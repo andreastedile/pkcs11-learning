@@ -42,7 +42,7 @@ class PKCS_SUL(SUL):
     def step(self, letter):
         if letter == "C_GenerateKey_flag0":
             if self.flag0 is not None:
-                return "unapplicable"  # do not overwrite the existing key
+                return "inapplicable"  # do not overwrite the existing key
             else:
                 print("C_GenerateKey_flag0")
                 self.flag0 = self.session.generate_key(KeyType.DES3, template={Attribute.SENSITIVE: False})
@@ -50,7 +50,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_GenerateKey_wrapping0":
             if self.wrapping0 is not None:
-                return "unapplicable"  # do not overwrite the existing key
+                return "inapplicable"  # do not overwrite the existing key
             else:
                 print("C_GenerateKey_wrapping0")
                 self.wrapping0 = self.session.generate_key(KeyType.DES3)
@@ -60,7 +60,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_SetAttribute_flag0_SENSITIVE_True":
             if self.flag0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_SetAttribute_flag0_SENSITIVE_True")
                 self.flag0[Attribute.SENSITIVE] = True
@@ -68,7 +68,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_SetAttribute_wrapping0_SENSITIVE_True":
             if self.wrapping0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_SetAttribute_wrapping0_SENSITIVE_True")
                 self.wrapping0[Attribute.SENSITIVE] = True
@@ -78,7 +78,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_SetAttribute_wrapping0_WRAP_True":
             if self.wrapping0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_SetAttribute_wrapping0_WRAP_True")
                 self.wrapping0[Attribute.WRAP] = True
@@ -86,7 +86,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_SetAttribute_wrapping0_WRAP_False":
             if self.wrapping0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_SetAttribute_wrapping0_WRAP_False")
                 self.wrapping0[Attribute.WRAP] = False
@@ -96,7 +96,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_SetAttribute_flag0_EXTRACTABLE_False":
             if self.flag0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_SetAttribute_flag0_EXTRACTABLE_False")
                 self.flag0[Attribute.EXTRACTABLE] = False
@@ -106,7 +106,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_SetAttribute_wrapping0_DECRYPT_True":
             if self.wrapping0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_SetAttribute_wrapping0_DECRYPT_True")
                 self.wrapping0[Attribute.DECRYPT] = True
@@ -114,7 +114,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_SetAttribute_wrapping0_DECRYPT_False":
             if self.wrapping0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_SetAttribute_wrapping0_DECRYPT_False")
                 self.wrapping0[Attribute.DECRYPT] = False
@@ -124,11 +124,11 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_WrapKey_flag0":
             if self.wrapping0 is None:
-                return "unapplicable"
+                return "inapplicable"
             elif self.flag0 is None:
-                return "unapplicable"
+                return "inapplicable"
             elif self.wrapped0 is not None:
-                return "unapplicable"  # do not overwrite the existing bytes
+                return "inapplicable"  # do not overwrite the existing bytes
             else:
                 print("C_WrapKey_flag0")
                 self.wrapping0: WrapMixin
@@ -143,7 +143,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_Decrypt_wrapped0":
             if self.wrapped0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_Decrypt_wrapped0")
                 self.wrapping0: DecryptMixin
@@ -158,7 +158,7 @@ class PKCS_SUL(SUL):
 
         elif letter == "C_GetAttribute_flag0_VALUE":
             if self.flag0 is None:
-                return "unapplicable"
+                return "inapplicable"
             else:
                 print("C_GetAttribute_flag0_VALUE")
                 try:
@@ -198,11 +198,11 @@ def main():
         convert_automaton_to_smv_model(learned_pkcs, "pkcs_model.smv")
         append_ltl_properties_to_file("pkcs_model.smv")
 
-        # simplify visualization by removing unapplicable inputs
+        # simplify visualization by removing inapplicable inputs
         for source in learned_pkcs.states:
             transitions = source.transitions.copy()
             for label, destination in transitions.items():
-                if "unapplicable" in source.output_fun[label]:
+                if "inapplicable" in source.output_fun[label]:
                     v = source.transitions.pop(label)
 
         from aalpy import visualize_automaton

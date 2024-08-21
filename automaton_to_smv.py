@@ -16,7 +16,7 @@ def convert_automaton_to_smv_model(automaton: MealyMachine, file: str):
         comma_separated_inputs = ", ".join(INPUT_ALPHABET)
         f.write(f"  inp : {{{comma_separated_inputs}}};\n")
 
-        f.write("  out : {ok, fail, unapplicable};\n")
+        f.write("  out : {ok, fail, inapplicable};\n")
 
         f.write("  ASSIGN\n")
 
@@ -38,4 +38,4 @@ def convert_automaton_to_smv_model(automaton: MealyMachine, file: str):
 
 def append_ltl_properties_to_file(file: str):
     with open(file, "a") as f:
-        f.write("LTLSPEC\n  G(inp = C_Decrypt_wrapped0 -> (out = fail | out = unapplicable))")
+        f.write("LTLSPEC\n  G(inp = C_Decrypt_wrapped0 -> (out = fail | out = inapplicable))")
