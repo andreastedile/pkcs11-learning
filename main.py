@@ -1,10 +1,12 @@
 import argparse
 
 import pkcs11
-from aalpy import SUL, RandomWalkEqOracle, run_Lstar, save_automaton_to_file
+from aalpy import SUL, RandomWalkEqOracle, run_Lstar
 from aalpy.automata import MealyMachine
 from pkcs11.types import *
-import graphviz
+
+from alphabet import INPUT_ALPHABET
+from automaton_to_smv import convert_automaton_to_smv_model, append_ltl_properties_to_file
 
 
 class PKCS_SUL(SUL):
@@ -38,121 +40,89 @@ class PKCS_SUL(SUL):
         self.wrapped0 = None
 
     def step(self, letter):
-        if letter == 'C_GenerateKey@flag0':
+        if letter == 'C_GenerateKey_flag0':
             if self.flag0 is not None:
                 return 'unapplicable'  # do not overwrite the existing key
             else:
-                print("C_GenerateKey@flag0")
+                print("C_GenerateKey_flag0")
                 self.flag0 = self.session.generate_key(KeyType.DES3, template={Attribute.SENSITIVE: False})
                 return 'ok'
 
-        elif letter == 'C_GenerateKey@wrapping0':
+        elif letter == 'C_GenerateKey_wrapping0':
             if self.wrapping0 is not None:
                 return 'unapplicable'  # do not overwrite the existing key
             else:
-                print("C_GenerateKey@wrapping0")
+                print("C_GenerateKey_wrapping0")
                 self.wrapping0 = self.session.generate_key(KeyType.DES3)
                 return 'ok'
 
         # Attribute.SENSITIVE
 
-        elif letter == 'C_SetAttribute@flag0#SENSITIVE=True':
+        elif letter == 'C_SetAttribute_flag0_SENSITIVE_True':
             if self.flag0 is None:
                 return 'unapplicable'
             else:
-                print("C_SetAttribute@flag0#SENSITIVE=True")
+                print("C_SetAttribute_flag0_SENSITIVE_True")
                 self.flag0[Attribute.SENSITIVE] = True
                 return 'ok'
 
-        elif letter == 'C_SetAttribute@wrapping0#SENSITIVE=True':
+        elif letter == 'C_SetAttribute_wrapping0_SENSITIVE_True':
             if self.wrapping0 is None:
                 return 'unapplicable'
             else:
-                print("C_SetAttribute@wrapping0#SENSITIVE=True")
+                print("C_SetAttribute_wrapping0_SENSITIVE_True")
                 self.wrapping0[Attribute.SENSITIVE] = True
                 return 'ok'
 
         # Attribute.WRAP
 
-        # elif letter == 'C_SetAttribute@flag0#WRAP=True':
-        #     if self.flag0 is None:
-        #         return 'unapplicable'
-        #     else:
-        #         print("C_SetAttribute@flag0#WRAP=True")
-        #         self.flag0[Attribute.WRAP] = True
-        #         return 'ok'
-        #
-        # elif letter == 'C_SetAttribute@flag0#WRAP=False':
-        #     if self.flag0 is None:
-        #         return 'unapplicable'
-        #     else:
-        #         print("C_SetAttribute@flag0#WRAP=False")
-        #         self.flag0[Attribute.WRAP] = False
-        #         return 'ok'
-
-        elif letter == 'C_SetAttribute@wrapping0#WRAP=True':
+        elif letter == 'C_SetAttribute_wrapping0_WRAP_True':
             if self.wrapping0 is None:
                 return 'unapplicable'
             else:
-                print("C_SetAttribute@wrapping0#WRAP=True")
+                print("C_SetAttribute_wrapping0_WRAP_True")
                 self.wrapping0[Attribute.WRAP] = True
                 return 'ok'
 
-        elif letter == 'C_SetAttribute@wrapping0#WRAP=False':
+        elif letter == 'C_SetAttribute_wrapping0_WRAP_False':
             if self.wrapping0 is None:
                 return 'unapplicable'
             else:
-                print("C_SetAttribute@wrapping0#WRAP=False")
+                print("C_SetAttribute_wrapping0_WRAP_False")
                 self.wrapping0[Attribute.WRAP] = False
                 return 'ok'
 
         # Attribute.EXTRACTABLE
 
-        elif letter == 'C_SetAttribute@flag0#EXTRACTABLE=False':
+        elif letter == 'C_SetAttribute_flag0_EXTRACTABLE_False':
             if self.flag0 is None:
                 return 'unapplicable'
             else:
-                print("C_SetAttribute@flag0#EXTRACTABLE=False")
+                print("C_SetAttribute_flag0_EXTRACTABLE_False")
                 self.flag0[Attribute.EXTRACTABLE] = False
                 return 'ok'
 
         # Attribute.DECRYPT
 
-        # elif letter == 'C_SetAttribute@flag0#DECRYPT=True':
-        #     if self.flag0 is None:
-        #         return 'unapplicable'
-        #     else:
-        #         print("C_SetAttribute@flag0#DECRYPT=True")
-        #         self.flag0[Attribute.DECRYPT] = True
-        #         return 'ok'
-        #
-        # elif letter == 'C_SetAttribute@flag0#DECRYPT=False':
-        #     if self.flag0 is None:
-        #         return 'unapplicable'
-        #     else:
-        #         print("C_SetAttribute@flag0#DECRYPT=False")
-        #         self.flag0[Attribute.DECRYPT] = False
-        #         return 'ok'
-
-        elif letter == 'C_SetAttribute@wrapping0#DECRYPT=True':
+        elif letter == 'C_SetAttribute_wrapping0_DECRYPT_True':
             if self.wrapping0 is None:
                 return 'unapplicable'
             else:
-                print("C_SetAttribute@wrapping0#DECRYPT=True")
+                print("C_SetAttribute_wrapping0_DECRYPT_True")
                 self.wrapping0[Attribute.DECRYPT] = True
                 return 'ok'
 
-        elif letter == 'C_SetAttribute@wrapping0#DECRYPT=False':
+        elif letter == 'C_SetAttribute_wrapping0_DECRYPT_False':
             if self.wrapping0 is None:
                 return 'unapplicable'
             else:
-                print("C_SetAttribute@wrapping0#DECRYPT=False")
+                print("C_SetAttribute_wrapping0_DECRYPT_False")
                 self.wrapping0[Attribute.DECRYPT] = False
                 return 'ok'
 
         #
 
-        elif letter == 'C_WrapKey@flag0':
+        elif letter == 'C_WrapKey_flag0':
             if self.wrapping0 is None:
                 return 'unapplicable'
             elif self.flag0 is None:
@@ -160,7 +130,7 @@ class PKCS_SUL(SUL):
             elif self.wrapped0 is not None:
                 return 'unapplicable'  # do not overwrite the existing bytes
             else:
-                print("C_WrapKey@flag0")
+                print("C_WrapKey_flag0")
                 self.wrapping0: WrapMixin
                 try:
                     self.wrapped0: bytes = self.wrapping0.wrap_key(self.flag0, mechanism=Mechanism.DES3_ECB)
@@ -171,11 +141,11 @@ class PKCS_SUL(SUL):
                     return 'fail'
                 return 'ok'
 
-        elif letter == 'C_Decrypt@wrapped0':
+        elif letter == 'C_Decrypt_wrapped0':
             if self.wrapped0 is None:
                 return 'unapplicable'
             else:
-                print("C_Decrypt@wrapped0")
+                print("C_Decrypt_wrapped0")
                 self.wrapping0: DecryptMixin
                 try:
                     plaintext: bytes = self.wrapping0.decrypt(self.wrapped0, mechanism=Mechanism.DES3_ECB)
@@ -186,11 +156,11 @@ class PKCS_SUL(SUL):
 
         #
 
-        elif letter == 'C_GetAttribute@flag0#VALUE':
+        elif letter == 'C_GetAttribute_flag0_VALUE':
             if self.flag0 is None:
                 return 'unapplicable'
             else:
-                print('C_GetAttribute@flag0#VALUE')
+                print('C_GetAttribute_flag0_VALUE')
                 try:
                     value = self.flag0[Attribute.VALUE]
                 except pkcs11.exceptions.AttributeSensitive:
@@ -221,39 +191,22 @@ def main():
         print("in the session")
 
         sul = PKCS_SUL(session)
-        input_alphabet = ['C_GenerateKey@flag0',
-                          'C_GenerateKey@wrapping0',
-                          'C_SetAttribute@flag0#SENSITIVE=True',
-                          'C_SetAttribute@wrapping0#SENSITIVE=True',
-                          # 'C_SetAttribute@flag0#WRAP=True',
-                          # 'C_SetAttribute@flag0#WRAP=False',
-                          'C_SetAttribute@wrapping0#WRAP=True',
-                          'C_SetAttribute@wrapping0#WRAP=False',
-                          'C_SetAttribute@flag0#EXTRACTABLE=False',
-                          # 'C_SetAttribute@flag0#DECRYPT=True',
-                          # 'C_SetAttribute@flag0#DECRYPT=False',
-                          'C_SetAttribute@wrapping0#DECRYPT=True',
-                          'C_SetAttribute@wrapping0#DECRYPT=False',
-                          'C_WrapKey@flag0',
-                          'C_Decrypt@wrapped0',
-                          # 'C_GetAttribute@flag0#VALUE'
-                          ]
-        eq_oracle = RandomWalkEqOracle(input_alphabet, sul, num_steps=2000, reset_after_cex=True, reset_prob=0.05)
-        learned_pkcs: MealyMachine = run_Lstar(input_alphabet, sul, eq_oracle=eq_oracle, automaton_type='mealy',
+        eq_oracle = RandomWalkEqOracle(INPUT_ALPHABET, sul, num_steps=2000, reset_after_cex=True, reset_prob=0.05)
+        learned_pkcs: MealyMachine = run_Lstar(INPUT_ALPHABET, sul, eq_oracle=eq_oracle, automaton_type='mealy',
                                                cache_and_non_det_check=True, print_level=2)
 
-        # from aalpy import visualize_automaton
-        # visualize_automaton(learned_pkcs, display_same_state_trans=True)
+        convert_automaton_to_smv_model(learned_pkcs, "pkcs_model.smv")
+        append_ltl_properties_to_file("pkcs_model.smv")
 
-        save_automaton_to_file(learned_pkcs)
+        # simplify visualization by removing unapplicable inputs
+        for source in learned_pkcs.states:
+            transitions = source.transitions.copy()
+            for label, destination in transitions.items():
+                if "unapplicable" in source.output_fun[label]:
+                    v = source.transitions.pop(label)
 
-        with open('LearnedModel.dot', 'r') as LearnedModel:
-            lines = LearnedModel.readlines()
-            filtered_lines = [line for line in lines if "/unapplicable" not in line]
-            joined_lines = '\n'.join(filtered_lines)
-
-            graph = graphviz.Source(joined_lines)
-            graph.render('SimplifiedLearnedModel', format='pdf', cleanup=True)
+        from aalpy import visualize_automaton
+        visualize_automaton(learned_pkcs, display_same_state_trans=True)
 
 
 if __name__ == '__main__':
