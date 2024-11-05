@@ -1,3 +1,0 @@
-aalpy~=1.4.1
-python-pkcs11
-graphviz~=0.20.3
