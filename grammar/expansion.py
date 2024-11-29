@@ -5,7 +5,7 @@ from itertools import count
 from grammar.invariants import check_all_key_nodes_have_different_values
 from grammar.my_types import HandleNode, KeyNode
 from grammar.visualization import visualize_graph
-from grammar.graph import decrypt, unwrap, encrypt, wrap, standard_unwrap_func
+from grammar.graph import decrypt, unwrap, encrypt, wrap, intruder_decrypt, standard_unwrap_func
 
 
 def expand_graph(graph: dict[int, HandleNode | KeyNode],
@@ -23,6 +23,9 @@ def expand_graph(graph: dict[int, HandleNode | KeyNode],
         output_graph = deepcopy(input_graph)
 
         decrypt(input_graph, output_graph, id_generator)
+        check_all_key_nodes_have_different_values(graph)
+
+        intruder_decrypt(input_graph, output_graph, id_generator)
         check_all_key_nodes_have_different_values(graph)
 
         unwrap(input_graph, output_graph, id_generator, unwrap_func)

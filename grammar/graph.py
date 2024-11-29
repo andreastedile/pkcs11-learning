@@ -128,3 +128,24 @@ def unwrap(input_graph: dict[int, HandleNode | KeyNode],
                                 attr4.handle_in.append(n5)
                         case other:
                             raise ValueError(other)
+
+
+def intruder_decrypt(input_graph: dict[int, HandleNode | KeyNode],
+                     output_graph: dict[int, HandleNode | KeyNode],
+                     id_generator: Iterator[int]):
+    for n1, attr1 in [(n, attr) for n, attr in input_graph.items() if isinstance(attr, KeyNode) and attr.known]:
+        for n2, attr2 in [(n, attr) for n, attr in input_graph.items() if isinstance(attr, KeyNode) and attr.known]:
+            match attr2.value:
+                case (inner, outer) if outer == attr1.value:
+                    match [n for n, attr in output_graph.items() if isinstance(attr, KeyNode) and attr.value == inner]:
+                        case []:
+                            n3 = next(id_generator)
+                            attr3 = KeyNode(deepcopy(inner), True, [], [], [], [], [(n1, n2)])
+                            output_graph[n3] = attr3
+                        case [n3]:
+                            attr3: KeyNode = output_graph[n3]
+                            attr3.known = True
+                            if (n1, n2) not in attr3.intruder_decrypt_in:
+                                attr3.intruder_decrypt_in.append((n1, n2))
+                        case other:
+                            raise ValueError(other)

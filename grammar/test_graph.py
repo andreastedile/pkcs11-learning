@@ -2,7 +2,7 @@ from copy import deepcopy
 from itertools import count
 from unittest import TestCase
 
-from grammar.graph import wrap, encrypt, unwrap, decrypt
+from grammar.graph import wrap, encrypt, unwrap, decrypt, intruder_decrypt
 from grammar.my_types import HandleNode, KeyNode
 
 
@@ -200,6 +200,58 @@ class TestDecrypt(TestCase):
 
         attr2: KeyNode = g1[2]
         self.assertTrue(attr2.known)
+
+
+class TestIntruderDecrypt(TestCase):
+    def test_empty_graph_intruder_decrypt(self):
+        g0 = {}
+        id_generator = count()
+
+        g1 = deepcopy(g0)
+        intruder_decrypt(g0, g1, id_generator)
+
+        self.assertEqual(len(g1), 0)
+
+    def test_graph_intruder_decrypt_should_create_new_key_node(self):
+        g0 = {
+            0: KeyNode(0, True, [], [], [], [], []),
+            1: KeyNode((1, 0), True, [], [], [], [], [])
+        }
+        id_generator = count(max(g0.keys()) + 1)
+
+        g1 = deepcopy(g0)
+        intruder_decrypt(g0, g1, id_generator)
+
+        self.assertEqual(len(g1), len(g0) + 1)
+
+        attr2: KeyNode = g1[2]
+        self.assertEqual(attr2.value, 1)
+        self.assertTrue(attr2.known)
+        self.assertListEqual(attr2.intruder_decrypt_in, [(0, 1)])
+
+        # the same intruder_decryption should not add a new node because it is already there
+
+        g2 = deepcopy(g1)
+        intruder_decrypt(g1, g2, id_generator)
+
+        self.assertEqual(len(g2), len(g1))
+
+    def test_graph_intruder_decrypt_should_update_existing_key_node(self):
+        g0 = {
+            0: KeyNode(0, True, [], [], [], [], []),
+            1: KeyNode((1, 0), True, [], [], [], [], []),
+            2: KeyNode(1, False, [], [], [], [], []),
+        }
+        id_generator = count(max(g0.keys()) + 1)
+
+        g1 = deepcopy(g0)
+        intruder_decrypt(g0, g1, id_generator)
+
+        self.assertEqual(len(g1), len(g0))
+
+        attr2: KeyNode = g1[2]
+        self.assertTrue(attr2.known)
+        self.assertListEqual(attr2.intruder_decrypt_in, [(0, 1)])
 
 
 class TestUnwrap(TestCase):

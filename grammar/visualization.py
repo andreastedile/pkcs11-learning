@@ -51,6 +51,11 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode]) -> Dot:
                 edge2 = Edge(e2, n, label=f"decrypt({e1},{e2})")
                 dot.add_edge(edge1)
                 dot.add_edge(edge2)
+            for (e1, e2) in attr.intruder_decrypt_in:
+                edge1 = Edge(e1, n, label=f"intruderdecrypt({e1},{e2})")
+                edge2 = Edge(e2, n, label=f"intruderdecrypt({e1},{e2})")
+                dot.add_edge(edge1)
+                dot.add_edge(edge2)
 
     return dot
 

@@ -99,3 +99,14 @@ class Test(TestCase):
 
         self.assertEqual(len(g1), 3)
         self.assertNotIn(3, g1)
+
+    def test_intruder_decrypt(self):
+        g0 = {
+            0: KeyNode(0, True, [], [], [], [], []),
+            1: KeyNode((1, 0), True, [], [], [], [], []),
+            2: KeyNode(1, False, [], [], [], [], [(0, 1)]),
+        }
+        g1 = prune_graph(g0, {0, 1})
+
+        self.assertEqual(len(g1), 2)
+        self.assertNotIn(2, g1)

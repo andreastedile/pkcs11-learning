@@ -69,6 +69,11 @@ def implies_other_nodes(graph: dict[int, HandleNode | KeyNode], n1: int) -> bool
                         raise TypeError
                     if e2 == n1:  # decrypt(?, n1) = n2
                         return True
+                for (e1, e2) in attr2.intruder_decrypt_in:
+                    if e1 == n1:  # intruder_decrypt(n1, ?) = n2
+                        return True
+                    if e2 == n1:  # intruder_decrypt(?, n1) = n2
+                        return True
     return False
 
 

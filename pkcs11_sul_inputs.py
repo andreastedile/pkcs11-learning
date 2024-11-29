@@ -1,5 +1,6 @@
 import abc
 
+from Crypto.Cipher import DES3
 from pkcs11 import SecretKey, Mechanism, Attribute, ObjectClass, KeyType, \
     WrapMixin, UnwrapMixin, EncryptMixin, DecryptMixin, \
     PKCS11Error
@@ -183,6 +184,33 @@ class PKCS11_SUL_Decrypt(PKCS11_SUL_Input):
         except PKCS11Error as e:
             # print(self, e)
             return OP_FAIL
+
+
+# noinspection PyPep8Naming
+class PKCS11_SUL_IntruderDecrypt(PKCS11_SUL_Input):
+    def __init__(self, decryption_key_id: int, key_to_be_decrypted_id: int, result_id: int):
+        self.decryption_key_id = decryption_key_id
+        self.key_to_be_decrypted_id = key_to_be_decrypted_id
+        self.result_id = result_id
+
+    def __str__(self):
+        return f"intruderdecrypt-{self.decryption_key_id}-{self.key_to_be_decrypted_id}-{self.result_id}"
+
+    def execute(self, knowledge_set: dict[int, SecretKey | bytes]) -> str:
+        decrypting_key = knowledge_set.get(self.decryption_key_id)
+        key_to_decrypt = knowledge_set.get(self.key_to_be_decrypted_id)
+        if not decrypting_key:  # we do not have the decrypting key yet
+            return NOT_APPLICABLE
+        if not key_to_decrypt:  # we do not have the key to decrypt yet
+            return NOT_APPLICABLE
+
+        cipher = DES3.new(decrypting_key, DES3.MODE_ECB)
+        result = cipher.decrypt(key_to_decrypt)
+        if self.result_id in knowledge_set:  # terms can be derived in multiple ways
+            assert knowledge_set[self.result_id] == result
+        else:
+            knowledge_set[self.result_id] = result
+        return OP_OK
 
 
 # noinspection PyPep8Naming
