@@ -43,7 +43,7 @@ def main():
     if debug:
         visualize_graph(clulow_graph, "clulow_initial_graph")
 
-    blocked_node_ids = set(clulow_graph.keys())
+    blocked_node_ids = {0}  # set(clulow_graph.keys())
 
     alphabet = compute_alphabet(clulow_graph, 2, True, blocked_node_ids, debug=debug)
 
