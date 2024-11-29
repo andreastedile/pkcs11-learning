@@ -32,7 +32,7 @@ def extract_alphabet(graph: dict[int, HandleNode | KeyNode]) -> list[PKCS11_SUL_
             alphabet.append(PKCS11_SUL_SetDecrypt(n))
             alphabet.append(PKCS11_SUL_UnsetDecrypt(n))
 
-    print(f"alphabet has {len(alphabet)} inputs, of which:")
+    print(f"alphabet has {len(alphabet)} inputs")
     print("number of wrap inputs:   ", len([input for input in alphabet if isinstance(input, PKCS11_SUL_Wrap)]))
     print("number of unwrap inputs: ", len([input for input in alphabet if isinstance(input, PKCS11_SUL_Unwrap)]))
     print("number of encrypt inputs:", len([input for input in alphabet if isinstance(input, PKCS11_SUL_Encrypt)]))
