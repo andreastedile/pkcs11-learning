@@ -2,9 +2,10 @@ type KeyType = int | tuple[KeyType, KeyType]
 
 
 class HandleNode:
-    def __init__(self, points_to: int, unwrap_in: tuple[int, int] | None):
+    def __init__(self, points_to: int, unwrap_in: tuple[int, int] | None, use: bool):
         self.points_to = points_to
         self.unwrap_in = unwrap_in
+        self.use = use
 
     def __eq__(self, other):
         if not isinstance(other, HandleNode):

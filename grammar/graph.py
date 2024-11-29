@@ -119,7 +119,7 @@ def unwrap(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int],
 
                                 for i in range(n_new_handles):
                                     n5 = next(id_generator)
-                                    attr5 = HandleNode(n4, (n1, n3))
+                                    attr5 = HandleNode(n4, (n1, n3), True)
                                     graph_copy[n5] = attr5
 
                                     attr4.handle_in.append(n5)
@@ -129,7 +129,7 @@ def unwrap(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int],
                             n_new_handles = unwrap_func(n4, graph_copy)
                             if n_new_handles > 0:
                                 n5 = next(id_generator)
-                                attr5 = HandleNode(n4, (n1, n3))
+                                attr5 = HandleNode(n4, (n1, n3), True)
                                 graph_copy[n5] = attr5
 
                                 attr4.handle_in.append(n5)

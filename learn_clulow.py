@@ -35,9 +35,9 @@ def main():
 
     clulow_graph = {
         0: KeyNode(0, False, [1], [], [], []),
-        1: HandleNode(0, None),
+        1: HandleNode(0, None, False),
         2: KeyNode(1, False, [3], [], [], []),
-        3: HandleNode(2, None),
+        3: HandleNode(2, None, True),
     }
 
     if debug:
