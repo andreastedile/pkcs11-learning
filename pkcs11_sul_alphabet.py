@@ -2,7 +2,7 @@ from collections.abc import Callable
 
 from grammar.expansion import expand_graph
 from grammar.graph import standard_unwrap_func
-from grammar.inputs import PKCS11_SUL_Input, \
+from inputs import PKCS11_SUL_Input, \
     PKCS11_SUL_Wrap, PKCS11_SUL_Unwrap, PKCS11_SUL_Encrypt, PKCS11_SUL_Decrypt, \
     PKCS11_SUL_SetWrap, PKCS11_SUL_SetUnwrap, PKCS11_SUL_SetEncrypt, PKCS11_SUL_SetDecrypt, \
     PKCS11_SUL_UnsetWrap, PKCS11_SUL_UnsetUnwrap, PKCS11_SUL_UnsetEncrypt, PKCS11_SUL_UnsetDecrypt
