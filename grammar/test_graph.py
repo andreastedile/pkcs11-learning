@@ -1,3 +1,4 @@
+from copy import deepcopy
 from itertools import count
 from unittest import TestCase
 
@@ -10,7 +11,8 @@ class TestWrap(TestCase):
         g0 = {}
         id_generator = count()
 
-        g1 = wrap(g0, id_generator)
+        g1 = deepcopy(g0)
+        wrap(g0, g1, id_generator)
 
         self.assertEqual(len(g1), 0)
 
@@ -21,7 +23,8 @@ class TestWrap(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = wrap(g0, id_generator)
+        g1 = deepcopy(g0)
+        wrap(g0, g1, id_generator)
 
         self.assertEqual(len(g1), len(g0) + 1)
 
@@ -32,7 +35,8 @@ class TestWrap(TestCase):
 
         # the same wrapping should not add a new node because it is already there
 
-        g2 = wrap(g0, id_generator)
+        g2 = deepcopy(g1)
+        wrap(g1, g2, id_generator)
 
         self.assertEqual(len(g2), len(g1))
 
@@ -44,7 +48,8 @@ class TestWrap(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = wrap(g0, id_generator)
+        g1 = deepcopy(g0)
+        wrap(g0, g1, id_generator)
 
         self.assertEqual(len(g1), 3)
 
@@ -60,7 +65,8 @@ class TestWrap(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = wrap(g0, id_generator)
+        g1 = deepcopy(g0)
+        wrap(g0, g1, id_generator)
 
         self.assertEqual(len(g1), len(g0) + 4)
 
@@ -80,7 +86,8 @@ class TestEncrypt(TestCase):
         g0 = {}
         id_generator = count()
 
-        g1 = encrypt(g0, id_generator)
+        g1 = deepcopy(g0)
+        encrypt(g0, g1, id_generator)
 
         self.assertEqual(len(g1), 0)
 
@@ -91,7 +98,8 @@ class TestEncrypt(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = encrypt(g0, id_generator)
+        g1 = deepcopy(g0)
+        encrypt(g0, g1, id_generator)
 
         self.assertEqual(len(g1), len(g0) + 1)
 
@@ -99,12 +107,6 @@ class TestEncrypt(TestCase):
         self.assertEqual(attr2.value, (0, 0))
         self.assertTrue(attr2.known)
         self.assertListEqual(attr2.encrypt_in, [(1, 0)])
-
-        # the same encryption should not add a new node because it is already there
-
-        g2 = encrypt(g0, id_generator)
-
-        self.assertEqual(len(g2), len(g1))
 
     def test_graph_encrypt_with_one_key_node_and_handle_node_pointing_to_it_should_update_existing_new_key_node(self):
         g0 = {
@@ -114,7 +116,8 @@ class TestEncrypt(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = encrypt(g0, id_generator)
+        g1 = deepcopy(g0)
+        encrypt(g0, g1, id_generator)
 
         self.assertEqual(len(g1), 3)
 
@@ -130,7 +133,8 @@ class TestEncrypt(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = encrypt(g0, id_generator)
+        g1 = deepcopy(g0)
+        encrypt(g0, g1, id_generator)
 
         self.assertEqual(len(g1), len(g0) + 4)
 
@@ -150,7 +154,8 @@ class TestDecrypt(TestCase):
         g0 = {}
         id_generator = count()
 
-        g1 = decrypt(g0, id_generator)
+        g1 = deepcopy(g0)
+        decrypt(g0, g1, id_generator)
 
         self.assertEqual(len(g1), 0)
 
@@ -162,7 +167,8 @@ class TestDecrypt(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = decrypt(g0, id_generator)
+        g1 = deepcopy(g0)
+        decrypt(g0, g1, id_generator)
 
         self.assertEqual(len(g1), len(g0) + 1)
 
@@ -173,7 +179,8 @@ class TestDecrypt(TestCase):
 
         # the same decryption should not add a new node because it is already there
 
-        g2 = decrypt(g0, id_generator)
+        g2 = deepcopy(g1)
+        decrypt(g1, g2, id_generator)
 
         self.assertEqual(len(g2), len(g1))
 
@@ -186,7 +193,8 @@ class TestDecrypt(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = decrypt(g0, id_generator)
+        g1 = deepcopy(g0)
+        decrypt(g0, g1, id_generator)
 
         self.assertEqual(len(g1), 4)
 
@@ -199,7 +207,8 @@ class TestUnwrap(TestCase):
         g0 = {}
         id_generator = count()
 
-        g1 = unwrap(g0, id_generator)
+        g1 = deepcopy(g0)
+        unwrap(g0, g1, id_generator)
 
         self.assertEqual(len(g1), 0)
 
@@ -211,7 +220,8 @@ class TestUnwrap(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = unwrap(g0, id_generator)
+        g1 = deepcopy(g0)
+        unwrap(g0, g1, id_generator)
 
         self.assertEqual(len(g1), len(g0) + 3)
 
@@ -238,7 +248,8 @@ class TestUnwrap(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = unwrap(g0, id_generator)
+        g1 = deepcopy(g0)
+        unwrap(g0, g1, id_generator)
 
         self.assertEqual(len(g1), len(g0) + 1)
 
@@ -257,6 +268,7 @@ class TestUnwrap(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = unwrap(g0, id_generator, lambda _n, _graph: 0)
+        g1 = deepcopy(g0)
+        unwrap(g0, g1, id_generator, lambda _n, _graph: 0)
 
         self.assertEqual(len(g1), len(g0))

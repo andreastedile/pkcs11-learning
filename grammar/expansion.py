@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from copy import deepcopy
 from itertools import count
 
 from grammar.invariants import check_all_key_nodes_have_different_values
@@ -16,20 +17,26 @@ def expand_graph(graph: dict[int, HandleNode | KeyNode],
     # generates ids for new nodes in the graph
     id_generator = count(max(graph.keys()) + 1)
 
+    input_graph = graph
+
     for i in range(n_iter):
-        graph = decrypt(graph, id_generator)
+        output_graph = deepcopy(input_graph)
+
+        decrypt(input_graph, output_graph, id_generator)
         check_all_key_nodes_have_different_values(graph)
 
-        graph = unwrap(graph, id_generator, unwrap_func)
+        unwrap(input_graph, output_graph, id_generator, unwrap_func)
         check_all_key_nodes_have_different_values(graph)
 
-        graph = encrypt(graph, id_generator)
+        encrypt(input_graph, output_graph, id_generator)
         check_all_key_nodes_have_different_values(graph)
 
-        graph = wrap(graph, id_generator)
+        wrap(input_graph, output_graph, id_generator)
         check_all_key_nodes_have_different_values(graph)
 
         if debug:
-            visualize_graph(graph, f"expand_{i}")
+            visualize_graph(output_graph, f"expand_{i}")
 
-    return graph
+        input_graph = output_graph
+
+    return input_graph
