@@ -6,10 +6,12 @@ from aalpy import RandomWalkEqOracle, run_Lstar, save_automaton_to_file, \
 import pkcs11
 from pkcs11 import Token, Session, SecretKey, KeyType, Attribute
 
+from grammar.expansion import expand_graph
 from grammar.my_types import HandleNode, KeyNode
+from grammar.pruning import prune_graph
 from grammar.visualization import visualize_graph
 from pkcs11_sul import PKCS11_SUL
-from pkcs11_sul_alphabet import compute_alphabet
+from pkcs11_sul_alphabet import extract_alphabet
 
 
 def main():
@@ -45,8 +47,17 @@ def main():
 
     blocked_node_ids = {0}  # set(clulow_graph.keys())
 
-    alphabet = compute_alphabet(clulow_graph, 2, True, blocked_node_ids, debug=debug)
+    print("expand graph")
+    expanded = expand_graph(clulow_graph, 2, debug=debug)
+    print("number of handle nodes:", len([attr for attr in expanded.values() if isinstance(attr, HandleNode)]))
+    print("number of key nodes:   ", len([attr for attr in expanded.values() if isinstance(attr, KeyNode)]))
 
+    print("pruning")
+    pruned = prune_graph(expanded, blocked_node_ids, debug)
+    print("number of handle nodes:", len([attr for attr in pruned.values() if isinstance(attr, HandleNode)]))
+    print("number of key nodes:   ", len([attr for attr in pruned.values() if isinstance(attr, KeyNode)]))
+
+    alphabet = extract_alphabet(pruned)
     if len(alphabet) == 0:
         print("alphabet is empty, cannot learn")
         return
