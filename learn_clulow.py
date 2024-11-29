@@ -66,10 +66,6 @@ def main():
     if len(alphabet) == 0:
         print("alphabet is empty, cannot learn")
         return
-    else:
-        print(f"alphabet has {len(alphabet)} inputs:")
-        for input in alphabet:
-            print(input)
 
     lib = pkcs11.lib(so)
     token: Token = lib.get_token(token_label=token_label)
