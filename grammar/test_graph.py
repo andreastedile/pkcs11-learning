@@ -18,7 +18,7 @@ class TestWrap(TestCase):
 
     def test_graph_wrap_with_one_key_node_and_handle_node_pointing_to_it_should_create_new_key_node(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True)
         }
         id_generator = count(max(g0.keys()) + 1)
@@ -42,9 +42,9 @@ class TestWrap(TestCase):
 
     def test_graph_wrap_with_one_key_node_and_handle_node_pointing_to_it_should_update_existing_key_node(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((0, 0), False, [], [], [], [])
+            2: KeyNode((0, 0), False, [], [], [], [], [])
         }
         id_generator = count(max(g0.keys()) + 1)
 
@@ -58,9 +58,9 @@ class TestWrap(TestCase):
 
     def test_graph_wrap_with_two_key_nodes_and_handle_nodes_pointing_to_them_should_create_new_key_nodes(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode(1, False, [3], [], [], []),
+            2: KeyNode(1, False, [3], [], [], [], []),
             3: HandleNode(2, None, True)
         }
         id_generator = count(max(g0.keys()) + 1)
@@ -93,7 +93,7 @@ class TestEncrypt(TestCase):
 
     def test_graph_encrypt_with_one_key_node_and_handle_node_pointing_to_it_should_create_new_key_node(self):
         g0 = {
-            0: KeyNode(0, True, [1], [], [], []),
+            0: KeyNode(0, True, [1], [], [], [], []),
             1: HandleNode(0, None, True)
         }
         id_generator = count(max(g0.keys()) + 1)
@@ -110,9 +110,9 @@ class TestEncrypt(TestCase):
 
     def test_graph_encrypt_with_one_key_node_and_handle_node_pointing_to_it_should_update_existing_new_key_node(self):
         g0 = {
-            0: KeyNode(0, True, [1], [], [], []),
+            0: KeyNode(0, True, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((0, 0), False, [], [], [(1, 0)], []),
+            2: KeyNode((0, 0), False, [], [], [(1, 0)], [], []),
         }
         id_generator = count(max(g0.keys()) + 1)
 
@@ -126,9 +126,9 @@ class TestEncrypt(TestCase):
 
     def test_graph_encrypt_with_two_key_nodes_and_handle_nodes_pointing_to_them_should_create_new_key_nodes(self):
         g0 = {
-            0: KeyNode(0, True, [1], [], [], []),
+            0: KeyNode(0, True, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode(1, True, [3], [], [], []),
+            2: KeyNode(1, True, [3], [], [], [], []),
             3: HandleNode(2, None, True)
         }
         id_generator = count(max(g0.keys()) + 1)
@@ -161,9 +161,9 @@ class TestDecrypt(TestCase):
 
     def test_graph_decrypt_should_create_new_key_node(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((1, 0), True, [], [], [], [])
+            2: KeyNode((1, 0), True, [], [], [], [], [])
         }
         id_generator = count(max(g0.keys()) + 1)
 
@@ -186,10 +186,10 @@ class TestDecrypt(TestCase):
 
     def test_graph_decrypt_should_update_existing_key_node(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((1, 0), True, [], [], [], []),
-            3: KeyNode(1, False, [], [], [], [])
+            2: KeyNode((1, 0), True, [], [], [], [], []),
+            3: KeyNode(1, False, [], [], [], [], [])
         }
         id_generator = count(max(g0.keys()) + 1)
 
@@ -214,9 +214,9 @@ class TestUnwrap(TestCase):
 
     def test_graph_unwrap_should_create_new_key_node_and_two_handle_nodes_pointing_to_it(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((1, 0), True, [], [], [], []),
+            2: KeyNode((1, 0), True, [], [], [], [], []),
         }
         id_generator = count(max(g0.keys()) + 1)
 
@@ -240,10 +240,10 @@ class TestUnwrap(TestCase):
 
     def test_graph_unwrap_should_create_new_handle_node(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((1, 0), True, [], [], [], []),
-            3: KeyNode(1, False, [4], [], [], []),
+            2: KeyNode((1, 0), True, [], [], [], [], []),
+            3: KeyNode(1, False, [4], [], [], [], []),
             4: HandleNode(3, (1, 2), True),
         }
         id_generator = count(max(g0.keys()) + 1)
@@ -262,9 +262,9 @@ class TestUnwrap(TestCase):
 
     def test_graph_unwrap_should_not_create_new_handle_node_with_condition(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((1, 0), True, [], [], [], []),
+            2: KeyNode((1, 0), True, [], [], [], [], []),
         }
         id_generator = count(max(g0.keys()) + 1)
 

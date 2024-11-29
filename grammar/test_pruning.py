@@ -13,7 +13,7 @@ class Test(TestCase):
 
     def test_graph_with_one_key_node(self):
         g0 = {
-            0: KeyNode(0, False, [], [], [], []),
+            0: KeyNode(0, False, [], [], [], [], []),
         }
         g1 = prune_graph(g0, set())
 
@@ -21,7 +21,7 @@ class Test(TestCase):
 
     def test_graph_with_one_key_node_that_is_blocked(self):
         g0 = {
-            0: KeyNode(0, False, [], [], [], []),
+            0: KeyNode(0, False, [], [], [], [], []),
         }
         g1 = prune_graph(g0, {0})
 
@@ -29,7 +29,7 @@ class Test(TestCase):
 
     def test_graph_with_one_blocked_key_node_and_handle_node_pointing_to_it(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
         }
         g1 = prune_graph(g0, {0})
@@ -42,7 +42,7 @@ class Test(TestCase):
 
     def test_graph_with_one_blocked_key_node_and_blocked_handle_node_pointing_to_it(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
         }
         g1 = prune_graph(g0, {0, 1})
@@ -51,11 +51,11 @@ class Test(TestCase):
 
     def test_wrap(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode(1, False, [3], [], [], []),
+            2: KeyNode(1, False, [3], [], [], [], []),
             3: HandleNode(2, None, True),
-            4: KeyNode((0, 1), True, [], [(3, 1)], [], []),
+            4: KeyNode((0, 1), True, [], [(3, 1)], [], [], []),
         }
         g1 = prune_graph(g0, {0, 1, 2, 3})
 
@@ -64,10 +64,10 @@ class Test(TestCase):
 
     def test_unwrap(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((1, 0), True, [], [], [], []),
-            3: KeyNode(1, False, [4], [], [], []),
+            2: KeyNode((1, 0), True, [], [], [], [], []),
+            3: KeyNode(1, False, [4], [], [], [], []),
             4: HandleNode(3, (1, 2), True),
         }
         g1 = prune_graph(g0, {0, 1, 2})
@@ -78,10 +78,10 @@ class Test(TestCase):
 
     def test_encrypt(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode(1, True, [], [], [], []),
-            3: KeyNode((1, 0), True, [], [], [(1, 2)], []),
+            2: KeyNode(1, True, [], [], [], [], []),
+            3: KeyNode((1, 0), True, [], [], [(1, 2)], [], []),
         }
         g1 = prune_graph(g0, {0, 1, 2})
 
@@ -90,10 +90,10 @@ class Test(TestCase):
 
     def test_decrypt(self):
         g0 = {
-            0: KeyNode(0, False, [1], [], [], []),
+            0: KeyNode(0, False, [1], [], [], [], []),
             1: HandleNode(0, None, True),
-            2: KeyNode((1, 0), True, [], [], [], []),
-            3: KeyNode(1, True, [], [], [], [(1, 2)]),
+            2: KeyNode((1, 0), True, [], [], [], [], []),
+            3: KeyNode(1, True, [], [], [], [(1, 2)], []),
         }
         g1 = prune_graph(g0, {0, 1, 2})
 

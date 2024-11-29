@@ -24,13 +24,15 @@ class KeyNode:
                  handle_in: list[int],
                  wrap_in: list[tuple[int, int]],
                  encrypt_in: list[tuple[int, int]],
-                 decrypt_in: list[tuple[int, int]]):
+                 decrypt_in: list[tuple[int, int]],
+                 intruder_decrypt_in: list[tuple[int, int]]):
         self.value = value
         self.known = known
         self.handle_in = handle_in
         self.wrap_in = wrap_in
         self.encrypt_in = encrypt_in
         self.decrypt_in = decrypt_in
+        self.intruder_decrypt_in = intruder_decrypt_in
 
     def __eq__(self, other):
         if not isinstance(other, KeyNode):
@@ -40,8 +42,10 @@ class KeyNode:
                 self.handle_in == other.handle_in and
                 self.wrap_in == other.wrap_in and
                 self.encrypt_in == other.encrypt_in and
-                self.decrypt_in == other.decrypt_in)
+                self.decrypt_in == other.decrypt_in and
+                self.intruder_decrypt_in == other.intruder_decrypt_in)
 
     def __repr__(self):
         return ("KeyNode(value={}, handle_in={}, wrap_in={}, encrypt_in={}, decrypt_in={}, known={})"
-                .format(self.value, self.handle_in, self.wrap_in, self.encrypt_in, self.decrypt_in, self.known))
+                .format(self.value, self.known, self.handle_in, self.wrap_in, self.encrypt_in, self.decrypt_in,
+                        self.intruder_decrypt_in))
