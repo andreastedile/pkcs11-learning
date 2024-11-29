@@ -7,7 +7,7 @@ from grammar.my_types import HandleNode, KeyNode
 def wrap(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int]) -> dict[int, HandleNode | KeyNode]:
     graph_copy = deepcopy(graph)
 
-    for n1, attr1 in [(n, attr) for n, attr in graph.items() if isinstance(attr, HandleNode)]:
+    for n1, attr1 in [(n, attr) for n, attr in graph.items() if isinstance(attr, HandleNode) and attr.use]:
         attr2: KeyNode
         n2, attr2 = attr1.points_to, graph[attr1.points_to]
 
@@ -36,7 +36,7 @@ def wrap(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int]) ->
 def encrypt(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int]) -> dict[int, HandleNode | KeyNode]:
     graph_copy = deepcopy(graph)
 
-    for n1, attr1 in [(n, attr) for n, attr in graph.items() if isinstance(attr, HandleNode)]:
+    for n1, attr1 in [(n, attr) for n, attr in graph.items() if isinstance(attr, HandleNode) and attr.use]:
         attr2: KeyNode
         n2, attr2 = attr1.points_to, graph[attr1.points_to]
 
@@ -62,7 +62,7 @@ def encrypt(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int])
 def decrypt(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int]) -> dict[int, HandleNode | KeyNode]:
     graph_copy = deepcopy(graph)
 
-    for n1, attr1 in [(n, attr) for n, attr in graph.items() if isinstance(attr, HandleNode)]:
+    for n1, attr1 in [(n, attr) for n, attr in graph.items() if isinstance(attr, HandleNode) and attr.use]:
         attr2: KeyNode
         n2, attr2 = attr1.points_to, graph[attr1.points_to]
 
@@ -101,7 +101,7 @@ def unwrap(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int],
         -> dict[int, HandleNode | KeyNode]:
     graph_copy = deepcopy(graph)
 
-    for n1, attr1 in [(n, attr) for n, attr in graph.items() if isinstance(attr, HandleNode)]:
+    for n1, attr1 in [(n, attr) for n, attr in graph.items() if isinstance(attr, HandleNode) and attr.use]:
         attr2: KeyNode
         n2, attr2 = attr1.points_to, graph[attr1.points_to]
 
