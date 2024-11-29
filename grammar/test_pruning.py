@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from grammar.pruning import prune_graph
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 
 
 class Test(TestCase):

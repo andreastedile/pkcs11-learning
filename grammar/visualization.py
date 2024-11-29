@@ -1,6 +1,6 @@
 from pydot import Dot, Node, Edge
 
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 
 
 def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode]) -> Dot:

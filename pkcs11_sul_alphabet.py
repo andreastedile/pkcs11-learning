@@ -7,7 +7,7 @@ from grammar.inputs import PKCS11_SUL_Input, \
     PKCS11_SUL_SetWrap, PKCS11_SUL_SetUnwrap, PKCS11_SUL_SetEncrypt, PKCS11_SUL_SetDecrypt, \
     PKCS11_SUL_UnsetWrap, PKCS11_SUL_UnsetUnwrap, PKCS11_SUL_UnsetEncrypt, PKCS11_SUL_UnsetDecrypt
 from grammar.pruning import prune_graph
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 
 
 def compute_alphabet(graph: dict[int, HandleNode | KeyNode],

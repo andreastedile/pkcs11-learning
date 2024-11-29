@@ -6,7 +6,7 @@ from aalpy import RandomWalkEqOracle, run_Lstar, save_automaton_to_file, \
 import pkcs11
 from pkcs11 import Token, Session, SecretKey, KeyType, Attribute
 
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 from grammar.visualization import visualize_graph
 from pkcs11_sul import PKCS11_SUL
 from pkcs11_sul_alphabet import compute_alphabet

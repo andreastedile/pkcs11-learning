@@ -1,7 +1,7 @@
 from collections.abc import Iterator, Callable
 from copy import deepcopy
 
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 
 
 def wrap(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int]) -> dict[int, HandleNode | KeyNode]:

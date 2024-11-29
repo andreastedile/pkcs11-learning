@@ -2,7 +2,7 @@ from collections.abc import Callable
 from itertools import count
 
 from grammar.invariants import check_all_key_nodes_have_different_values
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 from grammar.visualization import visualize_graph
 from grammar.graph import decrypt, unwrap, encrypt, wrap, standard_unwrap_func
 

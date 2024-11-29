@@ -1,7 +1,7 @@
 from copy import deepcopy
 from itertools import count
 
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 from grammar.visualization import visualize_graph
 
 

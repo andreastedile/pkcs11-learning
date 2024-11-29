@@ -2,7 +2,7 @@ from itertools import count
 from unittest import TestCase
 
 from grammar.graph import wrap, encrypt, unwrap, decrypt
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 
 
 class TestWrap(TestCase):

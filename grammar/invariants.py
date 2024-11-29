@@ -1,4 +1,4 @@
-from grammar.types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode
 
 
 def check_all_key_nodes_have_different_values(nodes: dict[int, HandleNode | KeyNode]):
