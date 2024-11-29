@@ -203,7 +203,7 @@ class TestUnwrap(TestCase):
 
         self.assertEqual(len(g1), 0)
 
-    def test_graph_unwrap_should_create_new_handle_node_and_key_nodes(self):
+    def test_graph_unwrap_should_create_new_key_node_and_two_handle_nodes_pointing_to_it(self):
         g0 = {
             0: KeyNode(0, False, [1], [], [], []),
             1: HandleNode(0, None),
@@ -213,16 +213,20 @@ class TestUnwrap(TestCase):
 
         g1 = unwrap(g0, id_generator)
 
-        self.assertEqual(len(g1), len(g0) + 2)
+        self.assertEqual(len(g1), len(g0) + 3)
 
         attr3: KeyNode = g1[3]
         self.assertEqual(attr3.value, 1)
         self.assertFalse(attr3.known)
-        self.assertListEqual(attr3.handle_in, [4])
+        self.assertListEqual(attr3.handle_in, [4, 5])
 
         attr4: HandleNode = g1[4]
         self.assertEqual(attr4.points_to, 3)
         self.assertTupleEqual(attr4.unwrap_in, (1, 2))
+
+        attr5: HandleNode = g1[5]
+        self.assertEqual(attr5.points_to, 3)
+        self.assertTupleEqual(attr5.unwrap_in, (1, 2))
 
     def test_graph_unwrap_should_create_new_handle_node(self):
         g0 = {
@@ -253,6 +257,6 @@ class TestUnwrap(TestCase):
         }
         id_generator = count(max(g0.keys()) + 1)
 
-        g1 = unwrap(g0, id_generator, lambda a, b: False)
+        g1 = unwrap(g0, id_generator, lambda _n, _graph: 0)
 
         self.assertEqual(len(g1), len(g0))

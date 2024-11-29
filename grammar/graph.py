@@ -86,8 +86,18 @@ def decrypt(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int])
     return graph_copy
 
 
+def standard_unwrap_func(n: int | None, graph: dict[int, HandleNode | KeyNode]) -> int:
+    # noinspection PyPep8Naming
+    MAX_HANDLE_NODES_POINTING_TO_KEY_NODE = 2
+    if n is None:
+        return MAX_HANDLE_NODES_POINTING_TO_KEY_NODE
+    else:
+        attr: KeyNode = graph[n]
+        return MAX_HANDLE_NODES_POINTING_TO_KEY_NODE - len(attr.handle_in)
+
+
 def unwrap(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int],
-           new_handle_cond: Callable[[KeyNode | None, list[HandleNode]], bool] = lambda _1, _2: True) \
+           unwrap_func: Callable[[int | None, dict[int, HandleNode | KeyNode]], int] = standard_unwrap_func) \
         -> dict[int, HandleNode | KeyNode]:
     graph_copy = deepcopy(graph)
 
@@ -100,22 +110,24 @@ def unwrap(graph: dict[int, HandleNode | KeyNode], id_generator: Iterator[int],
                 case (inner, outer) if outer == attr2.value:
                     match [n for n, attr in graph_copy.items() if isinstance(attr, KeyNode) and attr.value == inner]:
                         case []:
-                            if new_handle_cond(None, []):
-                                # only create the key node if the handle node pointing to it would be created as well
+                            n_new_handles = unwrap_func(None, graph_copy)
+                            if n_new_handles > 0:
+                                # we create the key node if we create one or more handle nodes pointing to it as well.
                                 n4 = next(id_generator)
                                 attr4 = KeyNode(deepcopy(inner), False, [], [], [], [])
                                 graph_copy[n4] = attr4
 
-                                n5 = next(id_generator)
-                                attr5 = HandleNode(n4, (n1, n3))
-                                graph_copy[n5] = attr5
+                                for i in range(n_new_handles):
+                                    n5 = next(id_generator)
+                                    attr5 = HandleNode(n4, (n1, n3))
+                                    graph_copy[n5] = attr5
 
-                                attr4.handle_in.append(n5)
+                                    attr4.handle_in.append(n5)
                         case [n4]:
                             attr4: KeyNode = graph_copy[n4]
 
-                            if new_handle_cond(attr4, [attr for attr in graph_copy.values() if
-                                                       isinstance(attr, HandleNode) and attr.points_to == n4]):
+                            n_new_handles = unwrap_func(n4, graph_copy)
+                            if n_new_handles > 0:
                                 n5 = next(id_generator)
                                 attr5 = HandleNode(n4, (n1, n3))
                                 graph_copy[n5] = attr5

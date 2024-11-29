@@ -1,6 +1,7 @@
 from collections.abc import Callable
 
 from grammar.expansion import expand_graph
+from grammar.graph import standard_unwrap_func
 from grammar.inputs import PKCS11_SUL_Input, \
     PKCS11_SUL_Wrap, PKCS11_SUL_Unwrap, PKCS11_SUL_Encrypt, PKCS11_SUL_Decrypt, \
     PKCS11_SUL_SetWrap, PKCS11_SUL_SetUnwrap, PKCS11_SUL_SetEncrypt, PKCS11_SUL_SetDecrypt, \
@@ -13,9 +14,9 @@ def compute_alphabet(graph: dict[int, HandleNode | KeyNode],
                      n_iter: int,
                      do_pruning=False,
                      blocked_node_ids: set[int] = None,
-                     new_handle_cond: Callable[[KeyNode | None, list[HandleNode]], bool] = lambda _1, _2: True,
+                     unwrap_func: Callable[[int | None, dict[int, HandleNode | KeyNode]], int] = standard_unwrap_func,
                      debug=False) -> list[PKCS11_SUL_Input]:
-    graph = expand_graph(graph, n_iter, new_handle_cond, debug)
+    graph = expand_graph(graph, n_iter, unwrap_func, debug)
     if do_pruning:
         graph = prune_graph(graph, blocked_node_ids, debug)
 
