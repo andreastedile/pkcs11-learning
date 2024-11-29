@@ -3,7 +3,7 @@ import typing
 from aalpy import SUL
 from pkcs11 import Session, SecretKey, Object
 
-from inputs import PKCS11_SUL_Input
+from pkcs11_sul_inputs import PKCS11_SUL_Input
 
 
 # noinspection PyPep8Naming
