@@ -20,6 +20,8 @@ def main():
     parser.add_argument("so", help="Shared object")
     parser.add_argument("token_label", help="Token label")
     parser.add_argument("user_pin", help="User PIN")
+    parser.add_argument("--n_iter", type=int, required=True, help="Number of graph expansion iterations (int)")
+    parser.add_argument("--no_pruning", help="Disable graph pruning", action="store_true")
     parser.add_argument("--debug", help="Save the graph generation steps to PNG for debugging", action="store_true")
     parser.add_argument("--visualize_automaton", help="Visualize the PKCS #11 automaton after learning",
                         action="store_true")
@@ -31,6 +33,8 @@ def main():
     so = args.so
     token_label = args.token_label
     user_pin = args.user_pin
+    n_iter: int = args.n_iter
+    no_pruning: bool = args.no_pruning
     debug: bool = args.debug
     visualize_automaton: bool = args.visualize_automaton
     display_same_state_trans: bool = args.display_same_state_trans
@@ -48,16 +52,17 @@ def main():
     blocked_node_ids = {0}  # set(clulow_graph.keys())
 
     print("expand graph")
-    expanded = expand_graph(clulow_graph, 2, debug=debug)
-    print("number of handle nodes:", len([attr for attr in expanded.values() if isinstance(attr, HandleNode)]))
-    print("number of key nodes:   ", len([attr for attr in expanded.values() if isinstance(attr, KeyNode)]))
+    clulow_graph = expand_graph(clulow_graph, n_iter, debug=debug)
+    print("number of handle nodes:", len([attr for attr in clulow_graph.values() if isinstance(attr, HandleNode)]))
+    print("number of key nodes:   ", len([attr for attr in clulow_graph.values() if isinstance(attr, KeyNode)]))
 
-    print("pruning")
-    pruned = prune_graph(expanded, blocked_node_ids, debug)
-    print("number of handle nodes:", len([attr for attr in pruned.values() if isinstance(attr, HandleNode)]))
-    print("number of key nodes:   ", len([attr for attr in pruned.values() if isinstance(attr, KeyNode)]))
+    if not no_pruning:
+        print("pruning")
+        clulow_graph = prune_graph(clulow_graph, blocked_node_ids, debug)
+        print("number of handle nodes:", len([attr for attr in clulow_graph.values() if isinstance(attr, HandleNode)]))
+        print("number of key nodes:   ", len([attr for attr in clulow_graph.values() if isinstance(attr, KeyNode)]))
 
-    alphabet = extract_alphabet(pruned)
+    alphabet = extract_alphabet(clulow_graph)
     if len(alphabet) == 0:
         print("alphabet is empty, cannot learn")
         return
