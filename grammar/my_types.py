@@ -2,10 +2,11 @@ type KeyType = int | tuple[KeyType, KeyType]
 
 
 class HandleNode:
-    def __init__(self, points_to: int, unwrap_in: tuple[int, int] | None, use: bool):
+    def __init__(self, points_to: int, unwrap_in: tuple[int, int] | None, use: bool, initial: bool):
         self.points_to = points_to
         self.unwrap_in = unwrap_in
         self.use = use
+        self.initial = initial
 
     def __eq__(self, other):
         if not isinstance(other, HandleNode):
@@ -25,7 +26,8 @@ class KeyNode:
                  wrap_in: list[tuple[int, int]],
                  encrypt_in: list[tuple[int, int]],
                  decrypt_in: list[tuple[int, int]],
-                 intruder_decrypt_in: list[tuple[int, int]]):
+                 intruder_decrypt_in: list[tuple[int, int]],
+                 initial: bool):
         self.value = value
         self.known = known
         self.handle_in = handle_in
@@ -33,6 +35,7 @@ class KeyNode:
         self.encrypt_in = encrypt_in
         self.decrypt_in = decrypt_in
         self.intruder_decrypt_in = intruder_decrypt_in
+        self.initial = initial
 
     def __eq__(self, other):
         if not isinstance(other, KeyNode):

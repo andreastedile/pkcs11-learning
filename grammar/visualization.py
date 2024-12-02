@@ -13,7 +13,8 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode]) -> Dot:
                 label=f"id={n}, points_to={attr.points_to}",
                 shape="box",
                 style="filled",
-                fillcolor="lightblue")
+                fillcolor="lightblue",
+                peripheries=2 if attr.initial else 1)
             dot.add_node(node)
         elif isinstance(attr, KeyNode):
             node = Node(
@@ -21,7 +22,8 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode]) -> Dot:
                 label=f"id={n}, value={attr.value}",
                 shape="box",
                 style="filled",
-                fillcolor="lightgreen")
+                fillcolor="lightgreen",
+                peripheries=2 if attr.initial else 1)
             dot.add_node(node)
 
     for n, attr in graph.items():

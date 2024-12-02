@@ -19,7 +19,8 @@ def wrap(input_graph: dict[int, HandleNode | KeyNode],
                    isinstance(attr, KeyNode) and attr.value == (attr4.value, attr2.value)]:
                 case []:
                     n5 = next(id_generator)
-                    attr5 = KeyNode((deepcopy(attr4.value), deepcopy(attr2.value)), True, [], [(n1, n3)], [], [], [])
+                    attr5 = KeyNode((deepcopy(attr4.value), deepcopy(attr2.value)), True, [], [(n1, n3)], [], [], [],
+                                    False)
                     output_graph[n5] = attr5
                 case [n5]:
                     attr5: KeyNode = output_graph[n5]
@@ -43,7 +44,8 @@ def encrypt(input_graph: dict[int, HandleNode | KeyNode],
                    isinstance(attr, KeyNode) and attr.value == (attr3.value, attr2.value)]:
                 case []:
                     n4 = next(id_generator)
-                    attr4 = KeyNode((deepcopy(attr3.value), deepcopy(attr2.value)), True, [], [], [(n1, n3)], [], [])
+                    attr4 = KeyNode((deepcopy(attr3.value), deepcopy(attr2.value)), True, [], [], [(n1, n3)], [], [],
+                                    False)
                     output_graph[n4] = attr4
                 case [n4]:
                     attr4: KeyNode = output_graph[n4]
@@ -68,7 +70,7 @@ def decrypt(input_graph: dict[int, HandleNode | KeyNode],
                     match [n for n, attr in output_graph.items() if isinstance(attr, KeyNode) and attr.value == inner]:
                         case []:
                             n4 = next(id_generator)
-                            attr4 = KeyNode(deepcopy(inner), True, [], [], [], [(n1, n3)], [])
+                            attr4 = KeyNode(deepcopy(inner), True, [], [], [], [(n1, n3)], [], False)
                             output_graph[n4] = attr4
                         case [n4]:
                             attr4: KeyNode = output_graph[n4]
@@ -107,12 +109,12 @@ def unwrap(input_graph: dict[int, HandleNode | KeyNode],
                             if n_new_handles > 0:
                                 # we create the key node if we create one or more handle nodes pointing to it as well.
                                 n4 = next(id_generator)
-                                attr4 = KeyNode(deepcopy(inner), False, [], [], [], [], [])
+                                attr4 = KeyNode(deepcopy(inner), False, [], [], [], [], [], False)
                                 output_graph[n4] = attr4
 
                                 for i in range(n_new_handles):
                                     n5 = next(id_generator)
-                                    attr5 = HandleNode(n4, (n1, n3), True)
+                                    attr5 = HandleNode(n4, (n1, n3), True, False)
                                     output_graph[n5] = attr5
 
                                     attr4.handle_in.append(n5)
@@ -122,7 +124,7 @@ def unwrap(input_graph: dict[int, HandleNode | KeyNode],
                             n_new_handles = unwrap_func(n4, output_graph)
                             if n_new_handles > 0:
                                 n5 = next(id_generator)
-                                attr5 = HandleNode(n4, (n1, n3), True)
+                                attr5 = HandleNode(n4, (n1, n3), True, False)
                                 output_graph[n5] = attr5
 
                                 attr4.handle_in.append(n5)
@@ -140,7 +142,7 @@ def intruder_decrypt(input_graph: dict[int, HandleNode | KeyNode],
                     match [n for n, attr in output_graph.items() if isinstance(attr, KeyNode) and attr.value == inner]:
                         case []:
                             n3 = next(id_generator)
-                            attr3 = KeyNode(deepcopy(inner), True, [], [], [], [], [(n1, n2)])
+                            attr3 = KeyNode(deepcopy(inner), True, [], [], [], [], [(n1, n2)], False)
                             output_graph[n3] = attr3
                         case [n3]:
                             attr3: KeyNode = output_graph[n3]
