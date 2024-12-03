@@ -30,8 +30,8 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode]) -> Dot:
         if isinstance(attr, HandleNode):
             match attr.unwrap_in:
                 case (e1, e2):
-                    edge1 = Edge(e1, n, label=f"unwrap({e1},{e2})")
-                    edge2 = Edge(e2, n, label=f"unwrap({e1},{e2})")
+                    edge1 = Edge(e1, n, label=f"<unwrap(<u>{e1}</u>,{e2})>")
+                    edge2 = Edge(e2, n, label=f"<unwrap({e1},<u>{e2}</u>)>")
                     dot.add_edge(edge1)
                     dot.add_edge(edge2)
         elif isinstance(attr, KeyNode):
@@ -39,23 +39,23 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode]) -> Dot:
                 edge = Edge(e, n, label="handle")
                 dot.add_edge(edge)
             for (e1, e2) in attr.wrap_in:
-                edge1 = Edge(e1, n, label=f"wrap({e1},{e2})")
-                edge2 = Edge(e2, n, label=f"wrap({e1},{e2})")
+                edge1 = Edge(e1, n, label=f"<wrap(<u>{e1}</u>,{e2})>")
+                edge2 = Edge(e2, n, label=f"<wrap({e1},<u>{e2}</u>)>")
                 dot.add_edge(edge1)
                 dot.add_edge(edge2)
             for (e1, e2) in attr.encrypt_in:
-                edge1 = Edge(e1, n, label=f"encrypt({e1},{e2})")
-                edge2 = Edge(e2, n, label=f"encrypt({e1},{e2})")
+                edge1 = Edge(e1, n, label=f"<encrypt(<u>{e1}</u>,{e2})>")
+                edge2 = Edge(e2, n, label=f"<encrypt({e1},<u>{e2}</u>)>")
                 dot.add_edge(edge1)
                 dot.add_edge(edge2)
             for (e1, e2) in attr.decrypt_in:
-                edge1 = Edge(e1, n, label=f"decrypt({e1},{e2})")
-                edge2 = Edge(e2, n, label=f"decrypt({e1},{e2})")
+                edge1 = Edge(e1, n, label=f"<decrypt(<u>{e1}</u>,{e2})>")
+                edge2 = Edge(e2, n, label=f"<decrypt({e1},<u>{e2}</u>)>")
                 dot.add_edge(edge1)
                 dot.add_edge(edge2)
             for (e1, e2) in attr.intruder_decrypt_in:
-                edge1 = Edge(e1, n, label=f"intruderdecrypt({e1},{e2})")
-                edge2 = Edge(e2, n, label=f"intruderdecrypt({e1},{e2})")
+                edge1 = Edge(e1, n, label=f"<intruderdecrypt(<u>{e1}</u>,{e2})>")
+                edge2 = Edge(e2, n, label=f"<intruderdecrypt({e1},<u>{e2}</u>)>")
                 dot.add_edge(edge1)
                 dot.add_edge(edge2)
 
