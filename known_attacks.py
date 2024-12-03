@@ -99,7 +99,42 @@ def dks_experiment_3():
     visualize_graph(output_graph, "dks_experiment_3_expanded")
 
 
+def fls_re_import_attack_2():
+    graph = {
+        0: KeyNode(1, False, [1], [], [], [], [], True),
+        1: HandleNode(0, None, False, True),
+        2: KeyNode(2, False, [3], [], [], [], [], True),
+        3: HandleNode(2, None, True, True),
+        4: KeyNode((3, 2), True, [], [], [], [], [], True)
+    }
+
+    visualize_graph(graph, "fls_re_import_attack_2")
+
+    id_generator = count(max(graph.keys()) + 1)
+
+    output_graph = deepcopy(graph)
+    unwrap(graph, output_graph, id_generator)
+    graph = output_graph
+
+    output_graph = deepcopy(graph)
+    unwrap(graph, output_graph, id_generator)
+    graph = output_graph
+
+    output_graph = deepcopy(graph)
+    wrap(graph, output_graph, id_generator)
+    graph = output_graph
+
+    output_graph = deepcopy(graph)
+    decrypt(graph, output_graph, id_generator)
+    graph = output_graph
+
+    output_graph = prune_graph(graph, {0})
+
+    visualize_graph(output_graph, "fls_re_import_attack_2_expanded")
+
+
 if __name__ == "__main__":
     clulow()
     dks_experiment_2()
     dks_experiment_3()
+    fls_re_import_attack_2()
