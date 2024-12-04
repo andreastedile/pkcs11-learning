@@ -7,7 +7,7 @@ import pkcs11
 from pkcs11 import Token, Session, SecretKey, KeyType, Attribute
 
 from grammar.expansion import expand_graph
-from grammar.my_types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode, Security
 from grammar.pruning import prune_graph
 from grammar.visualization import visualize_graph
 from pkcs11_sul import PKCS11_SUL
@@ -40,9 +40,9 @@ def main():
     display_same_state_trans: bool = args.display_same_state_trans
 
     clulow_graph = {
-        0: KeyNode(True, 0, False, [1], [], [], [], []),
+        0: KeyNode(True, 0, False, Security.LOW, [1], [], [], [], []),
         1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 1, False, [3], [], [], [], []),
+        2: KeyNode(True, 1, False, Security.LOW, [3], [], [], [], []),
         3: HandleNode(True, 2, True, None),
     }
 

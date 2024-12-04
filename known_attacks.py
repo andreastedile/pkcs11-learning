@@ -2,16 +2,16 @@ from copy import deepcopy
 from itertools import count
 
 from grammar.graph import wrap, decrypt, encrypt, unwrap, intruder_decrypt
-from grammar.my_types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode, Security
 from grammar.pruning import prune_graph
 from grammar.visualization import visualize_graph
 
 
 def clulow():
     graph = {
-        0: KeyNode(True, 0, False, [1], [], [], [], []),
+        0: KeyNode(True, 0, False, Security.HIGH, [1], [], [], [], []),
         1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 1, False, [3], [], [], [], []),
+        2: KeyNode(True, 1, False, Security.LOW, [3], [], [], [], []),
         3: HandleNode(True, 2, True, None)
     }
 
@@ -34,11 +34,11 @@ def clulow():
 
 def dks_experiment_2():
     graph = {
-        0: KeyNode(True, 1, False, [1], [], [], [], []),
+        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], []),
         1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 2, False, [3], [], [], [], []),
+        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], []),
         3: HandleNode(True, 2, True, None),
-        4: KeyNode(True, 3, True, [], [], [], [], [])
+        4: KeyNode(True, 3, True, Security.LOW, [], [], [], [], [])
     }
 
     visualize_graph(graph, "dks_experiment_2")
@@ -68,9 +68,9 @@ def dks_experiment_2():
 
 def dks_experiment_3():
     graph = {
-        0: KeyNode(True, 1, False, [1], [], [], [], []),
+        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], []),
         1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 2, False, [3], [], [], [], []),
+        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], []),
         3: HandleNode(True, 2, True, None)
     }
 
@@ -101,11 +101,11 @@ def dks_experiment_3():
 
 def fls_re_import_attack_2():
     graph = {
-        0: KeyNode(True, 1, False, [1], [], [], [], []),
+        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], []),
         1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 2, False, [3], [], [], [], []),
+        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], []),
         3: HandleNode(True, 2, True, None),
-        4: KeyNode(True, (3, 2), True, [], [], [], [], [])
+        4: KeyNode(True, (3, 2), True, Security.LOW, [], [], [], [], [])
     }
 
     visualize_graph(graph, "fls_re_import_attack_2")

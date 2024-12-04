@@ -1,6 +1,6 @@
 from pydot import Dot, Node, Edge
 
-from grammar.my_types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode, Security
 
 
 def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode]) -> Dot:
@@ -23,7 +23,8 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode]) -> Dot:
                 shape="box",
                 style="filled",
                 fillcolor="lightgreen",
-                peripheries=2 if attr.initial else 1)
+                peripheries=2 if attr.initial else 1,
+                penwidth=1 if attr.security == Security.LOW else 2.5)
             dot.add_node(node)
 
     for n, attr in graph.items():

@@ -1,6 +1,12 @@
 from copy import deepcopy
+from enum import Enum
 
 type KeyType = int | tuple[KeyType, KeyType]
+
+
+class Security(Enum):
+    LOW = 0,
+    HIGH = 1,
 
 
 class HandleNode:
@@ -30,14 +36,16 @@ class HandleNode:
 
 
 class KeyNode:
-    def __init__(self, initial: bool, value: KeyType, known: bool, handle_in: list[int], wrap_in: list[tuple[int, int]],
-                 encrypt_in: list[tuple[int, int]], decrypt_in: list[tuple[int, int]],
+    def __init__(self, initial: bool, value: KeyType, known: bool, security, handle_in: list[int],
+                 wrap_in: list[tuple[int, int]], encrypt_in: list[tuple[int, int]], decrypt_in: list[tuple[int, int]],
                  intruder_decrypt_in: list[tuple[int, int]]):
         """
+        :param security:
         :param initial: Whether the key node is part of the initial knowledge. If true, the node cannot be pruned.
         :param value: Value of the key node.
         :param known: Whether the key node is known and can be used as key to be wrapped, wrapped key, key to be
         encrypted, key to be decrypted.
+        :param security: Whether the key node has low or high security.
         :param handle_in: Handle nodes pointing to the key node.
         :param wrap_in: Pairs of handle node and key node, the first being the (handle to the) wrapping key, the second
          being the key to be wrapped.
@@ -50,6 +58,7 @@ class KeyNode:
         """
         self.value = value
         self.known = known
+        self.security = security
         self.handle_in = handle_in
         self.wrap_in = wrap_in
         self.encrypt_in = encrypt_in
