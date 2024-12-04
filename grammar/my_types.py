@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 type KeyType = int | tuple[KeyType, KeyType]
 
 
@@ -14,6 +16,7 @@ class HandleNode:
         self.unwrap_in = unwrap_in
         self.use = use
         self.initial = initial
+        self.copy = deepcopy(self) if initial else None
 
     def __eq__(self, other):
         if not isinstance(other, HandleNode):
@@ -53,6 +56,7 @@ class KeyNode:
         self.decrypt_in = decrypt_in
         self.intruder_decrypt_in = intruder_decrypt_in
         self.initial = initial
+        self.copy = deepcopy(self) if initial else None
 
     def __eq__(self, other):
         if not isinstance(other, KeyNode):
