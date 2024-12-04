@@ -40,7 +40,7 @@ def main():
     display_same_state_trans: bool = args.display_same_state_trans
 
     clulow_graph = {
-        0: KeyNode(True, 0, False, Security.LOW, [1], [], [], [], []),
+        0: KeyNode(True, 0, False, Security.HIGH, [1], [], [], [], []),
         1: HandleNode(True, 0, False, None),
         2: KeyNode(True, 1, False, Security.LOW, [3], [], [], [], []),
         3: HandleNode(True, 2, True, None),
@@ -49,8 +49,6 @@ def main():
     if debug:
         visualize_graph(clulow_graph, "clulow_initial_graph")
 
-    blocked_node_ids = {0}  # set(clulow_graph.keys())
-
     print("expand graph")
     clulow_graph = expand_graph(clulow_graph, n_iter, debug=debug)
     print("number of handle nodes:", len([attr for attr in clulow_graph.values() if isinstance(attr, HandleNode)]))
@@ -58,7 +56,7 @@ def main():
 
     if not no_pruning:
         print("pruning")
-        clulow_graph = prune_graph(clulow_graph, blocked_node_ids, debug)
+        clulow_graph = prune_graph(clulow_graph, debug)
         print("number of handle nodes:", len([attr for attr in clulow_graph.values() if isinstance(attr, HandleNode)]))
         print("number of key nodes:   ", len([attr for attr in clulow_graph.values() if isinstance(attr, KeyNode)]))
 

@@ -1,7 +1,7 @@
 from copy import deepcopy
 from itertools import count
 
-from grammar.my_types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode, Security
 from grammar.visualization import visualize_graph
 
 
@@ -77,37 +77,70 @@ def implies_other_nodes(graph: dict[int, HandleNode | KeyNode], n1: int) -> bool
     return False
 
 
-def prune_graph(graph: dict[int, HandleNode | KeyNode], blocked_node_ids: set[int] = None, debug=False) -> \
+def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
         dict[int, HandleNode | KeyNode]:
     graph = deepcopy(graph)
     counter = count()
 
-    if blocked_node_ids is None:
-        blocked_node_ids = set()
-
     while True:
-        non_blocked_non_implying_nodes = [n for n, attr in graph.items() if
-                                          n not in blocked_node_ids and not implies_other_nodes(graph, n)]
+        non_implying_nodes = [(n, attr) for n, attr in graph.items() if not implies_other_nodes(graph, n)]
+        changed = False
 
-        if len(non_blocked_non_implying_nodes) == 0:
+        for (n1, attr1) in [(n, attr) for n, attr in non_implying_nodes if isinstance(attr, HandleNode)]:
+            attr2: KeyNode = graph[attr1.points_to]
+            if attr1.initial:
+                assert attr2.initial
+                if attr1.unwrap_in is not None and attr1.copy.unwrap_in is None:  # case 1
+                    attr1.unwrap_in = None
+                    changed = True
+            else:  # case 2 and 3
+                attr2.handle_in.remove(n1)
+                del graph[n1]
+                changed = True
+
+        for (n1, attr1) in [(n, attr) for n, attr in non_implying_nodes if isinstance(attr, KeyNode)]:
+            if attr1.security == Security.LOW:
+                if attr1.initial:
+                    for (e1, e2) in attr1.wrap_in:
+                        if (e1, e2) not in attr1.copy.wrap_in:
+                            attr1.wrap_in.remove((e1, e2))
+                            changed = True
+                    for (e1, e2) in attr1.encrypt_in:
+                        if (e1, e2) not in attr1.copy.encrypt_in:
+                            attr1.encrypt_in.remove((e1, e2))
+                            changed = True
+                    for (e1, e2) in attr1.decrypt_in:
+                        if (e1, e2) not in attr1.copy.decrypt_in:
+                            attr1.decrypt_in.remove((e1, e2))
+                            changed = True
+                    for (e1, e2) in attr1.intruder_decrypt_in:
+                        if (e1, e2) not in attr1.copy.intruder_decrypt_in:
+                            attr1.intruder_decrypt_in.remove((e1, e2))
+                            changed = True
+                    # keep attr1.handle_in unchanged
+                else:
+                    if len(attr1.handle_in) == 0:  # case 5
+                        del graph[n1]
+                        changed = True
+                    else:
+                        if len(attr1.wrap_in) > 0:
+                            attr1.wrap_in.clear()
+                            changed = True
+                        if len(attr1.encrypt_in) > 0:
+                            attr1.encrypt_in.clear()
+                            changed = True
+                        if len(attr1.decrypt_in) > 0:
+                            attr1.decrypt_in.clear()
+                            changed = True
+                        if len(attr1.intruder_decrypt_in) > 0:
+                            attr1.intruder_decrypt_in.clear()
+                            changed = True
+                        # keep attr1.handle_in unchanged
+
+        if changed and debug:
+            visualize_graph(graph, f"pruning_{next(counter)}")
+
+        if not changed:
             break
-        else:
-            print("non-blocked non-implying nodes:", non_blocked_non_implying_nodes)
-
-            for n1 in non_blocked_non_implying_nodes:
-                attr1 = graph[n1]
-                if isinstance(attr1, HandleNode):
-                    # once we remove a handle node, we must update the pointed key node
-                    # so that it is no longer pointed by the handle
-                    n2 = attr1.points_to
-                    attr2: KeyNode = graph.get(n2)
-                    if attr2 is not None:  # perhaps it was removed in a previous iteration
-                        attr2.handle_in.remove(n1)
-
-            for n in non_blocked_non_implying_nodes:
-                del graph[n]
-
-            if debug:
-                visualize_graph(graph, f"pruning_{next(counter)}")
 
     return graph

@@ -27,7 +27,7 @@ def clulow():
     decrypt(graph, output_graph, id_generator)
     graph = output_graph
 
-    output_graph = prune_graph(graph, {0})
+    output_graph = prune_graph(graph)
 
     visualize_graph(output_graph, "clulow_expanded")
 
@@ -61,7 +61,7 @@ def dks_experiment_2():
     intruder_decrypt(graph, output_graph, id_generator)
     graph = output_graph
 
-    output_graph = prune_graph(graph, {0})
+    output_graph = prune_graph(graph)
 
     visualize_graph(output_graph, "dks_experiment_2_expanded")
 
@@ -94,7 +94,7 @@ def dks_experiment_3():
     decrypt(graph, output_graph, id_generator)
     graph = output_graph
 
-    output_graph = prune_graph(graph, {0})
+    output_graph = prune_graph(graph)
 
     visualize_graph(output_graph, "dks_experiment_3_expanded")
 
@@ -128,7 +128,7 @@ def fls_re_import_attack_2():
     decrypt(graph, output_graph, id_generator)
     graph = output_graph
 
-    output_graph = prune_graph(graph, {0})
+    output_graph = prune_graph(graph)
 
     visualize_graph(output_graph, "fls_re_import_attack_2_expanded")
 
