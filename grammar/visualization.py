@@ -70,4 +70,4 @@ def visualize_graph(graph: dict[int, HandleNode | KeyNode], file: str):
     :param file: name of the file without extension
     """
     dot = convert_graph_to_dot(graph)
-    dot.write(f"{file}.png", format="png")
+    dot.write(f"{file}.svg", format="svg")
