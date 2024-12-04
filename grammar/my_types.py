@@ -2,7 +2,7 @@ type KeyType = int | tuple[KeyType, KeyType]
 
 
 class HandleNode:
-    def __init__(self, points_to: int, unwrap_in: tuple[int, int] | None, use: bool, initial: bool):
+    def __init__(self, initial: bool, points_to: int, use: bool, unwrap_in: tuple[int, int] | None):
         self.points_to = points_to
         self.unwrap_in = unwrap_in
         self.use = use
@@ -20,14 +20,9 @@ class HandleNode:
 
 
 class KeyNode:
-    def __init__(self, value: KeyType,
-                 known: bool,
-                 handle_in: list[int],
-                 wrap_in: list[tuple[int, int]],
-                 encrypt_in: list[tuple[int, int]],
-                 decrypt_in: list[tuple[int, int]],
-                 intruder_decrypt_in: list[tuple[int, int]],
-                 initial: bool):
+    def __init__(self, initial: bool, value: KeyType, known: bool, handle_in: list[int], wrap_in: list[tuple[int, int]],
+                 encrypt_in: list[tuple[int, int]], decrypt_in: list[tuple[int, int]],
+                 intruder_decrypt_in: list[tuple[int, int]]):
         self.value = value
         self.known = known
         self.handle_in = handle_in
