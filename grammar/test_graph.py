@@ -29,7 +29,7 @@ class TestWrap(TestCase):
         self.assertEqual(len(g1), len(g0) + 1)
 
         attr2: KeyNode = g1[2]
-        self.assertEqual(attr2.value, (0, 0))
+        self.assertTupleEqual(attr2.value, (0, 0))
         self.assertTrue(attr2.known)
         self.assertListEqual(attr2.wrap_in, [(1, 1)])
 
@@ -71,12 +71,12 @@ class TestWrap(TestCase):
         self.assertEqual(len(g1), len(g0) + 4)
 
         attr5: KeyNode = g1[5]
-        self.assertEqual(attr5.value, (1, 0))
+        self.assertTupleEqual(attr5.value, (1, 0))
         self.assertTrue(attr5.known)
         self.assertListEqual(attr5.wrap_in, [(1, 3)])
 
         attr6: KeyNode = g1[6]
-        self.assertEqual(attr6.value, (0, 1))
+        self.assertTupleEqual(attr6.value, (0, 1))
         self.assertTrue(attr6.known)
         self.assertListEqual(attr6.wrap_in, [(3, 1)])
 
@@ -104,7 +104,7 @@ class TestEncrypt(TestCase):
         self.assertEqual(len(g1), len(g0) + 1)
 
         attr2: KeyNode = g1[2]
-        self.assertEqual(attr2.value, (0, 0))
+        self.assertTupleEqual(attr2.value, (0, 0))
         self.assertTrue(attr2.known)
         self.assertListEqual(attr2.encrypt_in, [(1, 0)])
 
@@ -139,12 +139,12 @@ class TestEncrypt(TestCase):
         self.assertEqual(len(g1), len(g0) + 4)
 
         attr5: KeyNode = g1[5]
-        self.assertEqual(attr5.value, (1, 0))
+        self.assertTupleEqual(attr5.value, (1, 0))
         self.assertTrue(attr5.known)
         self.assertListEqual(attr5.encrypt_in, [(1, 2)])
 
         attr6: KeyNode = g1[6]
-        self.assertEqual(attr6.value, (0, 1))
+        self.assertTupleEqual(attr6.value, (0, 1))
         self.assertTrue(attr6.known)
         self.assertListEqual(attr6.encrypt_in, [(3, 0)])
 

@@ -9,7 +9,7 @@ class Test(TestCase):
         g0 = {}
         g1 = prune_graph(g0)
 
-        self.assertEqual(g1, {})
+        self.assertDictEqual(g1, {})
 
     def test_graph_with_one_non_initial_key_node(self):
         g0 = {
@@ -17,7 +17,7 @@ class Test(TestCase):
         }
         g1 = prune_graph(g0)
 
-        self.assertEqual(g1, {})
+        self.assertDictEqual(g1, {})
 
     def test_graph_with_one_initial_key_node(self):
         g0 = {
@@ -25,7 +25,7 @@ class Test(TestCase):
         }
         g1 = prune_graph(g0)
 
-        self.assertEqual(g1, g0)
+        self.assertDictEqual(g1, g0)
 
     def test_graph_with_one_initial_key_node_and_non_initial_handle_node_pointing_to_it(self):
         g0 = {
