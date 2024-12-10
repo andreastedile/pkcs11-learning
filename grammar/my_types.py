@@ -79,6 +79,7 @@ class KeyNode:
                 self.intruder_decrypt_in == other.intruder_decrypt_in)
 
     def __repr__(self):
-        return ("KeyNode(value={}, handle_in={}, wrap_in={}, encrypt_in={}, decrypt_in={}, known={})"
-                .format(self.value, self.known, self.handle_in, self.wrap_in, self.encrypt_in, self.decrypt_in,
-                        self.intruder_decrypt_in))
+        return (
+            "KeyNode(value={}, known={}, handle_in={}, wrap_in={}, encrypt_in={}, decrypt_in={}, intruder_decrypt_in={})"
+            .format(self.value, self.known, self.handle_in, self.wrap_in, self.encrypt_in, self.decrypt_in,
+                    self.intruder_decrypt_in))
