@@ -8,6 +8,12 @@ class Security(Enum):
     LOW = 0,
     HIGH = 1,
 
+    def __str__(self) -> str:
+        if self == Security.LOW:
+            return "LOW"
+        else:
+            return "HIGH"
+
 
 class HandleNode:
     def __init__(self, initial: bool, points_to: int, use: bool, unwrap_in: tuple[int, int] | None):
@@ -18,21 +24,22 @@ class HandleNode:
         :param unwrap_in: Pair of handle node and key node, the first being the (handle to the) unwrapping key, the
          second being the wrapped key.
         """
-        self.points_to = points_to
-        self.unwrap_in = unwrap_in
-        self.use = use
         self.initial = initial
+        self.points_to = points_to
+        self.use = use
+        self.unwrap_in = unwrap_in
         self.copy = deepcopy(self) if initial else None
 
     def __eq__(self, other):
         if not isinstance(other, HandleNode):
             return False
-        return (self.points_to == other.points_to and
+        return (self.initial == other.initial and
+                self.points_to == other.points_to and
+                self.use == other.use and
                 self.unwrap_in == other.unwrap_in)
 
     def __repr__(self):
-        return ("HandleNode(points_to={}, unwrap_in={})"
-                .format(self.points_to, self.unwrap_in))
+        return f"HandleNode(initial={self.initial},points_to={self.points_to},use={self.use},unwrap_in={self.unwrap_in})"
 
 
 class KeyNode:
@@ -56,6 +63,7 @@ class KeyNode:
         :param intruder_decrypt_in: Pairs of key node and key node, the first being the decryption key, the second being
          the key to be decrypted.
         """
+        self.initial = initial
         self.value = value
         self.known = known
         self.security = security
@@ -64,14 +72,15 @@ class KeyNode:
         self.encrypt_in = encrypt_in
         self.decrypt_in = decrypt_in
         self.intruder_decrypt_in = intruder_decrypt_in
-        self.initial = initial
         self.copy = deepcopy(self) if initial else None
 
     def __eq__(self, other):
         if not isinstance(other, KeyNode):
             return False
-        return (self.value == other.value and
+        return (self.initial == other.initial and
+                self.value == other.value and
                 self.known == other.known and
+                self.security == other.security and
                 self.handle_in == other.handle_in and
                 self.wrap_in == other.wrap_in and
                 self.encrypt_in == other.encrypt_in and
@@ -79,7 +88,4 @@ class KeyNode:
                 self.intruder_decrypt_in == other.intruder_decrypt_in)
 
     def __repr__(self):
-        return (
-            "KeyNode(value={}, known={}, handle_in={}, wrap_in={}, encrypt_in={}, decrypt_in={}, intruder_decrypt_in={})"
-            .format(self.value, self.known, self.handle_in, self.wrap_in, self.encrypt_in, self.decrypt_in,
-                    self.intruder_decrypt_in))
+        return f"KeyNode(initial={self.initial},value={self.value},known={self.known},security={self.security},handle_in={self.handle_in},wrap_in={self.wrap_in},encrypt_in={self.encrypt_in},decrypt_in={self.decrypt_in},intruder_decrypt_in={self.intruder_decrypt_in})"
