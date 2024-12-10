@@ -15,7 +15,7 @@ def clulow():
         3: HandleNode(True, 2, True, None)
     }
 
-    visualize_graph(graph, "clulow")
+    visualize_graph(graph, "clulow_initial")
 
     id_generator = count(max(graph.keys()) + 1)
 
@@ -27,9 +27,11 @@ def clulow():
     decrypt(graph, output_graph, id_generator)
     graph = output_graph
 
+    visualize_graph(output_graph, "clulow_expanded")
+
     output_graph = prune_graph(graph)
 
-    visualize_graph(output_graph, "clulow_expanded")
+    visualize_graph(output_graph, "clulow_pruned")
 
 
 def dks_experiment_2():
@@ -41,7 +43,7 @@ def dks_experiment_2():
         4: KeyNode(True, 3, True, Security.LOW, [], [], [], [], [])
     }
 
-    visualize_graph(graph, "dks_experiment_2")
+    visualize_graph(graph, "dks_experiment_2_initial")
 
     id_generator = count(max(graph.keys()) + 1)
 
@@ -61,9 +63,11 @@ def dks_experiment_2():
     intruder_decrypt(graph, output_graph, id_generator)
     graph = output_graph
 
+    visualize_graph(output_graph, "dks_experiment_2_expanded")
+
     output_graph = prune_graph(graph)
 
-    visualize_graph(output_graph, "dks_experiment_2_expanded")
+    visualize_graph(output_graph, "dks_experiment_2_pruned")
 
 
 def dks_experiment_3():
@@ -74,7 +78,7 @@ def dks_experiment_3():
         3: HandleNode(True, 2, True, None)
     }
 
-    visualize_graph(graph, "dks_experiment_3")
+    visualize_graph(graph, "dks_experiment_3_initial")
 
     id_generator = count(max(graph.keys()) + 1)
 
@@ -94,9 +98,11 @@ def dks_experiment_3():
     decrypt(graph, output_graph, id_generator)
     graph = output_graph
 
+    visualize_graph(output_graph, "dks_experiment_3_expanded")
+
     output_graph = prune_graph(graph)
 
-    visualize_graph(output_graph, "dks_experiment_3_expanded")
+    visualize_graph(output_graph, "dks_experiment_3_pruned")
 
 
 def fls_re_import_attack_2():
@@ -108,7 +114,7 @@ def fls_re_import_attack_2():
         4: KeyNode(True, (3, 2), True, Security.LOW, [], [], [], [], [])
     }
 
-    visualize_graph(graph, "fls_re_import_attack_2")
+    visualize_graph(graph, "fls_re_import_attack_2_initial")
 
     id_generator = count(max(graph.keys()) + 1)
 
@@ -128,9 +134,11 @@ def fls_re_import_attack_2():
     decrypt(graph, output_graph, id_generator)
     graph = output_graph
 
+    visualize_graph(output_graph, "fls_re_import_attack_2_expanded")
+
     output_graph = prune_graph(graph)
 
-    visualize_graph(output_graph, "fls_re_import_attack_2_expanded")
+    visualize_graph(output_graph, "fls_re_import_attack_2_pruned")
 
 
 if __name__ == "__main__":
