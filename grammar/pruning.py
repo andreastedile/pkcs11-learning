@@ -117,6 +117,7 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         if (e1, e2) not in attr1.copy.intruder_decrypt_in:
                             attr1.intruder_decrypt_in.remove((e1, e2))
                             changed = True
+                    attr1.known = attr1.copy.known
                     # keep attr1.handle_in unchanged
                 else:
                     if len(attr1.handle_in) == 0:  # case 5
@@ -135,6 +136,7 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         if len(attr1.intruder_decrypt_in) > 0:
                             attr1.intruder_decrypt_in.clear()
                             changed = True
+                        attr1.known = False
                         # keep attr1.handle_in unchanged
 
         if changed and debug:
