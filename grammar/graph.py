@@ -19,13 +19,28 @@ def wrap(input_graph: dict[int, HandleNode | KeyNode],
                    isinstance(attr, KeyNode) and attr.value == (attr4.value, attr2.value)]:
                 case []:
                     n5 = next(id_generator)
-                    attr5 = KeyNode(False, (deepcopy(attr4.value), deepcopy(attr2.value)), True, Security.LOW, [],
-                                    [(n1, n3)], [], [], [])
+                    attr5 = KeyNode(False,
+                                    (deepcopy(attr4.value), deepcopy(attr2.value)),
+                                    True,
+                                    Security.LOW,
+                                    [],
+                                    [(n1, n3)],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [])
                     output_graph[n5] = attr5
+                    output_graph[n1].wrap_out.append((n3, n5))
+                    output_graph[n3].wrap_out.append((n1, n5))
                 case [n5]:
                     attr5: KeyNode = output_graph[n5]
                     if (n1, n3) not in attr5.wrap_in:
                         attr5.wrap_in.append((n1, n3))
+                        output_graph[n1].wrap_out.append((n3, n5))
+                        output_graph[n3].wrap_out.append((n1, n5))
                     if not attr5.known:
                         attr5.known = True
                 case other:
@@ -44,13 +59,28 @@ def encrypt(input_graph: dict[int, HandleNode | KeyNode],
                    isinstance(attr, KeyNode) and attr.value == (attr3.value, attr2.value)]:
                 case []:
                     n4 = next(id_generator)
-                    attr4 = KeyNode(False, (deepcopy(attr3.value), deepcopy(attr2.value)), True, Security.LOW, [], [],
-                                    [(n1, n3)], [], [])
+                    attr4 = KeyNode(False,
+                                    (deepcopy(attr3.value), deepcopy(attr2.value)),
+                                    True,
+                                    Security.LOW,
+                                    [],
+                                    [],
+                                    [(n1, n3)],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [])
                     output_graph[n4] = attr4
+                    output_graph[n1].encrypt_out.append((n3, n4))
+                    output_graph[n3].encrypt_out.append((n1, n4))
                 case [n4]:
                     attr4: KeyNode = output_graph[n4]
                     if (n1, n3) not in attr4.encrypt_in:
                         attr4.encrypt_in.append((n1, n3))
+                        output_graph[n1].encrypt_out.append((n3, n4))
+                        output_graph[n3].encrypt_out.append((n1, n4))
                     if not attr4.known:
                         attr4.known = True
                 case other:
@@ -70,12 +100,28 @@ def decrypt(input_graph: dict[int, HandleNode | KeyNode],
                     match [n for n, attr in output_graph.items() if isinstance(attr, KeyNode) and attr.value == inner]:
                         case []:
                             n4 = next(id_generator)
-                            attr4 = KeyNode(False, deepcopy(inner), True, Security.LOW, [], [], [], [(n1, n3)], [])
+                            attr4 = KeyNode(False,
+                                            deepcopy(inner),
+                                            True,
+                                            Security.LOW,
+                                            [],
+                                            [],
+                                            [],
+                                            [(n1, n3)],
+                                            [],
+                                            [],
+                                            [],
+                                            [],
+                                            [])
                             output_graph[n4] = attr4
+                            output_graph[n1].decrypt_out.append((n3, n4))
+                            output_graph[n3].decrypt_out.append((n1, n4))
                         case [n4]:
                             attr4: KeyNode = output_graph[n4]
                             if (n1, n3) not in attr4.decrypt_in:
                                 attr4.decrypt_in.append((n1, n3))
+                                output_graph[n1].decrypt_out.append((n3, n4))
+                                output_graph[n3].decrypt_out.append((n1, n4))
                             if not attr4.known:
                                 attr4.known = True
                         case other:
@@ -109,13 +155,34 @@ def unwrap(input_graph: dict[int, HandleNode | KeyNode],
                             if n_new_handles > 0:
                                 # we create the key node if we create one or more handle nodes pointing to it as well.
                                 n4 = next(id_generator)
-                                attr4 = KeyNode(False, deepcopy(inner), False, Security.LOW, [], [], [], [], [])
+                                attr4 = KeyNode(False,
+                                                deepcopy(inner),
+                                                False,
+                                                Security.LOW,
+                                                [],
+                                                [],
+                                                [],
+                                                [],
+                                                [],
+                                                [],
+                                                [],
+                                                [],
+                                                [])
                                 output_graph[n4] = attr4
 
                                 for i in range(n_new_handles):
                                     n5 = next(id_generator)
-                                    attr5 = HandleNode(False, n4, True, (n1, n3))
+                                    attr5 = HandleNode(False,
+                                                       n4,
+                                                       True,
+                                                       (n1, n3),
+                                                       [],
+                                                       [],
+                                                       [],
+                                                       [])
                                     output_graph[n5] = attr5
+                                    output_graph[n1].unwrap_out.append((n3, n5))
+                                    output_graph[n3].unwrap_out.append((n1, n5))
 
                                     attr4.handle_in.append(n5)
                         case [n4]:
@@ -124,8 +191,17 @@ def unwrap(input_graph: dict[int, HandleNode | KeyNode],
                             n_new_handles = unwrap_func(n4, output_graph)
                             if n_new_handles > 0:
                                 n5 = next(id_generator)
-                                attr5 = HandleNode(False, n4, True, (n1, n3))
+                                attr5 = HandleNode(False,
+                                                   n4,
+                                                   True,
+                                                   (n1, n3),
+                                                   [],
+                                                   [],
+                                                   [],
+                                                   [])
                                 output_graph[n5] = attr5
+                                output_graph[n1].unwrap_out.append((n3, n5))
+                                output_graph[n3].unwrap_out.append((n1, n5))
 
                                 attr4.handle_in.append(n5)
                         case other:
@@ -142,12 +218,28 @@ def intruder_decrypt(input_graph: dict[int, HandleNode | KeyNode],
                     match [n for n, attr in output_graph.items() if isinstance(attr, KeyNode) and attr.value == inner]:
                         case []:
                             n3 = next(id_generator)
-                            attr3 = KeyNode(False, deepcopy(inner), True, Security.LOW, [], [], [], [], [(n1, n2)])
+                            attr3 = KeyNode(False,
+                                            deepcopy(inner),
+                                            True,
+                                            Security.LOW,
+                                            [],
+                                            [],
+                                            [],
+                                            [],
+                                            [(n1, n2)],
+                                            [],
+                                            [],
+                                            [],
+                                            [])
                             output_graph[n3] = attr3
+                            output_graph[n1].intruder_decrypt_out.append((n2, n3))
+                            output_graph[n2].intruder_decrypt_out.append((n1, n3))
                         case [n3]:
                             attr3: KeyNode = output_graph[n3]
                             attr3.known = True
                             if (n1, n2) not in attr3.intruder_decrypt_in:
                                 attr3.intruder_decrypt_in.append((n1, n2))
+                                output_graph[n1].intruder_decrypt_out.append((n2, n3))
+                                output_graph[n2].intruder_decrypt_out.append((n1, n3))
                         case other:
                             raise ValueError(other)

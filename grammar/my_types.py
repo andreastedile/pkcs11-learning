@@ -16,7 +16,15 @@ class Security(Enum):
 
 
 class HandleNode:
-    def __init__(self, initial: bool, points_to: int, use: bool, unwrap_in: tuple[int, int] | None):
+    def __init__(self,
+                 initial: bool,
+                 points_to: int,
+                 use: bool,
+                 unwrap_in: tuple[int, int] | None,
+                 wrap_out: list[tuple[int, int]],
+                 unwrap_out: list[tuple[int, int]],
+                 encrypt_out: list[tuple[int, int]],
+                 decrypt_out: list[tuple[int, int]]):
         """
         :param initial: Whether the handle node is part of the initial knowledge. If true, the node cannot be pruned.
         :param points_to: Key node pointed by the handle node.
@@ -28,6 +36,10 @@ class HandleNode:
         self.points_to = points_to
         self.use = use
         self.unwrap_in = unwrap_in
+        self.wrap_out = wrap_out
+        self.unwrap_out = unwrap_out
+        self.encrypt_out = encrypt_out
+        self.decrypt_out = decrypt_out
         self.copy = deepcopy(self) if initial else None
 
     def __eq__(self, other):
@@ -36,16 +48,47 @@ class HandleNode:
         return (self.initial == other.initial and
                 self.points_to == other.points_to and
                 self.use == other.use and
-                self.unwrap_in == other.unwrap_in)
+                self.unwrap_in == other.unwrap_in and
+                self.wrap_out == other.wrap_out and
+                self.unwrap_out == other.unwrap_out and
+                self.encrypt_out == other.encrypt_out and
+                self.decrypt_out == other.decrypt_out)
 
     def __repr__(self):
-        return f"HandleNode(initial={self.initial},points_to={self.points_to},use={self.use},unwrap_in={self.unwrap_in})"
+        return (("HandleNode("
+                 "initial={},"
+                 "points_to={},"
+                 "use={},"
+                 "unwrap_in={},"
+                 "wrap_out={},"
+                 "unwrap_out={},"
+                 "encrypt_out={},"
+                 "decrypt_out={})")
+                .format(self.initial,
+                        self.points_to,
+                        self.use,
+                        self.unwrap_in,
+                        self.wrap_out,
+                        self.unwrap_out,
+                        self.encrypt_out,
+                        self.decrypt_out))
 
 
 class KeyNode:
-    def __init__(self, initial: bool, value: KeyType, known: bool, security, handle_in: list[int],
-                 wrap_in: list[tuple[int, int]], encrypt_in: list[tuple[int, int]], decrypt_in: list[tuple[int, int]],
-                 intruder_decrypt_in: list[tuple[int, int]]):
+    def __init__(self,
+                 initial: bool,
+                 value: KeyType,
+                 known: bool,
+                 security,
+                 handle_in: list[int],
+                 wrap_in: list[tuple[int, int]],
+                 encrypt_in: list[tuple[int, int]],
+                 decrypt_in: list[tuple[int, int]],
+                 intruder_decrypt_in: list[tuple[int, int]],
+                 unwrap_out: list[tuple[int, int]],
+                 encrypt_out: list[tuple[int, int]],
+                 decrypt_out: list[tuple[int, int]],
+                 intruder_decrypt_out: list[tuple[int, int]]):
         """
         :param security:
         :param initial: Whether the key node is part of the initial knowledge. If true, the node cannot be pruned.
@@ -72,6 +115,10 @@ class KeyNode:
         self.encrypt_in = encrypt_in
         self.decrypt_in = decrypt_in
         self.intruder_decrypt_in = intruder_decrypt_in
+        self.unwrap_out = unwrap_out
+        self.encrypt_out = encrypt_out
+        self.decrypt_out = decrypt_out
+        self.intruder_decrypt_out = intruder_decrypt_out
         self.copy = deepcopy(self) if initial else None
 
     def __eq__(self, other):
@@ -85,7 +132,33 @@ class KeyNode:
                 self.wrap_in == other.wrap_in and
                 self.encrypt_in == other.encrypt_in and
                 self.decrypt_in == other.decrypt_in and
-                self.intruder_decrypt_in == other.intruder_decrypt_in)
+                self.intruder_decrypt_in == other.intruder_decrypt_in and
+                self.unwrap_out == other.unwrap_out and
+                self.encrypt_out == other.encrypt_out and
+                self.decrypt_out == other.decrypt_out and
+                self.intruder_decrypt_out == other.intruder_decrypt_out)
 
     def __repr__(self):
-        return f"KeyNode(initial={self.initial},value={self.value},known={self.known},security={self.security},handle_in={self.handle_in},wrap_in={self.wrap_in},encrypt_in={self.encrypt_in},decrypt_in={self.decrypt_in},intruder_decrypt_in={self.intruder_decrypt_in})"
+        return (("KeyNode("
+                 "initial={},"
+                 "value={},"
+                 "known={},"
+                 "security={},"
+                 "handle_in={},"
+                 "wrap_in={},"
+                 "encrypt_in={},"
+                 "decrypt_in={},"
+                 "intruder_decrypt_in={})")
+                .format(self.initial,
+                        self.value,
+                        self.known,
+                        self.security,
+                        self.handle_in,
+                        self.wrap_in,
+                        self.encrypt_in,
+                        self.decrypt_in,
+                        self.intruder_decrypt_in,
+                        self.unwrap_out,
+                        self.encrypt_out,
+                        self.decrypt_out,
+                        self.intruder_decrypt_out))

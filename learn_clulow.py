@@ -40,10 +40,10 @@ def main():
     display_same_state_trans: bool = args.display_same_state_trans
 
     clulow_graph = {
-        0: KeyNode(True, 0, False, Security.HIGH, [1], [], [], [], []),
-        1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 1, False, Security.LOW, [3], [], [], [], []),
-        3: HandleNode(True, 2, True, None),
+        0: KeyNode(True, 0, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
+        1: HandleNode(True, 0, False, None, [], [], [], []),
+        2: KeyNode(True, 1, False, Security.LOW, [3], [], [], [], [], [], [], [], []),
+        3: HandleNode(True, 2, True, None, [], [], [], []),
     }
 
     if debug:

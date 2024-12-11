@@ -9,10 +9,10 @@ from grammar.visualization import visualize_graph
 
 def clulow():
     graph = {
-        0: KeyNode(True, 0, False, Security.HIGH, [1], [], [], [], []),
-        1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 1, False, Security.LOW, [3], [], [], [], []),
-        3: HandleNode(True, 2, True, None)
+        0: KeyNode(True, 0, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
+        1: HandleNode(True, 0, False, None, [], [], [], []),
+        2: KeyNode(True, 1, False, Security.LOW, [3], [], [], [], [], [], [], [], []),
+        3: HandleNode(True, 2, True, None, [], [], [], [])
     }
 
     visualize_graph(graph, "clulow_initial")
@@ -36,11 +36,11 @@ def clulow():
 
 def dks_experiment_2():
     graph = {
-        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], []),
-        1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], []),
-        3: HandleNode(True, 2, True, None),
-        4: KeyNode(True, 3, True, Security.LOW, [], [], [], [], [])
+        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
+        1: HandleNode(True, 0, False, None, [], [], [], []),
+        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], [], [], [], [], []),
+        3: HandleNode(True, 2, True, None, [], [], [], []),
+        4: KeyNode(True, 3, True, Security.LOW, [], [], [], [], [], [], [], [], [])
     }
 
     visualize_graph(graph, "dks_experiment_2_initial")
@@ -72,10 +72,10 @@ def dks_experiment_2():
 
 def dks_experiment_3():
     graph = {
-        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], []),
-        1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], []),
-        3: HandleNode(True, 2, True, None)
+        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
+        1: HandleNode(True, 0, False, None, [], [], [], []),
+        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], [], [], [], [], []),
+        3: HandleNode(True, 2, True, None, [], [], [], [])
     }
 
     visualize_graph(graph, "dks_experiment_3_initial")
@@ -107,11 +107,11 @@ def dks_experiment_3():
 
 def fls_re_import_attack_2():
     graph = {
-        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], []),
-        1: HandleNode(True, 0, False, None),
-        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], []),
-        3: HandleNode(True, 2, True, None),
-        4: KeyNode(True, (3, 2), True, Security.LOW, [], [], [], [], [])
+        0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
+        1: HandleNode(True, 0, False, None, [], [], [], []),
+        2: KeyNode(True, 2, False, Security.LOW, [3], [], [], [], [], [], [], [], []),
+        3: HandleNode(True, 2, True, None, [], [], [], []),
+        4: KeyNode(True, (3, 2), True, Security.LOW, [], [], [], [], [], [], [], [], [])
     }
 
     visualize_graph(graph, "fls_re_import_attack_2_initial")
