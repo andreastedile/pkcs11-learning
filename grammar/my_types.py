@@ -79,6 +79,9 @@ class HandleNode:
                 len(self.encrypt_out) > 0 or
                 len(self.decrypt_out) > 0)
 
+    def is_implied_by_other_nodes(self):
+        return len(self.unwrap_in) > 0
+
 
 class KeyNode:
     def __init__(self,
@@ -174,3 +177,9 @@ class KeyNode:
                 len(self.encrypt_out) > 0 or
                 len(self.decrypt_out) > 0 or
                 len(self.intruder_decrypt_out) > 0)
+
+    def is_implied_by_other_nodes(self):
+        return (len(self.wrap_in) > 0 or
+                len(self.encrypt_in) > 0 or
+                len(self.decrypt_in) > 0 or
+                len(self.intruder_decrypt_in) > 0)
