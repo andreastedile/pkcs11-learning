@@ -73,6 +73,12 @@ class HandleNode:
                         self.encrypt_out,
                         self.decrypt_out))
 
+    def implies_other_nodes(self):
+        return (len(self.wrap_out) > 0 or
+                len(self.unwrap_out) > 0 or
+                len(self.encrypt_out) > 0 or
+                len(self.decrypt_out) > 0)
+
 
 class KeyNode:
     def __init__(self,
@@ -162,3 +168,9 @@ class KeyNode:
                         self.encrypt_out,
                         self.decrypt_out,
                         self.intruder_decrypt_out))
+
+    def implies_other_nodes(self):
+        return (len(self.unwrap_out) > 0 or
+                len(self.encrypt_out) > 0 or
+                len(self.decrypt_out) > 0 or
+                len(self.intruder_decrypt_out) > 0)

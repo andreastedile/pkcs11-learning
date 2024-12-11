@@ -83,58 +83,138 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
     counter = count()
 
     while True:
-        non_implying_nodes = [(n, attr) for n, attr in graph.items() if not implies_other_nodes(graph, n)]
+        non_implying_handle_nodes: list[tuple[int, HandleNode]] = [(n, attr) for n, attr in graph.items() if
+                                                                   isinstance(attr, HandleNode) and
+                                                                   not attr.implies_other_nodes()]
+        non_implying_key_nodes: list[tuple[int, KeyNode]] = [(n, attr) for n, attr in graph.items() if
+                                                             isinstance(attr, KeyNode) and
+                                                             not attr.implies_other_nodes()]
         changed = False
 
-        for (n1, attr1) in [(n, attr) for n, attr in non_implying_nodes if isinstance(attr, HandleNode)]:
+        for (n1, attr1) in non_implying_handle_nodes:
             attr2: KeyNode = graph[attr1.points_to]
             if attr1.initial:
                 assert attr2.initial
-                if attr1.unwrap_in is not None and attr1.copy.unwrap_in is None:  # case 1
-                    attr1.unwrap_in = None
-                    changed = True
-            else:  # case 2 and 3
-                attr2.handle_in.remove(n1)
-                del graph[n1]
-                changed = True
+                match attr1.unwrap_in:
+                    case (e1, e2) if attr1.copy.unwrap_in is None:
+                        ne1: HandleNode = graph[e1]
+                        ne2: KeyNode = graph[e2]
+                        ne1.unwrap_out.remove((e2, n1))
+                        ne2.unwrap_out.remove((e1, n1))
+                        attr1.unwrap_in = None
+                        changed = True
+                    case (e1, e2) if attr1.copy.unwrap_in == (e1, e2):
+                        pass
+                    case None:
+                        pass
+                    case other:
+                        raise ValueError(other)
+            else:  # not attr1.initial
+                match attr1.unwrap_in:
+                    case (e1, e2):
+                        ne1: HandleNode = graph[e1]
+                        ne2: KeyNode = graph[e2]
+                        ne1.unwrap_out.remove((e2, n1))
+                        ne2.unwrap_out.remove((e1, n1))
+                        del graph[n1]
+                        attr2.handle_in.remove(n1)
+                        changed = True
+                    case None:
+                        raise ValueError
 
-        for (n1, attr1) in [(n, attr) for n, attr in non_implying_nodes if isinstance(attr, KeyNode)]:
+        for (n1, attr1) in non_implying_key_nodes:
             if attr1.security == Security.LOW:
                 if attr1.initial:
                     for (e1, e2) in attr1.wrap_in:
                         if (e1, e2) not in attr1.copy.wrap_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: HandleNode = graph[e2]
+                            ne1.wrap_out.remove((e2, n1))
+                            ne2.wrap_out.remove((e1, n1))
                             attr1.wrap_in.remove((e1, e2))
                             changed = True
                     for (e1, e2) in attr1.encrypt_in:
                         if (e1, e2) not in attr1.copy.encrypt_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.encrypt_out.remove((e2, n1))
+                            ne2.encrypt_out.remove((e1, n1))
                             attr1.encrypt_in.remove((e1, e2))
                             changed = True
                     for (e1, e2) in attr1.decrypt_in:
                         if (e1, e2) not in attr1.copy.decrypt_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.decrypt_out.remove((e2, n1))
+                            ne2.decrypt_out.remove((e1, n1))
                             attr1.decrypt_in.remove((e1, e2))
                             changed = True
                     for (e1, e2) in attr1.intruder_decrypt_in:
                         if (e1, e2) not in attr1.copy.intruder_decrypt_in:
+                            ne1: KeyNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.intruder_decrypt_out.remove((e2, n1))
+                            ne2.intruder_decrypt_out.remove((e1, n1))
                             attr1.intruder_decrypt_in.remove((e1, e2))
                             changed = True
                     attr1.known = attr1.copy.known
                     # keep attr1.handle_in unchanged
-                else:
+                else:  # not attr1.initial
                     if len(attr1.handle_in) == 0:  # case 5
+                        for (e1, e2) in attr1.wrap_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: HandleNode = graph[e2]
+                            ne1.wrap_out.remove((e2, n1))
+                            ne2.wrap_out.remove((e1, n1))
+                            attr1.wrap_in.remove((e1, e2))
+                        for (e1, e2) in attr1.encrypt_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.encrypt_out.remove((e2, n1))
+                            ne2.encrypt_out.remove((e1, n1))
+                            attr1.encrypt_in.remove((e1, e2))
+                        for (e1, e2) in attr1.decrypt_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.decrypt_out.remove((e2, n1))
+                            ne2.decrypt_out.remove((e1, n1))
+                            attr1.decrypt_in.remove((e1, e2))
+                        for (e1, e2) in attr1.intruder_decrypt_in:
+                            ne1: KeyNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.intruder_decrypt_out.remove((e2, n1))
+                            ne2.intruder_decrypt_out.remove((e1, n1))
+                            attr1.intruder_decrypt_in.remove((e1, e2))
                         del graph[n1]
                         changed = True
                     else:
-                        if len(attr1.wrap_in) > 0:
-                            attr1.wrap_in.clear()
+                        for (e1, e2) in attr1.wrap_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: HandleNode = graph[e2]
+                            ne1.wrap_out.remove((e2, n1))
+                            ne2.wrap_out.remove((e1, n1))
+                            attr1.wrap_in.remove((e1, e2))
                             changed = True
-                        if len(attr1.encrypt_in) > 0:
-                            attr1.encrypt_in.clear()
+                        for (e1, e2) in attr1.encrypt_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.encrypt_out.remove((e2, n1))
+                            ne2.encrypt_out.remove((e1, n1))
+                            attr1.encrypt_in.remove((e1, e2))
                             changed = True
-                        if len(attr1.decrypt_in) > 0:
-                            attr1.decrypt_in.clear()
+                        for (e1, e2) in attr1.decrypt_in:
+                            ne1: HandleNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.decrypt_out.remove((e2, n1))
+                            ne2.decrypt_out.remove((e1, n1))
+                            attr1.decrypt_in.remove((e1, e2))
                             changed = True
-                        if len(attr1.intruder_decrypt_in) > 0:
-                            attr1.intruder_decrypt_in.clear()
+                        for (e1, e2) in attr1.intruder_decrypt_in:
+                            ne1: KeyNode = graph[e1]
+                            ne2: KeyNode = graph[e2]
+                            ne1.intruder_decrypt_out.remove((e2, n1))
+                            ne2.intruder_decrypt_out.remove((e1, n1))
+                            attr1.intruder_decrypt_in.remove((e1, e2))
                             changed = True
                         attr1.known = False
                         # keep attr1.handle_in unchanged

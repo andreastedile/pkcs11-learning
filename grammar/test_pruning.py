@@ -27,19 +27,6 @@ class Test(TestCase):
 
         self.assertDictEqual(g1, g0)
 
-    def test_graph_with_one_initial_key_node_and_non_initial_handle_node_pointing_to_it(self):
-        g0 = {
-            0: KeyNode(True, 0, False, Security.LOW, [1], [], [], [], [], [], [], [], []),
-            1: HandleNode(False, 0, True, None, [], [], [], []),
-        }
-        g1 = prune_graph(g0, False)
-
-        self.assertEqual(len(g1), 1)
-        n0: KeyNode = g1[0]
-        # once we remove a handle node, we must update the pointed key node
-        # so that it is no longer pointed by the handle
-        self.assertListEqual(n0.handle_in, [])
-
     def test_graph_with_one_initial_key_node_and_initial_handle_node_pointing_to_it(self):
         g0 = {
             0: KeyNode(True, 0, False, Security.LOW, [1], [], [], [], [], [], [], [], []),
