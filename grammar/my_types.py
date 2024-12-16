@@ -157,7 +157,11 @@ class KeyNode:
                  "wrap_in={},"
                  "encrypt_in={},"
                  "decrypt_in={},"
-                 "intruder_decrypt_in={})")
+                 "intruder_decrypt_in={},"
+                 "unwrap_out={},"
+                 "encrypt_out={},"
+                 "decrypt_out={},"
+                 "intruder_decrypt_out={}")
                 .format(self.initial,
                         self.value,
                         self.known,
