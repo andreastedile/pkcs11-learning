@@ -1,6 +1,4 @@
-from copy import deepcopy
-from itertools import count
-
+from grammar.invariants import check_all_implied_nodes_are_present, check_all_implicant_nodes_are_present
 from grammar.my_types import HandleNode, KeyNode, Security
 from grammar.visualization import visualize_graph
 
@@ -79,9 +77,7 @@ def implies_other_nodes(graph: dict[int, HandleNode | KeyNode], n1: int) -> bool
 
 def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
         dict[int, HandleNode | KeyNode]:
-    graph = deepcopy(graph)
-    counter = count()
-
+    it = 0
     while True:
         non_implying_handle_nodes: list[tuple[int, HandleNode]] = [(n, attr) for n, attr in graph.items() if
                                                                    isinstance(attr, HandleNode) and
@@ -92,6 +88,8 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
         changed = False
 
         for (n1, attr1) in non_implying_handle_nodes:
+            n1: int
+            attr1: HandleNode
             attr2: KeyNode = graph[attr1.points_to]
             if attr1.initial:
                 assert attr2.initial
@@ -123,9 +121,11 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         raise ValueError
 
         for (n1, attr1) in non_implying_key_nodes:
+            n1: int
+            attr1: KeyNode
             if attr1.security == Security.LOW:
                 if attr1.initial:
-                    for (e1, e2) in attr1.wrap_in:
+                    for (e1, e2) in attr1.wrap_in.copy():
                         if (e1, e2) not in attr1.copy.wrap_in:
                             ne1: HandleNode = graph[e1]
                             ne2: HandleNode = graph[e2]
@@ -133,7 +133,7 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                             ne2.wrap_out.remove((e1, n1))
                             attr1.wrap_in.remove((e1, e2))
                             changed = True
-                    for (e1, e2) in attr1.encrypt_in:
+                    for (e1, e2) in attr1.encrypt_in.copy():
                         if (e1, e2) not in attr1.copy.encrypt_in:
                             ne1: HandleNode = graph[e1]
                             ne2: KeyNode = graph[e2]
@@ -141,7 +141,7 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                             ne2.encrypt_out.remove((e1, n1))
                             attr1.encrypt_in.remove((e1, e2))
                             changed = True
-                    for (e1, e2) in attr1.decrypt_in:
+                    for (e1, e2) in attr1.decrypt_in.copy():
                         if (e1, e2) not in attr1.copy.decrypt_in:
                             ne1: HandleNode = graph[e1]
                             ne2: KeyNode = graph[e2]
@@ -149,7 +149,7 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                             ne2.decrypt_out.remove((e1, n1))
                             attr1.decrypt_in.remove((e1, e2))
                             changed = True
-                    for (e1, e2) in attr1.intruder_decrypt_in:
+                    for (e1, e2) in attr1.intruder_decrypt_in.copy():
                         if (e1, e2) not in attr1.copy.intruder_decrypt_in:
                             ne1: KeyNode = graph[e1]
                             ne2: KeyNode = graph[e2]
@@ -161,25 +161,25 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                     # keep attr1.handle_in unchanged
                 else:  # not attr1.initial
                     if len(attr1.handle_in) == 0:  # case 5
-                        for (e1, e2) in attr1.wrap_in:
+                        for (e1, e2) in attr1.wrap_in.copy():
                             ne1: HandleNode = graph[e1]
                             ne2: HandleNode = graph[e2]
                             ne1.wrap_out.remove((e2, n1))
                             ne2.wrap_out.remove((e1, n1))
                             attr1.wrap_in.remove((e1, e2))
-                        for (e1, e2) in attr1.encrypt_in:
+                        for (e1, e2) in attr1.encrypt_in.copy():
                             ne1: HandleNode = graph[e1]
                             ne2: KeyNode = graph[e2]
                             ne1.encrypt_out.remove((e2, n1))
                             ne2.encrypt_out.remove((e1, n1))
                             attr1.encrypt_in.remove((e1, e2))
-                        for (e1, e2) in attr1.decrypt_in:
+                        for (e1, e2) in attr1.decrypt_in.copy():
                             ne1: HandleNode = graph[e1]
                             ne2: KeyNode = graph[e2]
                             ne1.decrypt_out.remove((e2, n1))
                             ne2.decrypt_out.remove((e1, n1))
                             attr1.decrypt_in.remove((e1, e2))
-                        for (e1, e2) in attr1.intruder_decrypt_in:
+                        for (e1, e2) in attr1.intruder_decrypt_in.copy():
                             ne1: KeyNode = graph[e1]
                             ne2: KeyNode = graph[e2]
                             ne1.intruder_decrypt_out.remove((e2, n1))
@@ -188,28 +188,28 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         del graph[n1]
                         changed = True
                     else:
-                        for (e1, e2) in attr1.wrap_in:
+                        for (e1, e2) in attr1.wrap_in.copy():
                             ne1: HandleNode = graph[e1]
                             ne2: HandleNode = graph[e2]
                             ne1.wrap_out.remove((e2, n1))
                             ne2.wrap_out.remove((e1, n1))
                             attr1.wrap_in.remove((e1, e2))
                             changed = True
-                        for (e1, e2) in attr1.encrypt_in:
+                        for (e1, e2) in attr1.encrypt_in.copy():
                             ne1: HandleNode = graph[e1]
                             ne2: KeyNode = graph[e2]
                             ne1.encrypt_out.remove((e2, n1))
                             ne2.encrypt_out.remove((e1, n1))
                             attr1.encrypt_in.remove((e1, e2))
                             changed = True
-                        for (e1, e2) in attr1.decrypt_in:
+                        for (e1, e2) in attr1.decrypt_in.copy():
                             ne1: HandleNode = graph[e1]
                             ne2: KeyNode = graph[e2]
                             ne1.decrypt_out.remove((e2, n1))
                             ne2.decrypt_out.remove((e1, n1))
                             attr1.decrypt_in.remove((e1, e2))
                             changed = True
-                        for (e1, e2) in attr1.intruder_decrypt_in:
+                        for (e1, e2) in attr1.intruder_decrypt_in.copy():
                             ne1: KeyNode = graph[e1]
                             ne2: KeyNode = graph[e2]
                             ne1.intruder_decrypt_out.remove((e2, n1))
@@ -219,10 +219,14 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         attr1.known = False
                         # keep attr1.handle_in unchanged
 
-        if changed and debug:
-            visualize_graph(graph, f"pruning_{next(counter)}")
+        check_all_implicant_nodes_are_present(graph)
+        check_all_implied_nodes_are_present(graph)
 
-        if not changed:
+        if changed:
+            if debug:
+                visualize_graph(graph, f"pruning_{it}")
+            it += 1
+        else:
             break
 
     return graph
