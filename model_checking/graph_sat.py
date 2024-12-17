@@ -166,6 +166,21 @@ def run_sat(graph: dict[int, HandleNode | KeyNode], high_security_node: int, pri
                     print(impl)
                     assertions.append(impl)
 
+    for n1, attr1 in graph.items():
+        if isinstance(attr1, HandleNode):
+            match attr1.unwrap_in:
+                case (n2, n3):
+                    for implication in attr1.wrap_out:
+                        match implication:
+                            case (m1, None, m3) if n3 == m3:
+                                cycle = And(Symbol(f"unwrap({n2},{n3})={n1}"), Symbol(f"wrap({m1},{n1})={m3}"))
+                                print("cycle to be removed:", cycle)
+                                assertions.append(Not(cycle))
+                            case (None, m2, m3) if n3 == m3:
+                                cycle = And(Symbol(f"unwrap({n2},{n3})={n1}"), Symbol(f"wrap({n1},{m2})={m3}"))
+                                print("cycle to be removed:", cycle)
+                                assertions.append(Not(cycle))
+
     assertions.append(Symbol(str(high_security_node)))
 
     formula: FNode = And(assertions)
