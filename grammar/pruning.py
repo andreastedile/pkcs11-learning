@@ -153,8 +153,8 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         if (e1, e2) not in attr1.copy.intruder_decrypt_in:
                             ne1: KeyNode = graph[e1]
                             ne2: KeyNode = graph[e2]
-                            ne1.intruder_decrypt_out.remove((e2, n1))
-                            ne2.intruder_decrypt_out.remove((e1, n1))
+                            ne1.intruder_decrypt_out.remove((None, e2, n1))
+                            ne2.intruder_decrypt_out.remove((e1, None, n1))
                             attr1.intruder_decrypt_in.remove((e1, e2))
                             changed = True
                     attr1.known = attr1.copy.known
@@ -182,8 +182,8 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         for (e1, e2) in attr1.intruder_decrypt_in.copy():
                             ne1: KeyNode = graph[e1]
                             ne2: KeyNode = graph[e2]
-                            ne1.intruder_decrypt_out.remove((e2, n1))
-                            ne2.intruder_decrypt_out.remove((e1, n1))
+                            ne1.intruder_decrypt_out.remove((None, e2, n1))
+                            ne2.intruder_decrypt_out.remove((e1, None, n1))
                             attr1.intruder_decrypt_in.remove((e1, e2))
                         del graph[n1]
                         changed = True
@@ -212,8 +212,8 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         for (e1, e2) in attr1.intruder_decrypt_in.copy():
                             ne1: KeyNode = graph[e1]
                             ne2: KeyNode = graph[e2]
-                            ne1.intruder_decrypt_out.remove((e2, n1))
-                            ne2.intruder_decrypt_out.remove((e1, n1))
+                            ne1.intruder_decrypt_out.remove((None, e2, n1))
+                            ne2.intruder_decrypt_out.remove((e1, None, n1))
                             attr1.intruder_decrypt_in.remove((e1, e2))
                             changed = True
                         attr1.known = False

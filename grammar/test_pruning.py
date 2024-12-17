@@ -89,8 +89,8 @@ class Test(TestCase):
 
     def test_intruder_decrypt(self):
         g0 = {
-            0: KeyNode(True, 0, True, Security.LOW, [], [], [], [], [], [], [], [], [(1, 2)]),
-            1: KeyNode(True, (1, 0), True, Security.LOW, [], [], [], [], [], [], [], [], [(0, 2)]),
+            0: KeyNode(True, 0, True, Security.LOW, [], [], [], [], [], [], [], [], [(None, 1, 2)]),
+            1: KeyNode(True, (1, 0), True, Security.LOW, [], [], [], [], [], [], [], [], [(0, None, 2)]),
             2: KeyNode(False, 1, False, Security.LOW, [], [], [], [], [(0, 1)], [], [], [], []),
         }
         g1 = prune_graph(g0)

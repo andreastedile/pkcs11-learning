@@ -97,7 +97,7 @@ class KeyNode:
                  unwrap_out: list[tuple[int, int]],
                  encrypt_out: list[tuple[int, int]],
                  decrypt_out: list[tuple[int, int]],
-                 intruder_decrypt_out: list[tuple[int, int]]):
+                 intruder_decrypt_out: list[tuple[int, None, int] | tuple[None, int, int]]):
         """
         :param security:
         :param initial: Whether the key node is part of the initial knowledge. If true, the node cannot be pruned.

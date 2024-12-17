@@ -45,9 +45,16 @@ def check_all_implied_nodes_are_present(graph: dict[int, HandleNode | KeyNode]):
             for (n2, n3) in attr1.decrypt_out:
                 assert n2 in graph
                 assert n3 in graph
-            for (n2, n3) in attr1.intruder_decrypt_out:
-                assert n2 in graph
-                assert n3 in graph
+            for implication in attr1.intruder_decrypt_out:
+                match implication:
+                    case (n1, None, n3):
+                        assert n1 in graph
+                        assert n3 in graph
+                    case (None, n2, n3):
+                        assert n2 in graph
+                        assert n3 in graph
+                    case other:
+                        raise ValueError(other)
         elif isinstance(attr1, HandleNode):
             for implication in attr1.wrap_out:
                 match implication:

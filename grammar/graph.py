@@ -232,14 +232,14 @@ def intruder_decrypt(input_graph: dict[int, HandleNode | KeyNode],
                                             [],
                                             [])
                             output_graph[n3] = attr3
-                            output_graph[n1].intruder_decrypt_out.append((n2, n3))
-                            output_graph[n2].intruder_decrypt_out.append((n1, n3))
+                            output_graph[n1].intruder_decrypt_out.append((None, n2, n3))
+                            output_graph[n2].intruder_decrypt_out.append((n1, None, n3))
                         case [n3]:
                             attr3: KeyNode = output_graph[n3]
                             attr3.known = True
                             if (n1, n2) not in attr3.intruder_decrypt_in:
                                 attr3.intruder_decrypt_in.append((n1, n2))
-                                output_graph[n1].intruder_decrypt_out.append((n2, n3))
-                                output_graph[n2].intruder_decrypt_out.append((n1, n3))
+                                output_graph[n1].intruder_decrypt_out.append((None, n2, n3))
+                                output_graph[n2].intruder_decrypt_out.append((n1, None, n3))
                         case other:
                             raise ValueError(other)
