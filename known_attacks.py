@@ -5,6 +5,7 @@ from grammar.graph import wrap, decrypt, encrypt, unwrap, intruder_decrypt
 from grammar.my_types import HandleNode, KeyNode, Security
 from grammar.pruning import prune_graph
 from grammar.visualization import visualize_graph
+from model_checking.graph_sat import run_sat
 
 
 def clulow():
@@ -32,6 +33,8 @@ def clulow():
     output_graph = prune_graph(graph)
 
     visualize_graph(output_graph, "clulow_pruned")
+
+    run_sat(output_graph, 0, True)
 
 
 def dks_experiment_2():
@@ -69,6 +72,8 @@ def dks_experiment_2():
 
     visualize_graph(output_graph, "dks_experiment_2_pruned")
 
+    run_sat(output_graph, 0, True)
+
 
 def dks_experiment_3():
     graph = {
@@ -103,6 +108,8 @@ def dks_experiment_3():
     output_graph = prune_graph(graph)
 
     visualize_graph(output_graph, "dks_experiment_3_pruned")
+
+    run_sat(output_graph, 0, True)
 
 
 def fls_re_import_attack_2():
@@ -139,6 +146,8 @@ def fls_re_import_attack_2():
     output_graph = prune_graph(graph)
 
     visualize_graph(output_graph, "fls_re_import_attack_2_pruned")
+
+    run_sat(output_graph, 0, True)
 
 
 if __name__ == "__main__":
