@@ -188,12 +188,12 @@ def run_sat(graph: dict[int, HandleNode | KeyNode], high_security_node: int, pri
     atoms = formula.get_atoms()  # same as formula.get_free_variables() since the problem is purely boolean
     print(f"{len(atoms)} atoms:", *atoms)
 
+    models: list[list[FNode]] = []
+
     with Solver(name="msat") as msat:
         msat: MathSAT5Solver
 
         msat.add_assertion(formula)
-
-        models: list[list[FNode]] = []
 
         def callback(model: list[mathsat.msat_term]):
             nonlocal models
@@ -206,55 +206,55 @@ def run_sat(graph: dict[int, HandleNode | KeyNode], high_security_node: int, pri
         print("run MathSAT")
         mathsat.msat_all_sat(msat.msat_env(), important, callback)
 
-        print(f"found {len(models)} models")
-        if print_models:
-            for i, model in enumerate(models):
-                py_model_true_nodes = [node for node in model if node.is_symbol()]  # same as if not node.is_not()
-                print(f"Model {i}: {py_model_true_nodes}")
-
-        prog = re.compile(r"^(?:\d+|(wrap|unwrap|encrypt|decrypt|intruder_decrypt)\((\d+),(\d+)\)=(\d+))$")
-
+    print(f"found {len(models)} models")
+    if print_models:
         for i, model in enumerate(models):
-            visible_nodes = []
-            visible_wrap_implications = []
-            visible_unwrap_implications = []
-            visible_encrypt_implications = []
-            visible_decrypt_implications = []
-            visible_intruder_decrypt_implications = []
+            py_model_true_nodes = [node for node in model if node.is_symbol()]  # same as if not node.is_not()
+            print(f"Model {i}: {py_model_true_nodes}")
 
-            for atom in model:
-                if atom.is_symbol():
-                    name: str = atom.symbol_name()
-                    match = re.match(prog, name)
-                    if match:
-                        if match.group(1) is None:
-                            visible_nodes.append(int(name))
-                        else:
-                            command, param1, param2, result = match.groups()
-                            match command:
-                                case "wrap":
-                                    visible_wrap_implications.append((int(param1), int(param2), int(result)))
-                                case "unwrap":
-                                    visible_unwrap_implications.append((int(param1), int(param2), int(result)))
-                                case "encrypt":
-                                    visible_encrypt_implications.append((int(param1), int(param2), int(result)))
-                                case "decrypt":
-                                    visible_decrypt_implications.append((int(param1), int(param2), int(result)))
-                                case "intruder_decrypt":
-                                    visible_intruder_decrypt_implications.append(
-                                        (int(param1), int(param2), int(result)))
-                                case other:
-                                    raise ValueError(other)
+    prog = re.compile(r"^(?:\d+|(wrap|unwrap|encrypt|decrypt|intruder_decrypt)\((\d+),(\d+)\)=(\d+))$")
+
+    for i, model in enumerate(models):
+        visible_nodes = []
+        visible_wrap_implications = []
+        visible_unwrap_implications = []
+        visible_encrypt_implications = []
+        visible_decrypt_implications = []
+        visible_intruder_decrypt_implications = []
+
+        for atom in model:
+            if atom.is_symbol():
+                name: str = atom.symbol_name()
+                match = re.match(prog, name)
+                if match:
+                    if match.group(1) is None:
+                        visible_nodes.append(int(name))
                     else:
-                        print("Input does not match the pattern:", atom.symbol_name())
+                        command, param1, param2, result = match.groups()
+                        match command:
+                            case "wrap":
+                                visible_wrap_implications.append((int(param1), int(param2), int(result)))
+                            case "unwrap":
+                                visible_unwrap_implications.append((int(param1), int(param2), int(result)))
+                            case "encrypt":
+                                visible_encrypt_implications.append((int(param1), int(param2), int(result)))
+                            case "decrypt":
+                                visible_decrypt_implications.append((int(param1), int(param2), int(result)))
+                            case "intruder_decrypt":
+                                visible_intruder_decrypt_implications.append(
+                                    (int(param1), int(param2), int(result)))
+                            case other:
+                                raise ValueError(other)
                 else:
-                    assert atom.is_not()
+                    print("Input does not match the pattern:", atom.symbol_name())
+            else:
+                assert atom.is_not()
 
-            dot = convert_graph_to_dot(graph,
-                                       visible_nodes,
-                                       visible_wrap_implications,
-                                       visible_unwrap_implications,
-                                       visible_encrypt_implications,
-                                       visible_decrypt_implications,
-                                       visible_intruder_decrypt_implications)
-            dot.write(f"model_{i}.svg", format="svg")
+        dot = convert_graph_to_dot(graph,
+                                   visible_nodes,
+                                   visible_wrap_implications,
+                                   visible_unwrap_implications,
+                                   visible_encrypt_implications,
+                                   visible_decrypt_implications,
+                                   visible_intruder_decrypt_implications)
+        dot.write(f"model_{i}.svg", format="svg")
