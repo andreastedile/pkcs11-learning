@@ -20,6 +20,50 @@ def run_sat(graph: dict[int, HandleNode | KeyNode], high_security_node: int, pri
         print(n, attr)
 
         if isinstance(attr, HandleNode):
+            implications_out = []
+            for implication in attr.wrap_out:
+                match implication:
+                    case (n1, None, n3):
+                        implications_out.append(Symbol(f"wrap({n1},{n})={n3}"))
+                    case (None, n2, n3):
+                        implications_out.append(Symbol(f"wrap({n},{n2})={n3}"))
+                    case other:
+                        raise ValueError(other)
+            for (n2, n3) in attr.unwrap_out:
+                implications_out.append(Symbol(f"unwrap({n},{n2})={n3}"))
+            for (n2, n3) in attr.encrypt_out:
+                implications_out.append(Symbol(f"encrypt({n},{n2})={n3}"))
+            for (n2, n3) in attr.decrypt_out:
+                implications_out.append(Symbol(f"decrypt({n},{n2})={n3}"))
+            iff = Iff(Symbol(str(n)), Or(implications_out))
+            print("qui", iff)
+            assertions.append(iff)
+
+            for implication in attr.wrap_out:
+                match implication:
+                    case (n1, None, n3):
+                        impl = Implies(Symbol(f"wrap({n1},{n})={n3}"),
+                                       And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
+                        assertions.append(impl)
+                    case (None, n2, n3):
+                        impl = Implies(Symbol(f"wrap({n},{n2})={n3}"),
+                                       And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
+                        assertions.append(impl)
+                    case other:
+                        raise ValueError(other)
+            for (n2, n3) in attr.unwrap_out:
+                impl = Implies(Symbol(f"unwrap({n},{n2})={n3}"),
+                               And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
+                assertions.append(impl)
+            for (n2, n3) in attr.encrypt_out:
+                impl = Implies(Symbol(f"encrypt({n},{n2})={n3}"),
+                               And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
+                assertions.append(impl)
+            for (n2, n3) in attr.decrypt_out:
+                impl = Implies(Symbol(f"decrypt({n},{n2})={n3}"),
+                               And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
+                assertions.append(impl)
+
             match attr.unwrap_in:
                 case (e1, e2) if not attr.initial:
                     iff = Iff(Symbol(str(n)), Symbol(f"unwrap({e1},{e2})={n}"))
@@ -35,6 +79,36 @@ def run_sat(graph: dict[int, HandleNode | KeyNode], high_security_node: int, pri
                     assert attr.initial
                     # can be freely satisfied
         elif isinstance(attr, KeyNode):
+            if n != high_security_node:
+                implications_out = []
+                for (n1, n3) in attr.unwrap_out:
+                    implications_out.append(Symbol(f"unwrap({n1},{n})={n3}"))
+                for (n1, n3) in attr.encrypt_out:
+                    implications_out.append(Symbol(f"encrypt({n1},{n})={n3}"))
+                for (n1, n3) in attr.decrypt_out:
+                    implications_out.append(Symbol(f"decrypt({n1},{n})={n3}"))
+                for (n1, n3) in attr.intruder_decrypt_out:
+                    implications_out.append(Symbol(f"intruder_decrypt({n1},{n})={n3}"))
+                iff = Iff(Symbol(str(n)), Or(implications_out))
+                print(iff)
+                assertions.append(iff)
+
+                for (n1, n3) in attr.unwrap_out:
+                    impl = Implies(Symbol(f"unwrap({n1},{n})={n3}"),
+                                   And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
+                    assertions.append(impl)
+                for (n1, n3) in attr.encrypt_out:
+                    impl = Implies(Symbol(f"encrypt({n1},{n})={n3}"),
+                                   And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
+                    assertions.append(impl)
+                for (n1, n3) in attr.decrypt_out:
+                    impl = Implies(Symbol(f"decrypt({n1},{n})={n3}"),
+                                   And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
+                    assertions.append(impl)
+                for (n1, n3) in attr.intruder_decrypt_out:
+                    impl = Implies(Symbol(f"intruder_decrypt({n1},{n})={n3}"),
+                                   And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
+                    assertions.append(impl)
             if attr.initial and attr.copy.known:
                 # can be freely satisfied
                 pass
