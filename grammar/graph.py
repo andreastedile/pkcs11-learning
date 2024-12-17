@@ -33,14 +33,14 @@ def wrap(input_graph: dict[int, HandleNode | KeyNode],
                                     [],
                                     [])
                     output_graph[n5] = attr5
-                    output_graph[n1].wrap_out.append((n3, n5))
-                    output_graph[n3].wrap_out.append((n1, n5))
+                    output_graph[n1].wrap_out.append((None, n3, n5))
+                    output_graph[n3].wrap_out.append((n1, None, n5))
                 case [n5]:
                     attr5: KeyNode = output_graph[n5]
                     if (n1, n3) not in attr5.wrap_in:
                         attr5.wrap_in.append((n1, n3))
-                        output_graph[n1].wrap_out.append((n3, n5))
-                        output_graph[n3].wrap_out.append((n1, n5))
+                        output_graph[n1].wrap_out.append((None, n3, n5))
+                        output_graph[n3].wrap_out.append((n1, None, n5))
                     if not attr5.known:
                         attr5.known = True
                 case other:

@@ -129,8 +129,8 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         if (e1, e2) not in attr1.copy.wrap_in:
                             ne1: HandleNode = graph[e1]
                             ne2: HandleNode = graph[e2]
-                            ne1.wrap_out.remove((e2, n1))
-                            ne2.wrap_out.remove((e1, n1))
+                            ne1.wrap_out.remove((None, e2, n1))
+                            ne2.wrap_out.remove((e1, None, n1))
                             attr1.wrap_in.remove((e1, e2))
                             changed = True
                     for (e1, e2) in attr1.encrypt_in.copy():
@@ -164,8 +164,8 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         for (e1, e2) in attr1.wrap_in.copy():
                             ne1: HandleNode = graph[e1]
                             ne2: HandleNode = graph[e2]
-                            ne1.wrap_out.remove((e2, n1))
-                            ne2.wrap_out.remove((e1, n1))
+                            ne1.wrap_out.remove((None, e2, n1))
+                            ne2.wrap_out.remove((e1, None, n1))
                             attr1.wrap_in.remove((e1, e2))
                         for (e1, e2) in attr1.encrypt_in.copy():
                             ne1: HandleNode = graph[e1]
@@ -191,8 +191,8 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
                         for (e1, e2) in attr1.wrap_in.copy():
                             ne1: HandleNode = graph[e1]
                             ne2: HandleNode = graph[e2]
-                            ne1.wrap_out.remove((e2, n1))
-                            ne2.wrap_out.remove((e1, n1))
+                            ne1.wrap_out.remove((None, e2, n1))
+                            ne2.wrap_out.remove((e1, None, n1))
                             attr1.wrap_in.remove((e1, e2))
                             changed = True
                         for (e1, e2) in attr1.encrypt_in.copy():

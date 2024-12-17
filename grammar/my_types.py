@@ -21,7 +21,7 @@ class HandleNode:
                  points_to: int,
                  use: bool,
                  unwrap_in: tuple[int, int] | None,
-                 wrap_out: list[tuple[int, int]],
+                 wrap_out: list[tuple[int, None, int] | tuple[None, int, int]],
                  unwrap_out: list[tuple[int, int]],
                  encrypt_out: list[tuple[int, int]],
                  decrypt_out: list[tuple[int, int]]):

@@ -39,9 +39,9 @@ class Test(TestCase):
     def test_wrap(self):
         g0 = {
             0: KeyNode(True, 0, False, Security.LOW, [1], [], [], [], [], [], [], [], []),
-            1: HandleNode(True, 0, True, None, [(3, 4)], [], [], []),
+            1: HandleNode(True, 0, True, None, [(3, None, 4)], [], [], []),
             2: KeyNode(True, 1, False, Security.LOW, [3], [], [], [], [], [], [], [], []),
-            3: HandleNode(True, 2, True, None, [(1, 4)], [], [], []),
+            3: HandleNode(True, 2, True, None, [(None, 1, 4)], [], [], []),
             4: KeyNode(False, (0, 1), True, Security.LOW, [], [(3, 1)], [], [], [], [], [], [], []),
         }
         g1 = prune_graph(g0)
