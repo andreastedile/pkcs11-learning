@@ -5,10 +5,13 @@ from grammar.graph import wrap, decrypt, encrypt, unwrap, intruder_decrypt
 from grammar.my_types import HandleNode, KeyNode, Security
 from grammar.pruning import prune_graph
 from grammar.visualization import visualize_graph
-from model_checking.graph_sat import run_sat
+from model_checking.enumeration import enumerate_models, print_model
+from model_checking.visualization import visualize_model
 
 
 def clulow():
+    print("clulow")
+
     graph = {
         0: KeyNode(True, 0, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
         1: HandleNode(True, 0, False, None, [], [], [], []),
@@ -34,10 +37,20 @@ def clulow():
 
     visualize_graph(output_graph, "clulow_pruned")
 
-    run_sat(output_graph, 0, True)
+    models = enumerate_models(output_graph, 0)
+
+    print(f"found {len(models)} models:")
+    for i, model in enumerate(models):
+        print(f"model {i}:")
+        print_model(model)
+
+    for i, model in enumerate(models):
+        visualize_model(output_graph, model, f"clulow_model_{i}")
 
 
 def dks_experiment_2():
+    print("dks_experiment_2")
+
     graph = {
         0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
         1: HandleNode(True, 0, False, None, [], [], [], []),
@@ -72,10 +85,20 @@ def dks_experiment_2():
 
     visualize_graph(output_graph, "dks_experiment_2_pruned")
 
-    run_sat(output_graph, 0, True)
+    models = enumerate_models(output_graph, 0)
+
+    print(f"found {len(models)} models:")
+    for i, model in enumerate(models):
+        print(f"model {i}:")
+        print_model(model)
+
+    for i, model in enumerate(models):
+        visualize_model(output_graph, model, f"dks_experiment_2_model_{i}")
 
 
 def dks_experiment_3():
+    print("dks_experiment_3")
+
     graph = {
         0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
         1: HandleNode(True, 0, False, None, [], [], [], []),
@@ -109,10 +132,20 @@ def dks_experiment_3():
 
     visualize_graph(output_graph, "dks_experiment_3_pruned")
 
-    run_sat(output_graph, 0, True)
+    models = enumerate_models(output_graph, 0)
+
+    print(f"found {len(models)} models:")
+    for i, model in enumerate(models):
+        print(f"model {i}:")
+        print_model(model)
+
+    for i, model in enumerate(models):
+        visualize_model(output_graph, model, f"dks_experiment_3_model_{i}")
 
 
 def fls_re_import_attack_2():
+    print("fls_re_import_attack_2")
+
     graph = {
         0: KeyNode(True, 1, False, Security.HIGH, [1], [], [], [], [], [], [], [], []),
         1: HandleNode(True, 0, False, None, [], [], [], []),
@@ -147,7 +180,15 @@ def fls_re_import_attack_2():
 
     visualize_graph(output_graph, "fls_re_import_attack_2_pruned")
 
-    run_sat(output_graph, 0, True)
+    models = enumerate_models(output_graph, 0)
+
+    print(f"found {len(models)} models:")
+    for i, model in enumerate(models):
+        print(f"model {i}:")
+        print_model(model)
+
+    for i, model in enumerate(models):
+        visualize_model(output_graph, model, f"fls_re_import_attack_2_model_{i}")
 
 
 if __name__ == "__main__":
