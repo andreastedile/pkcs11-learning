@@ -1,4 +1,5 @@
 import abc
+import re
 
 from Crypto.Cipher import DES3
 from pkcs11 import SecretKey, Mechanism, Attribute, ObjectClass, KeyType, \
@@ -8,6 +9,8 @@ from pkcs11 import SecretKey, Mechanism, Attribute, ObjectClass, KeyType, \
 NOT_APPLICABLE = "not-applicable"
 OP_FAIL = "op-fail"
 OP_OK = "op-ok"
+
+regex = re.compile(r"^(?:\d+|(wrap|unwrap|encrypt|decrypt|intruder_decrypt)\((\d+),(\d+)\)=(\d+))$")
 
 
 # noinspection PyPep8Naming
@@ -355,3 +358,32 @@ class PKCS11_SUL_UnsetDecrypt(PKCS11_SUL_Input):
         # noinspection PyUnresolvedReferences
         key[Attribute.DECRYPT] = False
         return OP_OK
+
+
+def convert_str_input_to_pkcs11_sul_input(str_input: str) -> PKCS11_SUL_Input:
+    match = re.match(regex, str_input)
+    if match:
+        if match.group(1) is None:
+            # n = int(str_input)
+            pass
+        else:
+            command, param1, param2, result = match.groups()
+            command: str
+            param1: str
+            param2: str
+            result: str
+            match command:
+                case "wrap":
+                    return PKCS11_SUL_Wrap(int(param1), int(param2), int(result))
+                case "unwrap":
+                    return PKCS11_SUL_Unwrap(int(param1), int(param2), int(result))
+                case "encrypt":
+                    return PKCS11_SUL_Encrypt(int(param1), int(param2), int(result))
+                case "decrypt":
+                    return PKCS11_SUL_Decrypt(int(param1), int(param2), int(result))
+                case "intruder_decrypt":
+                    return PKCS11_SUL_IntruderDecrypt(int(param1), int(param2), int(result))
+                case other:
+                    raise ValueError(other)
+    else:
+        raise ValueError("Input does not match the pattern:", str_input)
