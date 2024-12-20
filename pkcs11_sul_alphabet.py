@@ -28,7 +28,7 @@ def extract_alphabet(graph: dict[int, HandleNode | KeyNode]) -> list[PKCS11_SUL_
             for (n1, n2) in attr.decrypt_in:
                 alphabet.append(PKCS11_SUL_Decrypt(n1, n2, n))
             for (n1, n2) in attr.intruder_decrypt_in:
-                alphabet.append(PKCS11_SUL_IntruderDecrypt(n1, n2, n))
+                alphabet.append(PKCS11_SUL_IntruderDecrypt(n1, n2, n, attr.handle_in.copy()))
         elif isinstance(attr, HandleNode):
             match attr.unwrap_in:
                 case (n1, n2):
@@ -69,7 +69,7 @@ def convert_model_to_alphabet(graph: dict[int, HandleNode | KeyNode], model: lis
                     alphabet.append(PKCS11_SUL_SetDecrypt(n))
                     alphabet.append(PKCS11_SUL_UnsetDecrypt(n))
             else:
-                converted = convert_str_input_to_pkcs11_sul_input(name)
+                converted = convert_str_input_to_pkcs11_sul_input(graph, name)
                 alphabet.append(converted)
         else:
             assert atom.is_not()

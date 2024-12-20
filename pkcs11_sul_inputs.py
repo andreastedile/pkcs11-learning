@@ -2,9 +2,12 @@ import abc
 import re
 
 from Crypto.Cipher import DES3
+from Crypto.Util.Padding import pad
 from pkcs11 import SecretKey, Mechanism, Attribute, ObjectClass, KeyType, \
     WrapMixin, UnwrapMixin, EncryptMixin, DecryptMixin, \
     PKCS11Error
+
+from grammar.my_types import HandleNode, KeyNode
 
 NOT_APPLICABLE = "not-applicable"
 OP_FAIL = "op-fail"
@@ -191,10 +194,11 @@ class PKCS11_SUL_Decrypt(PKCS11_SUL_Input):
 
 # noinspection PyPep8Naming
 class PKCS11_SUL_IntruderDecrypt(PKCS11_SUL_Input):
-    def __init__(self, decryption_key_id: int, key_to_be_decrypted_id: int, result_id: int):
+    def __init__(self, decryption_key_id: int, key_to_be_decrypted_id: int, result_id: int, pointed_by: list[int]):
         self.decryption_key_id = decryption_key_id
         self.key_to_be_decrypted_id = key_to_be_decrypted_id
         self.result_id = result_id
+        self.pointed_by = pointed_by
 
     def __str__(self):
         return f"intruderdecrypt-{self.decryption_key_id}-{self.key_to_be_decrypted_id}-{self.result_id}"
@@ -211,6 +215,24 @@ class PKCS11_SUL_IntruderDecrypt(PKCS11_SUL_Input):
         result = cipher.decrypt(key_to_decrypt)
         if self.result_id in knowledge_set:  # terms can be derived in multiple ways
             assert knowledge_set[self.result_id] == result
+
+            padded = pad(b"testing...", 32)
+            # we create a cipher with key we just decrypted and encrypt a text with it.
+            cipher1 = DES3.new(result, DES3.MODE_ECB)
+            ciphertext1 = cipher1.encrypt(padded)
+            for encryption_key_id in self.pointed_by:
+                try:
+                    # we use the existing handles to that key to encrypt the same text.
+                    encryption_key: EncryptMixin = knowledge_set.get(encryption_key_id)
+                    ciphertext2: bytes = encryption_key.encrypt(padded, mechanism=Mechanism.DES3_ECB)
+                    # the two ciphertexts should be the same.
+                    assert ciphertext1 == ciphertext2
+                except PKCS11Error:
+                    pass
+            if self.result_id in knowledge_set:  # terms can be derived in multiple ways
+                assert knowledge_set[self.result_id] == result
+            else:
+                knowledge_set[self.result_id] = result
         else:
             knowledge_set[self.result_id] = result
         return OP_OK
@@ -360,7 +382,7 @@ class PKCS11_SUL_UnsetDecrypt(PKCS11_SUL_Input):
         return OP_OK
 
 
-def convert_str_input_to_pkcs11_sul_input(str_input: str) -> PKCS11_SUL_Input:
+def convert_str_input_to_pkcs11_sul_input(graph: dict[int, HandleNode | KeyNode], str_input: str) -> PKCS11_SUL_Input:
     match = re.match(regex, str_input)
     if match:
         if match.group(1) is None:
@@ -382,7 +404,8 @@ def convert_str_input_to_pkcs11_sul_input(str_input: str) -> PKCS11_SUL_Input:
                 case "decrypt":
                     return PKCS11_SUL_Decrypt(int(param1), int(param2), int(result))
                 case "intruder_decrypt":
-                    return PKCS11_SUL_IntruderDecrypt(int(param1), int(param2), int(result))
+                    attr: KeyNode = graph[int(result)]
+                    return PKCS11_SUL_IntruderDecrypt(int(param1), int(param2), int(result), attr.handle_in.copy())
                 case other:
                     raise ValueError(other)
     else:
