@@ -4,8 +4,7 @@ from pysmt.fnode import FNode
 
 from grammar.my_types import HandleNode, KeyNode
 from grammar.visualization import convert_graph_to_dot
-
-prog = re.compile(r"^(?:\d+|(wrap|unwrap|encrypt|decrypt|intruder_decrypt)\((\d+),(\d+)\)=(\d+))$")
+from pkcs11_sul_inputs import regex
 
 
 def visualize_model(graph: dict[int, HandleNode | KeyNode], model: list[FNode], file: str):
@@ -19,7 +18,7 @@ def visualize_model(graph: dict[int, HandleNode | KeyNode], model: list[FNode], 
     for atom in model:
         if atom.is_symbol():
             name: str = atom.symbol_name()
-            match = re.match(prog, name)
+            match = re.match(regex, name)
             if match:
                 if match.group(1) is None:
                     visible_nodes.append(int(name))
@@ -40,7 +39,7 @@ def visualize_model(graph: dict[int, HandleNode | KeyNode], model: list[FNode], 
                         case other:
                             raise ValueError(other)
             else:
-                print("Input does not match the pattern:", atom.symbol_name())
+                print("Input does not match the pattern:", name)
         else:
             assert atom.is_not()
 
