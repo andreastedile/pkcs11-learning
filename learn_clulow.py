@@ -10,8 +10,10 @@ from grammar.expansion import expand_graph
 from grammar.my_types import HandleNode, KeyNode, Security
 from grammar.pruning import prune_graph
 from grammar.visualization import visualize_graph
+from model_checking.enumeration import enumerate_models, print_model
+from model_checking.visualization import visualize_model
 from pkcs11_sul import PKCS11_SUL
-from pkcs11_sul_alphabet import extract_alphabet
+from pkcs11_sul_alphabet import convert_model_to_alphabet
 
 
 def main():
@@ -55,44 +57,58 @@ def main():
     print("number of key nodes:   ", len([attr for attr in clulow_graph.values() if isinstance(attr, KeyNode)]))
 
     if not no_pruning:
-        print("pruning")
+        print("prune graph")
         clulow_graph = prune_graph(clulow_graph, debug)
         print("number of handle nodes:", len([attr for attr in clulow_graph.values() if isinstance(attr, HandleNode)]))
         print("number of key nodes:   ", len([attr for attr in clulow_graph.values() if isinstance(attr, KeyNode)]))
 
-    alphabet = extract_alphabet(clulow_graph)
-    if len(alphabet) == 0:
-        print("alphabet is empty, cannot learn")
-        return
+    models = enumerate_models(clulow_graph, 0)
+    print(f"found {len(models)} models:")
+    if debug:
+        for i, model in enumerate(models):
+            print(f"model {i}:")
+            print_model(model)
+
+    if debug:
+        for i, model in enumerate(models):
+            visualize_model(clulow_graph, model, f"unassisted_clulow_model_{i}")
 
     lib = pkcs11.lib(so)
     token: Token = lib.get_token(token_label=token_label)
 
-    with token.open(user_pin=user_pin) as session:
-        def clulow_initial_knowledge_factory(session: Session) -> dict[int, SecretKey | bytes]:
-            return {
-                1: session.generate_key(KeyType.DES3, label="1", template={
-                    Attribute.SENSITIVE: True,
-                    Attribute.EXTRACTABLE: True
-                }),
-                3: session.generate_key(KeyType.DES3, label="3", template={
-                    Attribute.WRAP: True,
-                    Attribute.DECRYPT: True
-                }),
-            }
+    for i, model in enumerate(models):
+        print(f"convert model {i} to alphabet")
 
-        sul = PKCS11_SUL(session, clulow_initial_knowledge_factory)
+        alphabet = convert_model_to_alphabet(clulow_graph, model)
+        if len(alphabet) == 0:
+            print("alphabet is empty, cannot learn")
+            return
 
-        eq_oracle = RandomWalkEqOracle(alphabet, sul, num_steps=100, reset_after_cex=True, reset_prob=0.09)
+        with token.open(user_pin=user_pin) as session:
+            def clulow_initial_knowledge_factory(session: Session) -> dict[int, SecretKey | bytes]:
+                return {
+                    1: session.generate_key(KeyType.DES3, label="1", template={
+                        Attribute.SENSITIVE: True,
+                        Attribute.EXTRACTABLE: True
+                    }),
+                    3: session.generate_key(KeyType.DES3, label="3", template={
+                        Attribute.WRAP: True,
+                        Attribute.DECRYPT: True
+                    }),
+                }
 
-        print("\nstart learning")
-        learned_pkcs11: MealyMachine = run_Lstar(alphabet, sul, eq_oracle=eq_oracle, automaton_type="mealy",
-                                                 cache_and_non_det_check=True, print_level=2)
+            sul = PKCS11_SUL(session, clulow_initial_knowledge_factory)
 
-        save_automaton_to_file(learned_pkcs11)
+            eq_oracle = RandomWalkEqOracle(alphabet, sul, num_steps=100, reset_after_cex=True, reset_prob=0.09)
 
-        if visualize_automaton:
-            aalpy_visualize_automaton(learned_pkcs11, display_same_state_trans=display_same_state_trans)
+            print("\nstart learning")
+            learned_pkcs11: MealyMachine = run_Lstar(alphabet, sul, eq_oracle=eq_oracle, automaton_type="mealy",
+                                                     cache_and_non_det_check=True, print_level=2)
+
+            save_automaton_to_file(learned_pkcs11, path=f"unassisted_clulow_learned_{i}")
+
+            if visualize_automaton:
+                aalpy_visualize_automaton(learned_pkcs11, display_same_state_trans=display_same_state_trans)
 
 
 if __name__ == "__main__":
