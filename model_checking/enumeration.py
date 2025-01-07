@@ -177,6 +177,22 @@ def enumerate_models(graph: dict[int, HandleNode | KeyNode], high_security_node:
                                 cycle = And(Symbol(f"unwrap({n2},{n3})={n1}"), Symbol(f"wrap({n1},{m2})={m3}"))
                                 print("cycle to be removed:", cycle)
                                 assertions.append(Not(cycle))
+        elif isinstance(attr1, KeyNode):
+            for (di1, di2) in attr1.decrypt_in:
+                for (eo1, eo2) in attr1.encrypt_out:
+                    if di1 == eo1 and di2 == eo2:
+                        cycle = And(Symbol(f"decrypt({di1},{di2})={n1}"), Symbol(f"encrypt({eo1},{n1})={eo2}"))
+                        assertions.append(Not(cycle))
+            for (eo1, eo2) in attr1.encrypt_out:
+                for (id1, id2) in attr1.intruder_decrypt_in:
+                    if eo2 == id2:
+                        cycle = And(Symbol(f"encrypt({eo1},{n1})={eo2}"), Symbol(f"intruder_decrypt({id1},{id2})={n1}"))
+                        assertions.append(Not(cycle))
+            for (eo1, eo2) in attr1.encrypt_out:
+                for (di1, di2) in attr1.decrypt_in:
+                    if eo2 == di2:
+                        cycle = And(Symbol(f"encrypt({eo1},{n1})={eo2}"), Symbol(f"decrypt({di1},{di2})={n1}"))
+                        assertions.append(Not(cycle))
 
     assertions.append(Symbol(str(high_security_node)))
 
