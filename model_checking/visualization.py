@@ -2,7 +2,8 @@ import re
 
 from pysmt.fnode import FNode
 
-from grammar.my_types import HandleNode, KeyNode
+from grammar.my_types import HandleNode, KeyNode, \
+    IntruderDecryptImplication, DecryptImplication, EncryptImplication, UnwrapImplication, WrapImplication
 from grammar.visualization import convert_graph_to_dot
 from pkcs11_sul_inputs import regex
 
@@ -26,16 +27,20 @@ def visualize_model(graph: dict[int, HandleNode | KeyNode], model: list[FNode], 
                     command, param1, param2, result = match.groups()
                     match command:
                         case "wrap":
-                            visible_wrap_implications.append((int(param1), int(param2), int(result)))
+                            implication = WrapImplication(int(param1), int(param2), int(result))
+                            visible_wrap_implications.append(implication)
                         case "unwrap":
-                            visible_unwrap_implications.append((int(param1), int(param2), int(result)))
+                            implication = UnwrapImplication(int(param1), int(param2), int(result))
+                            visible_unwrap_implications.append(implication)
                         case "encrypt":
-                            visible_encrypt_implications.append((int(param1), int(param2), int(result)))
+                            implication = EncryptImplication(int(param1), int(param2), int(result))
+                            visible_encrypt_implications.append(implication)
                         case "decrypt":
-                            visible_decrypt_implications.append((int(param1), int(param2), int(result)))
+                            implication = DecryptImplication(int(param1), int(param2), int(result))
+                            visible_decrypt_implications.append(implication)
                         case "intruder_decrypt":
-                            visible_intruder_decrypt_implications.append(
-                                (int(param1), int(param2), int(result)))
+                            implication = IntruderDecryptImplication(int(param1), int(param2), int(result))
+                            visible_intruder_decrypt_implications.append(implication)
                         case other:
                             raise ValueError(other)
             else:

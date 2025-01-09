@@ -3,7 +3,8 @@ from itertools import count
 from unittest import TestCase
 
 from grammar.graph import wrap, encrypt, unwrap, decrypt, intruder_decrypt
-from grammar.my_types import HandleNode, KeyNode, Security
+from grammar.my_types import HandleNode, KeyNode, Security, UnwrapImplication, EncryptImplication, DecryptImplication, \
+    IntruderDecryptImplication, WrapImplication
 
 
 class TestWrap(TestCase):
@@ -31,7 +32,7 @@ class TestWrap(TestCase):
         attr2: KeyNode = g1[2]
         self.assertTupleEqual(attr2.value, (0, 0))
         self.assertTrue(attr2.known)
-        self.assertListEqual(attr2.wrap_in, [(1, 1)])
+        self.assertListEqual(attr2.wrap_in, [WrapImplication(1, 1, 2)])
 
         # the same wrapping should not add a new node because it is already there
 
@@ -73,12 +74,12 @@ class TestWrap(TestCase):
         attr5: KeyNode = g1[5]
         self.assertTupleEqual(attr5.value, (1, 0))
         self.assertTrue(attr5.known)
-        self.assertListEqual(attr5.wrap_in, [(1, 3)])
+        self.assertListEqual(attr5.wrap_in, [WrapImplication(1, 3, 5)])
 
         attr6: KeyNode = g1[6]
         self.assertTupleEqual(attr6.value, (0, 1))
         self.assertTrue(attr6.known)
-        self.assertListEqual(attr6.wrap_in, [(3, 1)])
+        self.assertListEqual(attr6.wrap_in, [WrapImplication(3, 1, 6)])
 
 
 class TestEncrypt(TestCase):
@@ -106,13 +107,13 @@ class TestEncrypt(TestCase):
         attr2: KeyNode = g1[2]
         self.assertTupleEqual(attr2.value, (0, 0))
         self.assertTrue(attr2.known)
-        self.assertListEqual(attr2.encrypt_in, [(1, 0)])
+        self.assertListEqual(attr2.encrypt_in, [EncryptImplication(1, 0, 2)])
 
     def test_graph_encrypt_with_one_key_node_and_handle_node_pointing_to_it_should_update_existing_new_key_node(self):
         g0 = {
             0: KeyNode(True, 0, True, Security.LOW, [1], [], [], [], [], [], [], [], []),
             1: HandleNode(True, 0, True, None, [], [], [], []),
-            2: KeyNode(True, (0, 0), False, Security.LOW, [], [], [(1, 0)], [], [], [], [], [], []),
+            2: KeyNode(True, (0, 0), False, Security.LOW, [], [], [EncryptImplication(1, 0, 2)], [], [], [], [], [], [])
         }
         id_generator = count(max(g0.keys()) + 1)
 
@@ -141,12 +142,12 @@ class TestEncrypt(TestCase):
         attr5: KeyNode = g1[5]
         self.assertTupleEqual(attr5.value, (1, 0))
         self.assertTrue(attr5.known)
-        self.assertListEqual(attr5.encrypt_in, [(1, 2)])
+        self.assertListEqual(attr5.encrypt_in, [EncryptImplication(1, 2, 5)])
 
         attr6: KeyNode = g1[6]
         self.assertTupleEqual(attr6.value, (0, 1))
         self.assertTrue(attr6.known)
-        self.assertListEqual(attr6.encrypt_in, [(3, 0)])
+        self.assertListEqual(attr6.encrypt_in, [EncryptImplication(3, 0, 6)])
 
 
 class TestDecrypt(TestCase):
@@ -175,7 +176,7 @@ class TestDecrypt(TestCase):
         attr3: KeyNode = g1[3]
         self.assertEqual(attr3.value, 1)
         self.assertTrue(attr3.known)
-        self.assertListEqual(attr3.decrypt_in, [(1, 2)])
+        self.assertListEqual(attr3.decrypt_in, [DecryptImplication(1, 2, 3)])
 
         # the same decryption should not add a new node because it is already there
 
@@ -227,7 +228,7 @@ class TestIntruderDecrypt(TestCase):
         attr2: KeyNode = g1[2]
         self.assertEqual(attr2.value, 1)
         self.assertTrue(attr2.known)
-        self.assertListEqual(attr2.intruder_decrypt_in, [(0, 1)])
+        self.assertListEqual(attr2.intruder_decrypt_in, [IntruderDecryptImplication(0, 1, 2)])
 
         # the same intruder_decryption should not add a new node because it is already there
 
@@ -251,7 +252,7 @@ class TestIntruderDecrypt(TestCase):
 
         attr2: KeyNode = g1[2]
         self.assertTrue(attr2.known)
-        self.assertListEqual(attr2.intruder_decrypt_in, [(0, 1)])
+        self.assertListEqual(attr2.intruder_decrypt_in, [IntruderDecryptImplication(0, 1, 2)])
 
 
 class TestUnwrap(TestCase):
@@ -284,11 +285,11 @@ class TestUnwrap(TestCase):
 
         attr4: HandleNode = g1[4]
         self.assertEqual(attr4.points_to, 3)
-        self.assertTupleEqual(attr4.unwrap_in, (1, 2))
+        self.assertEqual(attr4.unwrap_in, UnwrapImplication(1, 2, 4))
 
         attr5: HandleNode = g1[5]
         self.assertEqual(attr5.points_to, 3)
-        self.assertTupleEqual(attr5.unwrap_in, (1, 2))
+        self.assertEqual(attr5.unwrap_in, UnwrapImplication(1, 2, 5))
 
     def test_graph_unwrap_should_create_new_handle_node(self):
         g0 = {
@@ -296,7 +297,7 @@ class TestUnwrap(TestCase):
             1: HandleNode(True, 0, True, None, [], [], [], []),
             2: KeyNode(True, (1, 0), True, Security.LOW, [], [], [], [], [], [], [], [], []),
             3: KeyNode(True, 1, False, Security.LOW, [4], [], [], [], [], [], [], [], []),
-            4: HandleNode(True, 3, True, (1, 2), [], [], [], []),
+            4: HandleNode(True, 3, True, UnwrapImplication(1, 2, 4), [], [], [], []),
         }
         id_generator = count(max(g0.keys()) + 1)
 
@@ -307,7 +308,7 @@ class TestUnwrap(TestCase):
 
         attr5: HandleNode = g1[5]
         self.assertEqual(attr5.points_to, 3)
-        self.assertTupleEqual(attr5.unwrap_in, (1, 2))
+        self.assertEqual(attr5.unwrap_in, UnwrapImplication(1, 2, 5))
 
         attr3: KeyNode = g1[3]
         self.assertListEqual(attr3.handle_in, [4, 5])

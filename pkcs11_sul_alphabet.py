@@ -21,18 +21,27 @@ def extract_alphabet(graph: dict[int, HandleNode | KeyNode]) -> list[PKCS11_SUL_
 
     for n, attr in graph.items():
         if isinstance(attr, KeyNode):
-            for (n1, n2) in attr.wrap_in:
-                alphabet.append(PKCS11_SUL_Wrap(n1, n2, n))
-            for (n1, n2) in attr.encrypt_in:
-                alphabet.append(PKCS11_SUL_Encrypt(n1, n2, n))
-            for (n1, n2) in attr.decrypt_in:
-                alphabet.append(PKCS11_SUL_Decrypt(n1, n2, n))
-            for (n1, n2) in attr.intruder_decrypt_in:
-                alphabet.append(PKCS11_SUL_IntruderDecrypt(n1, n2, n, attr.handle_in.copy()))
+            for implication in attr.wrap_in:
+                alphabet.append(PKCS11_SUL_Wrap(implication.handle_of_wrapping_key,
+                                                implication.handle_of_key_to_be_wrapped,
+                                                implication.wrapped_key))
+            for implication in attr.encrypt_in:
+                alphabet.append(PKCS11_SUL_Encrypt(implication.handle_of_encryption_key,
+                                                   implication.key_to_be_encrypted,
+                                                   implication.encrypted_key))
+            for implication in attr.decrypt_in:
+                alphabet.append(PKCS11_SUL_Decrypt(implication.handle_of_decryption_key,
+                                                   implication.key_to_be_decrypted,
+                                                   implication.decrypted_key))
+            for implication in attr.intruder_decrypt_in:
+                alphabet.append(PKCS11_SUL_IntruderDecrypt(implication.decryption_key,
+                                                           implication.key_to_be_decrypted,
+                                                           implication.decrypted_key, attr.handle_in.copy()))
         elif isinstance(attr, HandleNode):
-            match attr.unwrap_in:
-                case (n1, n2):
-                    alphabet.append(PKCS11_SUL_Unwrap(n1, n2, n))
+            if attr.unwrap_in is not None:
+                alphabet.append(PKCS11_SUL_Unwrap(attr.unwrap_in.handle_of_unwrapping_key,
+                                                  attr.unwrap_in.key_to_be_unwrapped,
+                                                  attr.unwrap_in.handle_of_recovered_key))
 
     for n, attr in graph.items():
         if isinstance(attr, HandleNode):

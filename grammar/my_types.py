@@ -15,16 +15,111 @@ class Security(Enum):
             return "HIGH"
 
 
+class WrapImplication:
+    __match_args__ = ("handle_of_wrapping_key", "handle_of_key_to_be_wrapped", "wrapped_key",)
+
+    def __init__(self, handle_of_wrapping_key: int, handle_of_key_to_be_wrapped: int, wrapped_key: int):
+        self.handle_of_wrapping_key = handle_of_wrapping_key
+        self.handle_of_key_to_be_wrapped = handle_of_key_to_be_wrapped
+        self.wrapped_key = wrapped_key
+
+    def __repr__(self) -> str:
+        return f"wrap({self.handle_of_wrapping_key},{self.handle_of_key_to_be_wrapped})={self.wrapped_key}"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, WrapImplication):
+            raise NotImplementedError
+        return (self.handle_of_wrapping_key == other.handle_of_wrapping_key and
+                self.handle_of_key_to_be_wrapped == other.handle_of_key_to_be_wrapped and
+                self.wrapped_key == other.wrapped_key)
+
+
+class UnwrapImplication:
+    __match_args__ = ("handle_of_unwrapping_key", "key_to_be_unwrapped", "handle_of_recovered_key",)
+
+    def __init__(self, handle_of_unwrapping_key: int, key_to_be_unwrapped: int, unwrapped_key: int):
+        self.handle_of_unwrapping_key = handle_of_unwrapping_key
+        self.key_to_be_unwrapped = key_to_be_unwrapped
+        self.handle_of_recovered_key = unwrapped_key
+
+    def __repr__(self) -> str:
+        return f"unwrap({self.handle_of_unwrapping_key},{self.key_to_be_unwrapped})={self.handle_of_recovered_key}"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, UnwrapImplication):
+            raise NotImplementedError
+        return (self.handle_of_unwrapping_key == other.handle_of_unwrapping_key and
+                self.key_to_be_unwrapped == other.key_to_be_unwrapped and
+                self.handle_of_recovered_key == other.handle_of_recovered_key)
+
+
+class EncryptImplication:
+    __match_args__ = ("handle_of_encryption_key", "key_to_be_encrypted", "encrypted_key",)
+
+    def __init__(self, handle_of_encryption_key: int, key_to_be_encrypted: int, encrypted_key: int):
+        self.handle_of_encryption_key = handle_of_encryption_key
+        self.key_to_be_encrypted = key_to_be_encrypted
+        self.encrypted_key = encrypted_key
+
+    def __repr__(self) -> str:
+        return f"encrypt({self.handle_of_encryption_key},{self.key_to_be_encrypted})={self.encrypted_key}"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, EncryptImplication):
+            raise NotImplementedError
+        return (self.handle_of_encryption_key == other.handle_of_encryption_key and
+                self.key_to_be_encrypted == other.key_to_be_encrypted and
+                self.encrypted_key == other.encrypted_key)
+
+
+class DecryptImplication:
+    __match_args__ = ("handle_of_decryption_key", "key_to_be_decrypted", "decrypted_key",)
+
+    def __init__(self, handle_of_decryption_key: int, key_to_be_decrypted: int, decrypted_key: int):
+        self.handle_of_decryption_key = handle_of_decryption_key
+        self.key_to_be_decrypted = key_to_be_decrypted
+        self.decrypted_key = decrypted_key
+
+    def __repr__(self) -> str:
+        return f"decrypt({self.handle_of_decryption_key},{self.key_to_be_decrypted})={self.decrypted_key}"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, DecryptImplication):
+            raise NotImplementedError
+        return (self.handle_of_decryption_key == other.handle_of_decryption_key and
+                self.key_to_be_decrypted == other.key_to_be_decrypted and
+                self.decrypted_key == other.decrypted_key)
+
+
+class IntruderDecryptImplication:
+    __match_args__ = ("decryption_key", "key_to_be_decrypted", "decrypted_key",)
+
+    def __init__(self, decryption_key: int, key_to_be_decrypted: int, decrypted_key: int):
+        self.decryption_key = decryption_key
+        self.key_to_be_decrypted = key_to_be_decrypted
+        self.decrypted_key = decrypted_key
+
+    def __repr__(self) -> str:
+        return f"intruder_decrypt({self.decryption_key},{self.key_to_be_decrypted})={self.decrypted_key}"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, IntruderDecryptImplication):
+            raise NotImplementedError
+        return (self.decryption_key == other.decryption_key and
+                self.key_to_be_decrypted == other.key_to_be_decrypted and
+                self.decrypted_key == other.decrypted_key)
+
+
 class HandleNode:
     def __init__(self,
                  initial: bool,
                  points_to: int,
                  use: bool,
-                 unwrap_in: tuple[int, int] | None,
-                 wrap_out: list[tuple[int, None, int] | tuple[None, int, int]],
-                 unwrap_out: list[tuple[int, int]],
-                 encrypt_out: list[tuple[int, int]],
-                 decrypt_out: list[tuple[int, int]]):
+                 unwrap_in: UnwrapImplication | None,
+                 wrap_out: list[WrapImplication],
+                 unwrap_out: list[UnwrapImplication],
+                 encrypt_out: list[EncryptImplication],
+                 decrypt_out: list[DecryptImplication]):
         """
         :param initial: Whether the handle node is part of the initial knowledge. If true, the node cannot be pruned.
         :param points_to: Key node pointed by the handle node.
@@ -80,7 +175,7 @@ class HandleNode:
                 len(self.decrypt_out) > 0)
 
     def is_implied_by_other_nodes(self):
-        return len(self.unwrap_in) > 0
+        return self.unwrap_in is not None
 
 
 class KeyNode:
@@ -90,14 +185,14 @@ class KeyNode:
                  known: bool,
                  security,
                  handle_in: list[int],
-                 wrap_in: list[tuple[int, int]],
-                 encrypt_in: list[tuple[int, int]],
-                 decrypt_in: list[tuple[int, int]],
-                 intruder_decrypt_in: list[tuple[int, int]],
-                 unwrap_out: list[tuple[int, int]],
-                 encrypt_out: list[tuple[int, int]],
-                 decrypt_out: list[tuple[int, int]],
-                 intruder_decrypt_out: list[tuple[int, None, int] | tuple[None, int, int]]):
+                 wrap_in: list[WrapImplication],
+                 encrypt_in: list[EncryptImplication],
+                 decrypt_in: list[DecryptImplication],
+                 intruder_decrypt_in: list[IntruderDecryptImplication],
+                 unwrap_out: list[UnwrapImplication],
+                 encrypt_out: list[EncryptImplication],
+                 decrypt_out: list[DecryptImplication],
+                 intruder_decrypt_out: list[IntruderDecryptImplication]):
         """
         :param security:
         :param initial: Whether the key node is part of the initial knowledge. If true, the node cannot be pruned.

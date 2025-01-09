@@ -1,7 +1,8 @@
 from collections.abc import Iterator, Callable
 from copy import deepcopy
 
-from grammar.my_types import HandleNode, KeyNode, Security
+from grammar.my_types import HandleNode, KeyNode, Security, \
+    WrapImplication, EncryptImplication, DecryptImplication, UnwrapImplication, IntruderDecryptImplication
 
 
 def wrap(input_graph: dict[int, HandleNode | KeyNode],
@@ -19,12 +20,13 @@ def wrap(input_graph: dict[int, HandleNode | KeyNode],
                    isinstance(attr, KeyNode) and attr.value == (attr4.value, attr2.value)]:
                 case []:
                     n5 = next(id_generator)
+                    implication = WrapImplication(n1, n3, n5)
                     attr5 = KeyNode(False,
                                     (deepcopy(attr4.value), deepcopy(attr2.value)),
                                     True,
                                     Security.LOW,
                                     [],
-                                    [(n1, n3)],
+                                    [implication],
                                     [],
                                     [],
                                     [],
@@ -33,14 +35,15 @@ def wrap(input_graph: dict[int, HandleNode | KeyNode],
                                     [],
                                     [])
                     output_graph[n5] = attr5
-                    output_graph[n1].wrap_out.append((None, n3, n5))
-                    output_graph[n3].wrap_out.append((n1, None, n5))
+                    output_graph[n1].wrap_out.append(implication)
+                    output_graph[n3].wrap_out.append(implication)
                 case [n5]:
                     attr5: KeyNode = output_graph[n5]
-                    if (n1, n3) not in attr5.wrap_in:
-                        attr5.wrap_in.append((n1, n3))
-                        output_graph[n1].wrap_out.append((None, n3, n5))
-                        output_graph[n3].wrap_out.append((n1, None, n5))
+                    implication = WrapImplication(n1, n3, n5)
+                    if implication not in attr5.wrap_in:
+                        attr5.wrap_in.append(implication)
+                        output_graph[n1].wrap_out.append(implication)
+                        output_graph[n3].wrap_out.append(implication)
                     if not attr5.known:
                         attr5.known = True
                 case other:
@@ -59,13 +62,14 @@ def encrypt(input_graph: dict[int, HandleNode | KeyNode],
                    isinstance(attr, KeyNode) and attr.value == (attr3.value, attr2.value)]:
                 case []:
                     n4 = next(id_generator)
+                    implication = EncryptImplication(n1, n3, n4)
                     attr4 = KeyNode(False,
                                     (deepcopy(attr3.value), deepcopy(attr2.value)),
                                     True,
                                     Security.LOW,
                                     [],
                                     [],
-                                    [(n1, n3)],
+                                    [implication],
                                     [],
                                     [],
                                     [],
@@ -73,14 +77,15 @@ def encrypt(input_graph: dict[int, HandleNode | KeyNode],
                                     [],
                                     [])
                     output_graph[n4] = attr4
-                    output_graph[n1].encrypt_out.append((n3, n4))
-                    output_graph[n3].encrypt_out.append((n1, n4))
+                    output_graph[n1].encrypt_out.append(implication)
+                    output_graph[n3].encrypt_out.append(implication)
                 case [n4]:
                     attr4: KeyNode = output_graph[n4]
-                    if (n1, n3) not in attr4.encrypt_in:
-                        attr4.encrypt_in.append((n1, n3))
-                        output_graph[n1].encrypt_out.append((n3, n4))
-                        output_graph[n3].encrypt_out.append((n1, n4))
+                    implication = EncryptImplication(n1, n3, n4)
+                    if implication not in attr4.encrypt_in:
+                        attr4.encrypt_in.append(implication)
+                        output_graph[n1].encrypt_out.append(implication)
+                        output_graph[n3].encrypt_out.append(implication)
                     if not attr4.known:
                         attr4.known = True
                 case other:
@@ -100,6 +105,7 @@ def decrypt(input_graph: dict[int, HandleNode | KeyNode],
                     match [n for n, attr in output_graph.items() if isinstance(attr, KeyNode) and attr.value == inner]:
                         case []:
                             n4 = next(id_generator)
+                            implication = DecryptImplication(n1, n3, n4)
                             attr4 = KeyNode(False,
                                             deepcopy(inner),
                                             True,
@@ -107,21 +113,22 @@ def decrypt(input_graph: dict[int, HandleNode | KeyNode],
                                             [],
                                             [],
                                             [],
-                                            [(n1, n3)],
+                                            [implication],
                                             [],
                                             [],
                                             [],
                                             [],
                                             [])
                             output_graph[n4] = attr4
-                            output_graph[n1].decrypt_out.append((n3, n4))
-                            output_graph[n3].decrypt_out.append((n1, n4))
+                            output_graph[n1].decrypt_out.append(implication)
+                            output_graph[n3].decrypt_out.append(implication)
                         case [n4]:
                             attr4: KeyNode = output_graph[n4]
-                            if (n1, n3) not in attr4.decrypt_in:
-                                attr4.decrypt_in.append((n1, n3))
-                                output_graph[n1].decrypt_out.append((n3, n4))
-                                output_graph[n3].decrypt_out.append((n1, n4))
+                            implication = DecryptImplication(n1, n3, n4)
+                            if implication not in attr4.decrypt_in:
+                                attr4.decrypt_in.append(implication)
+                                output_graph[n1].decrypt_out.append(implication)
+                                output_graph[n3].decrypt_out.append(implication)
                             if not attr4.known:
                                 attr4.known = True
                         case other:
@@ -172,17 +179,18 @@ def unwrap(input_graph: dict[int, HandleNode | KeyNode],
 
                                 for i in range(n_new_handles):
                                     n5 = next(id_generator)
+                                    implication = UnwrapImplication(n1, n3, n5)
                                     attr5 = HandleNode(False,
                                                        n4,
                                                        True,
-                                                       (n1, n3),
+                                                       implication,
                                                        [],
                                                        [],
                                                        [],
                                                        [])
                                     output_graph[n5] = attr5
-                                    output_graph[n1].unwrap_out.append((n3, n5))
-                                    output_graph[n3].unwrap_out.append((n1, n5))
+                                    output_graph[n1].unwrap_out.append(implication)
+                                    output_graph[n3].unwrap_out.append(implication)
 
                                     attr4.handle_in.append(n5)
                         case [n4]:
@@ -191,17 +199,18 @@ def unwrap(input_graph: dict[int, HandleNode | KeyNode],
                             n_new_handles = unwrap_func(n4, output_graph)
                             if n_new_handles > 0:
                                 n5 = next(id_generator)
+                                implication = UnwrapImplication(n1, n3, n5)
                                 attr5 = HandleNode(False,
                                                    n4,
                                                    True,
-                                                   (n1, n3),
+                                                   implication,
                                                    [],
                                                    [],
                                                    [],
                                                    [])
                                 output_graph[n5] = attr5
-                                output_graph[n1].unwrap_out.append((n3, n5))
-                                output_graph[n3].unwrap_out.append((n1, n5))
+                                output_graph[n1].unwrap_out.append(implication)
+                                output_graph[n3].unwrap_out.append(implication)
 
                                 attr4.handle_in.append(n5)
                         case other:
@@ -218,6 +227,7 @@ def intruder_decrypt(input_graph: dict[int, HandleNode | KeyNode],
                     match [n for n, attr in output_graph.items() if isinstance(attr, KeyNode) and attr.value == inner]:
                         case []:
                             n3 = next(id_generator)
+                            implication = IntruderDecryptImplication(n1, n2, n3)
                             attr3 = KeyNode(False,
                                             deepcopy(inner),
                                             True,
@@ -226,20 +236,21 @@ def intruder_decrypt(input_graph: dict[int, HandleNode | KeyNode],
                                             [],
                                             [],
                                             [],
-                                            [(n1, n2)],
+                                            [implication],
                                             [],
                                             [],
                                             [],
                                             [])
                             output_graph[n3] = attr3
-                            output_graph[n1].intruder_decrypt_out.append((None, n2, n3))
-                            output_graph[n2].intruder_decrypt_out.append((n1, None, n3))
+                            output_graph[n1].intruder_decrypt_out.append(implication)
+                            output_graph[n2].intruder_decrypt_out.append(implication)
                         case [n3]:
                             attr3: KeyNode = output_graph[n3]
                             attr3.known = True
-                            if (n1, n2) not in attr3.intruder_decrypt_in:
-                                attr3.intruder_decrypt_in.append((n1, n2))
-                                output_graph[n1].intruder_decrypt_out.append((None, n2, n3))
-                                output_graph[n2].intruder_decrypt_out.append((n1, None, n3))
+                            implication = IntruderDecryptImplication(n1, n2, n3)
+                            if implication not in attr3.intruder_decrypt_in:
+                                attr3.intruder_decrypt_in.append(implication)
+                                output_graph[n1].intruder_decrypt_out.append(implication)
+                                output_graph[n2].intruder_decrypt_out.append(implication)
                         case other:
                             raise ValueError(other)

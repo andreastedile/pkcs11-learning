@@ -14,64 +14,50 @@ def check_all_implicant_nodes_are_present(graph: dict[int, HandleNode | KeyNode]
         if isinstance(attr1, KeyNode):
             for n2 in attr1.handle_in:
                 assert n2 in graph
-            for (e1, e2) in attr1.wrap_in:
-                assert e1 in graph
-                assert e2 in graph
-            for (e1, e2) in attr1.encrypt_in:
-                assert e1 in graph
-                assert e2 in graph
-            for (e1, e2) in attr1.decrypt_in:
-                assert e1 in graph
-                assert e2 in graph
-            for (e1, e2) in attr1.intruder_decrypt_in:
-                assert e1 in graph
-                assert e2 in graph
+            for implication in attr1.wrap_in:
+                assert implication.handle_of_wrapping_key in graph
+                assert implication.handle_of_key_to_be_wrapped in graph
+            for implication in attr1.encrypt_in:
+                assert implication.handle_of_encryption_key in graph
+                assert implication.key_to_be_encrypted in graph
+            for implication in attr1.decrypt_in:
+                assert implication.handle_of_decryption_key in graph
+                assert implication.key_to_be_decrypted in graph
+            for implication in attr1.intruder_decrypt_in:
+                assert implication.decryption_key in graph
+                assert implication.key_to_be_decrypted in graph
         elif isinstance(attr1, HandleNode):
-            match attr1.unwrap_in:
-                case (e1, e2):
-                    assert e1 in graph
-                    assert e2 in graph
+            if attr1.unwrap_in is not None:
+                assert attr1.unwrap_in.handle_of_unwrapping_key in graph
+                assert attr1.unwrap_in.key_to_be_unwrapped in graph
 
 
 def check_all_implied_nodes_are_present(graph: dict[int, HandleNode | KeyNode]):
     for n1, attr1 in graph.items():
         if isinstance(attr1, KeyNode):
-            for (n2, n3) in attr1.unwrap_out:
-                assert n2 in graph
-                assert n3 in graph
-            for (n2, n3) in attr1.encrypt_out:
-                assert n2 in graph
-                assert n3 in graph
-            for (n2, n3) in attr1.decrypt_out:
-                assert n2 in graph
-                assert n3 in graph
+            for implication in attr1.unwrap_out:
+                assert implication.handle_of_unwrapping_key in graph
+                assert implication.handle_of_recovered_key in graph
+            for implication in attr1.encrypt_out:
+                assert implication.handle_of_encryption_key in graph
+                assert implication.encrypted_key in graph
+            for implication in attr1.decrypt_out:
+                assert implication.handle_of_decryption_key in graph
+                assert implication.decrypted_key in graph
             for implication in attr1.intruder_decrypt_out:
-                match implication:
-                    case (n1, None, n3):
-                        assert n1 in graph
-                        assert n3 in graph
-                    case (None, n2, n3):
-                        assert n2 in graph
-                        assert n3 in graph
-                    case other:
-                        raise ValueError(other)
+                assert implication.decryption_key in graph
+                assert implication.key_to_be_decrypted in graph
+                assert implication.decrypted_key in graph
         elif isinstance(attr1, HandleNode):
             for implication in attr1.wrap_out:
-                match implication:
-                    case (n1, None, n3):
-                        assert n1 in graph
-                        assert n3 in graph
-                    case (None, n2, n3):
-                        assert n2 in graph
-                        assert n3 in graph
-                    case other:
-                        raise ValueError(other)
-            for (n2, n3) in attr1.unwrap_out:
-                assert n1 in graph
-                assert n3 in graph
-            for (n2, n3) in attr1.encrypt_out:
-                assert n1 in graph
-                assert n3 in graph
-            for (n2, n3) in attr1.decrypt_out:
-                assert n1 in graph
-                assert n3 in graph
+                assert implication.handle_of_key_to_be_wrapped in graph
+                assert implication.wrapped_key in graph
+            for implication in attr1.unwrap_out:
+                assert implication.key_to_be_unwrapped in graph
+                assert implication.handle_of_recovered_key in graph
+            for implication in attr1.encrypt_out:
+                assert implication.key_to_be_encrypted in graph
+                assert implication.encrypted_key in graph
+            for implication in attr1.decrypt_out:
+                assert implication.handle_of_decryption_key in graph
+                assert implication.decrypted_key in graph

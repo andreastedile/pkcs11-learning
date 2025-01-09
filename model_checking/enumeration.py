@@ -19,180 +19,159 @@ def enumerate_models(graph: dict[int, HandleNode | KeyNode], high_security_node:
         if isinstance(attr, HandleNode):
             implications_out = []
             for implication in attr.wrap_out:
-                match implication:
-                    case (n1, None, n3):
-                        implications_out.append(Symbol(f"wrap({n1},{n})={n3}"))
-                    case (None, n2, n3):
-                        implications_out.append(Symbol(f"wrap({n},{n2})={n3}"))
-                    case other:
-                        raise ValueError(other)
-            for (n2, n3) in attr.unwrap_out:
-                implications_out.append(Symbol(f"unwrap({n},{n2})={n3}"))
-            for (n2, n3) in attr.encrypt_out:
-                implications_out.append(Symbol(f"encrypt({n},{n2})={n3}"))
-            for (n2, n3) in attr.decrypt_out:
-                implications_out.append(Symbol(f"decrypt({n},{n2})={n3}"))
+                implications_out.append(Symbol(str(implication)))
+            for implication in attr.unwrap_out:
+                implications_out.append(Symbol(str(implication)))
+            for implication in attr.encrypt_out:
+                implications_out.append(Symbol(str(implication)))
+            for implication in attr.decrypt_out:
+                implications_out.append(Symbol(str(implication)))
             iff = Iff(Symbol(str(n)), Or(implications_out))
-            print("qui", iff)
+            print(iff)
             assertions.append(iff)
 
             for implication in attr.wrap_out:
-                match implication:
-                    case (n1, None, n3):
-                        impl = Implies(Symbol(f"wrap({n1},{n})={n3}"),
-                                       And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
-                        assertions.append(impl)
-                    case (None, n2, n3):
-                        impl = Implies(Symbol(f"wrap({n},{n2})={n3}"),
-                                       And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
-                        assertions.append(impl)
-                    case other:
-                        raise ValueError(other)
-            for (n2, n3) in attr.unwrap_out:
-                impl = Implies(Symbol(f"unwrap({n},{n2})={n3}"),
-                               And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
+                impl = Implies(Symbol(str(implication)),
+                               And(
+                                   Symbol(str(implication.handle_of_wrapping_key)),
+                                   Symbol(str(implication.handle_of_key_to_be_wrapped)),
+                                   Symbol(str(implication.wrapped_key))))
                 assertions.append(impl)
-            for (n2, n3) in attr.encrypt_out:
-                impl = Implies(Symbol(f"encrypt({n},{n2})={n3}"),
-                               And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
+            for implication in attr.unwrap_out:
+                impl = Implies(Symbol(str(implication)),
+                               And(
+                                   Symbol(str(implication.handle_of_unwrapping_key)),
+                                   Symbol(str(implication.key_to_be_unwrapped)),
+                                   Symbol(str(implication.handle_of_recovered_key))))
                 assertions.append(impl)
-            for (n2, n3) in attr.decrypt_out:
-                impl = Implies(Symbol(f"decrypt({n},{n2})={n3}"),
-                               And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
+            for implication in attr.encrypt_out:
+                impl = Implies(Symbol(str(implication)),
+                               And(
+                                   Symbol(str(implication.handle_of_encryption_key)),
+                                   Symbol(str(implication.key_to_be_encrypted)),
+                                   Symbol(str(implication.encrypted_key))))
+                assertions.append(impl)
+            for implication in attr.decrypt_out:
+                impl = Implies(Symbol(str(implication)),
+                               And(
+                                   Symbol(str(implication.handle_of_decryption_key)),
+                                   Symbol(str(implication.key_to_be_decrypted)),
+                                   Symbol(str(implication.decrypted_key))))
                 assertions.append(impl)
 
-            match attr.unwrap_in:
-                case (e1, e2) if not attr.initial:
-                    iff = Iff(Symbol(str(n)), Symbol(f"unwrap({e1},{e2})={n}"))
-                    print(iff)
-                    assertions.append(iff)
+            if attr.unwrap_in is not None:
+                iff = Iff(Symbol(str(n)), Symbol(str(attr.unwrap_in)))
+                print(iff)
+                assertions.append(iff)
 
-                    # a command requires both its operands
-                    impl = Implies(Symbol(f"unwrap({e1},{e2})={n}"),
-                                   And(Symbol(str(e1)), Symbol(str(e2)), Symbol(str(n))))
-                    print(impl)
-                    assertions.append(impl)
-                case None:
-                    assert attr.initial
-                    # can be freely satisfied
+                # a command requires both its operands
+                impl = Implies(Symbol(str(attr.unwrap_in)),
+                               And(
+                                   Symbol(str(attr.unwrap_in.handle_of_unwrapping_key)),
+                                   Symbol(str(attr.unwrap_in.key_to_be_unwrapped)),
+                                   Symbol(str(attr.unwrap_in.handle_of_recovered_key))))
+                print(impl)
+                assertions.append(impl)
+            else:
+                assert attr.initial
+                # can be freely satisfied
         elif isinstance(attr, KeyNode):
             if n != high_security_node:
                 implications_out = []
-                for (n1, n3) in attr.unwrap_out:
-                    implications_out.append(Symbol(f"unwrap({n1},{n})={n3}"))
-                for (n1, n3) in attr.encrypt_out:
-                    implications_out.append(Symbol(f"encrypt({n1},{n})={n3}"))
-                for (n1, n3) in attr.decrypt_out:
-                    implications_out.append(Symbol(f"decrypt({n1},{n})={n3}"))
+                for implication in attr.unwrap_out:
+                    implications_out.append(Symbol(str(implication)))
+                for implication in attr.encrypt_out:
+                    implications_out.append(Symbol(str(implication)))
+                for implication in attr.decrypt_out:
+                    implications_out.append(Symbol(str(implication)))
                 for implication in attr.intruder_decrypt_out:
-                    match implication:
-                        case (n1, None, n3):
-                            implications_out.append(Symbol(f"intruder_decrypt({n1},{n})={n3}"))
-                        case (None, n2, n3):
-                            implications_out.append(Symbol(f"intruder_decrypt({n},{n2})={n3}"))
-                        case other:
-                            raise ValueError(other)
+                    implications_out.append(Symbol(str(implication)))
                 iff = Iff(Symbol(str(n)), Or(implications_out))
                 print(iff)
                 assertions.append(iff)
 
-                for (n1, n3) in attr.unwrap_out:
-                    impl = Implies(Symbol(f"unwrap({n1},{n})={n3}"),
-                                   And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
+                for implication in attr.unwrap_out:
+                    impl = Implies(Symbol(str(implication)),
+                                   And(
+                                       Symbol(str(implication.handle_of_unwrapping_key)),
+                                       Symbol(str(implication.key_to_be_unwrapped)),
+                                       Symbol(str(implication.handle_of_recovered_key))))
                     assertions.append(impl)
-                for (n1, n3) in attr.encrypt_out:
-                    impl = Implies(Symbol(f"encrypt({n1},{n})={n3}"),
-                                   And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
+                for implication in attr.encrypt_out:
+                    impl = Implies(Symbol(str(implication)),
+                                   And(
+                                       Symbol(str(implication.handle_of_encryption_key)),
+                                       Symbol(str(implication.key_to_be_encrypted)),
+                                       Symbol(str(implication.encrypted_key))))
                     assertions.append(impl)
-                for (n1, n3) in attr.decrypt_out:
-                    impl = Implies(Symbol(f"decrypt({n1},{n})={n3}"),
-                                   And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
+                for implication in attr.decrypt_out:
+                    impl = Implies(Symbol(str(implication)),
+                                   And(
+                                       Symbol(str(implication.handle_of_decryption_key)),
+                                       Symbol(str(implication.key_to_be_decrypted)),
+                                       Symbol(str(implication.decrypted_key))))
                     assertions.append(impl)
                 for implication in attr.intruder_decrypt_out:
-                    match implication:
-                        case (n1, None, n3):
-                            impl = Implies(Symbol(f"intruder_decrypt({n1},{n})={n3}"),
-                                           And(Symbol(str(n1)), Symbol(str(n)), Symbol(str(n3))))
-                            assertions.append(impl)
-                        case (None, n2, n3):
-                            impl = Implies(Symbol(f"intruder_decrypt({n},{n2})={n3}"),
-                                           And(Symbol(str(n)), Symbol(str(n2)), Symbol(str(n3))))
-                            assertions.append(impl)
-                        case other:
-                            raise ValueError(other)
+                    impl = Implies(Symbol(str(implication)),
+                                   And(
+                                       Symbol(str(implication.decryption_key)),
+                                       Symbol(str(implication.key_to_be_decrypted)),
+                                       Symbol(str(implication.decrypted_key))))
+                    assertions.append(impl)
             if attr.initial and attr.copy.known:
                 # can be freely satisfied
                 pass
             else:
-                implications = []
-                for (e1, e2) in attr.wrap_in:
-                    implications.append(Symbol(f"wrap({e1},{e2})={n}"))
-                for (e1, e2) in attr.encrypt_in:
-                    implications.append(Symbol(f"encrypt({e1},{e2})={n}"))
-                for (e1, e2) in attr.decrypt_in:
-                    implications.append(Symbol(f"decrypt({e1},{e2})={n}"))
-                for (e1, e2) in attr.intruder_decrypt_in:
-                    implications.append(Symbol(f"intruder_decrypt({e1},{e2})={n}"))
+                implications_in = []
+                for implication in attr.wrap_in:
+                    implications_in.append(Symbol(str(implication)))
+                for implication in attr.encrypt_in:
+                    implications_in.append(Symbol(str(implication)))
+                for implication in attr.decrypt_in:
+                    implications_in.append(Symbol(str(implication)))
+                for implication in attr.intruder_decrypt_in:
+                    implications_in.append(Symbol(str(implication)))
 
-                iif = Iff(Symbol(str(n)), Or(implications))
+                iif = Iff(Symbol(str(n)), Or(implications_in))
                 print(iif)
                 assertions.append(iif)
 
-                amo = AtMostOne(implications)
+                amo = AtMostOne(implications_in)
                 assertions.append(amo)
 
                 # a command requires both its operands
-                for (e1, e2) in attr.wrap_in:
-                    impl = Implies(Symbol(f"wrap({e1},{e2})={n}"),
-                                   And(Symbol(str(e1)), Symbol(str(e2)), Symbol(str(n))))
+                for implication in attr.wrap_in:
+                    impl = Implies(Symbol(str(implication)),
+                                   And(
+                                       Symbol(str(implication.handle_of_wrapping_key)),
+                                       Symbol(str(implication.handle_of_key_to_be_wrapped)),
+                                       Symbol(str(implication.wrapped_key))))
                     print(impl)
                     assertions.append(impl)
-                for (e1, e2) in attr.encrypt_in:
-                    impl = Implies(Symbol(f"encrypt({e1},{e2})={n}"),
-                                   And(Symbol(str(e1)), Symbol(str(e2)), Symbol(str(n))))
+                for implication in attr.encrypt_in:
+                    impl = Implies(Symbol(str(implication)),
+                                   And(
+                                       Symbol(str(implication.handle_of_encryption_key)),
+                                       Symbol(str(implication.key_to_be_encrypted)),
+                                       Symbol(str(implication.encrypted_key))))
                     print(impl)
                     assertions.append(impl)
-                for (e1, e2) in attr.decrypt_in:
-                    impl = Implies(Symbol(f"decrypt({e1},{e2})={n}"),
-                                   And(Symbol(str(e1)), Symbol(str(e2)), Symbol(str(n))))
+                for implication in attr.decrypt_in:
+                    impl = Implies(Symbol(str(implication)),
+                                   And(
+                                       Symbol(str(implication.handle_of_decryption_key)),
+                                       Symbol(str(implication.key_to_be_decrypted)),
+                                       Symbol(str(implication.decrypted_key))))
                     print(impl)
                     assertions.append(impl)
-                for (e1, e2) in attr.intruder_decrypt_in:
-                    impl = Implies(Symbol(f"intruder_decrypt({e1},{e2})={n}"),
-                                   And(Symbol(str(e1)), Symbol(str(e2)), Symbol(str(n))))
+                for implication in attr.intruder_decrypt_in:
+                    impl = Implies(Symbol(str(implication)),
+                                   And(
+                                       Symbol(str(implication.decryption_key)),
+                                       Symbol(str(implication.key_to_be_decrypted)),
+                                       Symbol(str(implication.decrypted_key))))
                     print(impl)
                     assertions.append(impl)
-
-    for n1, attr1 in graph.items():
-        if isinstance(attr1, HandleNode):
-            match attr1.unwrap_in:
-                case (n2, n3):
-                    for implication in attr1.wrap_out:
-                        match implication:
-                            case (m1, None, m3) if n3 == m3:
-                                cycle = And(Symbol(f"unwrap({n2},{n3})={n1}"), Symbol(f"wrap({m1},{n1})={m3}"))
-                                print("cycle to be removed:", cycle)
-                                assertions.append(Not(cycle))
-                            case (None, m2, m3) if n3 == m3:
-                                cycle = And(Symbol(f"unwrap({n2},{n3})={n1}"), Symbol(f"wrap({n1},{m2})={m3}"))
-                                print("cycle to be removed:", cycle)
-                                assertions.append(Not(cycle))
-        elif isinstance(attr1, KeyNode):
-            for (di1, di2) in attr1.decrypt_in:
-                for (eo1, eo2) in attr1.encrypt_out:
-                    if di1 == eo1 and di2 == eo2:
-                        cycle = And(Symbol(f"decrypt({di1},{di2})={n1}"), Symbol(f"encrypt({eo1},{n1})={eo2}"))
-                        assertions.append(Not(cycle))
-            for (eo1, eo2) in attr1.encrypt_out:
-                for (id1, id2) in attr1.intruder_decrypt_in:
-                    if eo2 == id2:
-                        cycle = And(Symbol(f"encrypt({eo1},{n1})={eo2}"), Symbol(f"intruder_decrypt({id1},{id2})={n1}"))
-                        assertions.append(Not(cycle))
-            for (eo1, eo2) in attr1.encrypt_out:
-                for (di1, di2) in attr1.decrypt_in:
-                    if eo2 == di2:
-                        cycle = And(Symbol(f"encrypt({eo1},{n1})={eo2}"), Symbol(f"decrypt({di1},{di2})={n1}"))
-                        assertions.append(Not(cycle))
 
     assertions.append(Symbol(str(high_security_node)))
 
