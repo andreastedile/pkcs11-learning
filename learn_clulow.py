@@ -58,7 +58,7 @@ def main():
 
     if not no_pruning:
         print("prune graph")
-        clulow_graph = prune_graph(clulow_graph, debug)
+        clulow_graph = prune_graph(clulow_graph)
         print("number of handle nodes:", len([attr for attr in clulow_graph.values() if isinstance(attr, HandleNode)]))
         print("number of key nodes:   ", len([attr for attr in clulow_graph.values() if isinstance(attr, KeyNode)]))
 

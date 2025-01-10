@@ -2,9 +2,10 @@ from grammar.invariants import check_all_implied_nodes_are_present, check_all_im
 from grammar.my_types import HandleNode, KeyNode, Security
 from grammar.visualization import visualize_graph
 
+DEBUG = False
 
-def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
-        dict[int, HandleNode | KeyNode]:
+
+def prune_graph(graph: dict[int, HandleNode | KeyNode]) -> dict[int, HandleNode | KeyNode]:
     it = 0
     while True:
         non_implying_handle_nodes: list[tuple[int, HandleNode]] = [(n, attr) for n, attr in graph.items() if
@@ -144,7 +145,7 @@ def prune_graph(graph: dict[int, HandleNode | KeyNode], debug=False) -> \
         check_all_implied_nodes_are_present(graph)
 
         if changed:
-            if debug:
+            if DEBUG:
                 visualize_graph(graph, f"pruning_{it}")
             it += 1
         else:
