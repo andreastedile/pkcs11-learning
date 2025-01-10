@@ -73,9 +73,9 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode],
         if isinstance(attr, HandleNode):
             if attr.unwrap_in is not None:
                 edge1 = Edge(attr.unwrap_in.handle_of_unwrapping_key, n,
-                             label=f"<unwrap(<u>{attr.unwrap_in.handle_of_unwrapping_key}</u>,{attr.unwrap_in.key_to_be_unwrapped})>")
+                             label=f"<unwrap(<u>{attr.unwrap_in.handle_of_unwrapping_key}</u>,{attr.unwrap_in.key_to_be_unwrapped})={n}>")
                 edge2 = Edge(attr.unwrap_in.key_to_be_unwrapped, n,
-                             label=f"<unwrap({attr.unwrap_in.handle_of_unwrapping_key},<u>{attr.unwrap_in.key_to_be_unwrapped}</u>)>")
+                             label=f"<unwrap({attr.unwrap_in.handle_of_unwrapping_key},<u>{attr.unwrap_in.key_to_be_unwrapped}</u>)={n}>")
                 if attr.unwrap_in not in visible_unwrap_implications:
                     edge1.set_style("invis")
                     edge2.set_style("invis")
@@ -89,9 +89,9 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode],
                 dot.add_edge(edge)
             for implication in attr.wrap_in:
                 edge1 = Edge(implication.handle_of_wrapping_key, n,
-                             label=f"<wrap(<u>{implication.handle_of_wrapping_key}</u>,{implication.handle_of_key_to_be_wrapped})>")
+                             label=f"<wrap(<u>{implication.handle_of_wrapping_key}</u>,{implication.handle_of_key_to_be_wrapped})={n}>")
                 edge2 = Edge(implication.handle_of_key_to_be_wrapped, n,
-                             label=f"<wrap({implication.handle_of_wrapping_key},<u>{implication.handle_of_key_to_be_wrapped}</u>)>")
+                             label=f"<wrap({implication.handle_of_wrapping_key},<u>{implication.handle_of_key_to_be_wrapped}</u>)={n}>")
                 if implication not in visible_wrap_implications:
                     edge1.set_style("invis")
                     edge2.set_style("invis")
@@ -99,9 +99,9 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode],
                 dot.add_edge(edge2)
             for implication in attr.encrypt_in:
                 edge1 = Edge(implication.handle_of_encryption_key, n,
-                             label=f"<encrypt(<u>{implication.handle_of_encryption_key}</u>,{implication.key_to_be_encrypted})>")
+                             label=f"<encrypt(<u>{implication.handle_of_encryption_key}</u>,{implication.key_to_be_encrypted})={n}>")
                 edge2 = Edge(implication.key_to_be_encrypted, n,
-                             label=f"<encrypt({implication.handle_of_encryption_key},<u>{implication.key_to_be_encrypted}</u>)>")
+                             label=f"<encrypt({implication.handle_of_encryption_key},<u>{implication.key_to_be_encrypted}</u>)={n}>")
                 if implication not in visible_encrypt_implications:
                     edge1.set_style("invis")
                     edge2.set_style("invis")
@@ -109,9 +109,9 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode],
                 dot.add_edge(edge2)
             for implication in attr.decrypt_in:
                 edge1 = Edge(implication.handle_of_decryption_key, n,
-                             label=f"<decrypt(<u>{implication.handle_of_decryption_key}</u>,{implication.key_to_be_decrypted})>")
+                             label=f"<decrypt(<u>{implication.handle_of_decryption_key}</u>,{implication.key_to_be_decrypted})={n}>")
                 edge2 = Edge(implication.key_to_be_decrypted, n,
-                             label=f"<decrypt({implication.handle_of_decryption_key},<u>{implication.key_to_be_decrypted}</u>)>")
+                             label=f"<decrypt({implication.handle_of_decryption_key},<u>{implication.key_to_be_decrypted}</u>)={n}>")
                 if implication not in visible_decrypt_implications:
                     edge1.set_style("invis")
                     edge2.set_style("invis")
@@ -119,9 +119,9 @@ def convert_graph_to_dot(graph: dict[int, HandleNode | KeyNode],
                 dot.add_edge(edge2)
             for implication in attr.intruder_decrypt_in:
                 edge1 = Edge(implication.decryption_key, n,
-                             label=f"<intruderdecrypt(<u>{implication.decryption_key}</u>,{implication.key_to_be_decrypted})>")
+                             label=f"<intruderdecrypt(<u>{implication.decryption_key}</u>,{implication.key_to_be_decrypted})={n}>")
                 edge2 = Edge(implication.key_to_be_decrypted, n,
-                             label=f"<intruderdecrypt({implication.decryption_key},<u>{implication.key_to_be_decrypted}</u>)>")
+                             label=f"<intruderdecrypt({implication.decryption_key},<u>{implication.key_to_be_decrypted}</u>)={n}>")
                 if implication not in visible_intruder_decrypt_implications:
                     edge1.set_style("invis")
                     edge2.set_style("invis")
