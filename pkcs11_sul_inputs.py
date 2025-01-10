@@ -6,6 +6,8 @@ from Crypto.Util.Padding import pad
 from pkcs11 import SecretKey, Mechanism, Attribute, ObjectClass, KeyType, \
     WrapMixin, UnwrapMixin, EncryptMixin, DecryptMixin, \
     PKCS11Error
+from pysmt.fnode import FNode
+from pysmt.shortcuts import Symbol
 
 from grammar.my_types import HandleNode, KeyNode
 
@@ -382,7 +384,8 @@ class PKCS11_SUL_UnsetDecrypt(PKCS11_SUL_Input):
         return OP_OK
 
 
-def convert_str_input_to_pkcs11_sul_input(graph: dict[int, HandleNode | KeyNode], str_input: str) -> PKCS11_SUL_Input:
+def convert_str_input_to_pkcs11_sul_input(graph: dict[int, HandleNode | KeyNode], model: list[FNode],
+                                          str_input: str) -> PKCS11_SUL_Input:
     match = re.match(regex, str_input)
     if match:
         if match.group(1) is None:
@@ -405,7 +408,8 @@ def convert_str_input_to_pkcs11_sul_input(graph: dict[int, HandleNode | KeyNode]
                     return PKCS11_SUL_Decrypt(int(param1), int(param2), int(result))
                 case "intruder_decrypt":
                     attr: KeyNode = graph[int(result)]
-                    return PKCS11_SUL_IntruderDecrypt(int(param1), int(param2), int(result), attr.handle_in.copy())
+                    handle_in = [n for n in attr.handle_in if Symbol(str(n)) in model]
+                    return PKCS11_SUL_IntruderDecrypt(int(param1), int(param2), int(result), handle_in)
                 case other:
                     raise ValueError(other)
     else:

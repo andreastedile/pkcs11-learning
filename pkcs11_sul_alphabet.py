@@ -78,7 +78,7 @@ def convert_model_to_alphabet(graph: dict[int, HandleNode | KeyNode], model: lis
                     alphabet.append(PKCS11_SUL_SetDecrypt(n))
                     alphabet.append(PKCS11_SUL_UnsetDecrypt(n))
             else:
-                converted = convert_str_input_to_pkcs11_sul_input(graph, name)
+                converted = convert_str_input_to_pkcs11_sul_input(graph, model, name)
                 alphabet.append(converted)
         else:
             assert atom.is_not()
