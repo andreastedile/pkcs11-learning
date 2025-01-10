@@ -7,11 +7,13 @@ from grammar.my_types import HandleNode, KeyNode
 from grammar.visualization import visualize_graph
 from grammar.graph import decrypt, unwrap, encrypt, wrap, intruder_decrypt, standard_unwrap_func
 
+DEBUG = False
+
 
 def expand_graph(graph: dict[int, HandleNode | KeyNode],
                  n_iter: int,
-                 unwrap_func: Callable[[int | None, dict[int, HandleNode | KeyNode]], int] = standard_unwrap_func,
-                 debug=False) -> dict[int, HandleNode | KeyNode]:
+                 unwrap_func: Callable[[int | None, dict[int, HandleNode | KeyNode]], int] = standard_unwrap_func) -> \
+        dict[int, HandleNode | KeyNode]:
     check_all_key_nodes_have_different_values(graph)
 
     # generates ids for new nodes in the graph
@@ -37,7 +39,7 @@ def expand_graph(graph: dict[int, HandleNode | KeyNode],
         wrap(input_graph, output_graph, id_generator)
         check_all_key_nodes_have_different_values(graph)
 
-        if debug:
+        if DEBUG:
             visualize_graph(output_graph, f"expand_{i}")
 
         input_graph = output_graph

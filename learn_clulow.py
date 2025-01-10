@@ -52,7 +52,7 @@ def main():
         visualize_graph(clulow_graph, "clulow_initial_graph")
 
     print("expand graph")
-    clulow_graph = expand_graph(clulow_graph, n_iter, debug=debug)
+    clulow_graph = expand_graph(clulow_graph, n_iter)
     print("number of handle nodes:", len([attr for attr in clulow_graph.values() if isinstance(attr, HandleNode)]))
     print("number of key nodes:   ", len([attr for attr in clulow_graph.values() if isinstance(attr, KeyNode)]))
 
