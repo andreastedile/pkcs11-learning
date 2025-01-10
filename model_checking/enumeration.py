@@ -173,6 +173,31 @@ def enumerate_models(graph: dict[int, HandleNode | KeyNode], high_security_node:
                     print(impl)
                     assertions.append(impl)
 
+    for n1, attr1 in graph.items():
+        if isinstance(attr1, HandleNode):
+            for wrap in attr1.wrap_out:
+                wrapped_key: KeyNode = graph[wrap.wrapped_key]
+                for unwrap in wrapped_key.unwrap_out:
+                    if unwrap.handle_of_recovered_key == wrap.handle_of_key_to_be_wrapped:
+                        cycle = And(Symbol(str(wrap)), Symbol(str(unwrap)))
+                        assertions.append(Not(cycle))
+                    elif unwrap.handle_of_recovered_key == wrap.handle_of_wrapping_key:
+                        cycle = And(Symbol(str(wrap)), Symbol(str(unwrap)))
+                        assertions.append(Not(cycle))
+        elif isinstance(attr1, KeyNode):
+            for encrypt in attr1.encrypt_out:
+                encrypted_key: KeyNode = graph[encrypt.encrypted_key]
+                for decrypt in encrypted_key.decrypt_out:
+                    if decrypt.decrypted_key == encrypt.key_to_be_encrypted:
+                        cycle = And(Symbol(str(encrypt)), Symbol(str(decrypt)))
+                        assertions.append(Not(cycle))
+            for encrypt in attr1.encrypt_out:
+                encrypted_key: KeyNode = graph[encrypt.encrypted_key]
+                for intruder_decrypt in encrypted_key.intruder_decrypt_out:
+                    if intruder_decrypt.decrypted_key == encrypt.key_to_be_encrypted:
+                        cycle = And(Symbol(str(encrypt)), Symbol(str(intruder_decrypt)))
+                        assertions.append(Not(cycle))
+
     assertions.append(Symbol(str(high_security_node)))
 
     formula: FNode = And(assertions)
