@@ -172,6 +172,10 @@ def enumerate_models(graph: dict[int, HandleNode | KeyNode], high_security_node:
                                        Symbol(str(implication.decrypted_key))))
                     print(impl)
                     assertions.append(impl)
+            if (attr.initial and not attr.copy.known and attr.known) or (not attr.initial and attr.known):
+                for implication in attr.intruder_decrypt_in:
+                    if implication.decryption_key == n:
+                        assertions.append(Not(Symbol(str(implication))))
 
     for n1, attr1 in graph.items():
         if isinstance(attr1, HandleNode):
