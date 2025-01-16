@@ -34,6 +34,7 @@ def wrap(input_graph: dict[int, HandleNode | KeyNode],
                                     [],
                                     [],
                                     [])
+                    attr5.copy = deepcopy(attr5)
                     output_graph[n5] = attr5
                     output_graph[n1].wrap_out.append(implication)
                     output_graph[n3].wrap_out.append(implication)
@@ -76,6 +77,7 @@ def encrypt(input_graph: dict[int, HandleNode | KeyNode],
                                     [],
                                     [],
                                     [])
+                    attr4.copy = deepcopy(attr4)
                     output_graph[n4] = attr4
                     output_graph[n1].encrypt_out.append(implication)
                     output_graph[n3].encrypt_out.append(implication)
@@ -119,6 +121,7 @@ def decrypt(input_graph: dict[int, HandleNode | KeyNode],
                                             [],
                                             [],
                                             [])
+                            attr4.copy = deepcopy(attr4)
                             output_graph[n4] = attr4
                             output_graph[n1].decrypt_out.append(implication)
                             output_graph[n3].decrypt_out.append(implication)
@@ -175,6 +178,7 @@ def unwrap(input_graph: dict[int, HandleNode | KeyNode],
                                                 [],
                                                 [],
                                                 [])
+                                attr4.copy = deepcopy(attr4)
                                 output_graph[n4] = attr4
 
                                 for i in range(n_new_handles):
@@ -241,6 +245,7 @@ def intruder_decrypt(input_graph: dict[int, HandleNode | KeyNode],
                                             [],
                                             [],
                                             [])
+                            attr3.copy = deepcopy(attr3)
                             output_graph[n3] = attr3
                             output_graph[n1].intruder_decrypt_out.append(implication)
                             output_graph[n2].intruder_decrypt_out.append(implication)
