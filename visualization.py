@@ -1,5 +1,6 @@
 import typing
 
+from aalpy import MealyMachine, MealyState
 from networkx.classes import MultiDiGraph
 from pydot import Dot, Node, Edge
 
@@ -9,6 +10,7 @@ from my_types import KnowledgeBase, PKCS11_FunctionArguments, \
     PKCS11_EncryptArguments, \
     PKCS11_DecryptArguments, \
     IntruderDecryptArguments
+from pkcs11_sul_inputs import NOT_APPLICABLE
 
 
 def convert_knowledege_base_to_dot(kb: KnowledgeBase, initial_nodes: set[int]) -> Dot:
@@ -152,3 +154,15 @@ def convert_model_to_dot_compact(kb: KnowledgeBase, initial_nodes: set[int], mod
                     typing.assert_never(arguments)
 
     return dot
+
+
+def remove_not_applicable_transitions(mealy: MealyMachine):
+    source: MealyState
+    for source in mealy.states:
+        destination: MealyState
+        for _transition, _destination in source.transitions.items():
+            pass
+        for transition, output in source.output_fun.copy().items():
+            if output == NOT_APPLICABLE:
+                del source.transitions[transition]
+                del source.output_fun[transition]

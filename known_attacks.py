@@ -10,7 +10,8 @@ from models import compute_all_models
 from my_types import KnowledgeBase, HandleNode, KeyNode, Security
 from pkcs11_sul import PKCS11_SUL
 from pkcs11_sul_alphabet import extract_alphabet_from_model
-from visualization import convert_knowledege_base_to_dot, convert_model_to_dot_compact
+from visualization import convert_knowledege_base_to_dot, convert_model_to_dot_compact, \
+    remove_not_applicable_transitions
 
 
 def clulow(so,
@@ -89,6 +90,7 @@ def clulow(so,
             learned_pkcs11: MealyMachine = run_Lstar(alphabet, sul, eq_oracle=eq_oracle, automaton_type="mealy",
                                                      cache_and_non_det_check=True, print_level=2)
 
+            remove_not_applicable_transitions(learned_pkcs11)
             save_automaton_to_file(learned_pkcs11,
                                    path=f"clulow_automaton_{i}",
                                    file_type="pdf",
@@ -191,6 +193,7 @@ def fls_2(so,
             learned_pkcs11: MealyMachine = run_Lstar(alphabet, sul, eq_oracle=eq_oracle, automaton_type="mealy",
                                                      cache_and_non_det_check=True, print_level=2)
 
+            remove_not_applicable_transitions(learned_pkcs11)
             save_automaton_to_file(learned_pkcs11,
 
                                    path=f"fls2_automaton_{i}",
@@ -286,6 +289,7 @@ def dks_experiment_2(so,
             learned_pkcs11: MealyMachine = run_Lstar(alphabet, sul, eq_oracle=eq_oracle, automaton_type="mealy",
                                                      cache_and_non_det_check=True, print_level=2)
 
+            remove_not_applicable_transitions(learned_pkcs11)
             save_automaton_to_file(learned_pkcs11,
                                    path=f"dks2_automaton_{i}",
                                    file_type="pdf",
@@ -377,6 +381,7 @@ def dks_experiment_3(so,
             learned_pkcs11: MealyMachine = run_Lstar(alphabet, sul, eq_oracle=eq_oracle, automaton_type="mealy",
                                                      cache_and_non_det_check=True, print_level=2)
 
+            remove_not_applicable_transitions(learned_pkcs11)
             save_automaton_to_file(learned_pkcs11,
                                    path=f"dks3_automaton_{i}",
                                    file_type="pdf",
