@@ -1,0 +1,48 @@
+[commands]
+deduce_decrypt = []
+deduce_encrypt = []
+encrypt = []
+unwrap = []
+
+[[commands.decrypt]]
+decrypted_key = 6
+handle_of_decryption_key = 1
+key_to_be_decrypted = 4
+
+[[commands.wrap]]
+handle_of_key_to_be_wrapped = 0
+handle_of_wrapping_key = 1
+wrapped_key = 4
+
+[nodes]
+aenc = []
+handles = []
+private_key = []
+public_key = []
+
+[[nodes.secret_key]]
+index = 6
+pointed_by = [0]
+
+[[nodes.senc]]
+index = 4
+
+[setattribute]
+encrypt = []
+unwrap = []
+
+[[setattribute.decrypt]]
+handle = 1
+
+[[setattribute.wrap]]
+handle = 1
+
+[unsetattribute]
+encrypt = []
+unwrap = []
+
+[[unsetattribute.decrypt]]
+handle = 1
+
+[[unsetattribute.wrap]]
+handle = 1
