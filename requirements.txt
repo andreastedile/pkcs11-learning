@@ -3,3 +3,4 @@ networkx~=3.4.2
 aalpy~=1.4.2
 pycryptodome~=3.21.0
 python-pkcs11~=0.7.0
+pykcs11~=1.5.17
