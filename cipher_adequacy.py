@@ -1,22 +1,27 @@
 # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
 
-# encrypted by pkcs11 b'\x96\xbc{A\x87\xae\xde\xcf\x9fk\xee"\xc6\xee\xab\x9e\x17\xdc\xa1\xec'
-# encrypted by cipher b'\x96\xbc{A\x87\xae\xde\xcf\x9fk\xee"\xc6\xee\xab\x9e'
-# decrypted by pkcs11 b'hello, world!\x03\x03\x03'
-# decrypted by decipher b'hello, world!\x03\x03\x03'
+# encrypted by pkcs11 b'!\xbfQ\xc1\xc5\x03G\x15\xaex\x9c\xe7\xd2\x97\x9a\xfa\xde'
+# encrypted by cipher b'!\xbfQ\xc1\xc5\x03G\x15\xaex\x9c\xe7\xd2'
+# encrypted by pkcs11 then decrypted by pkcs11	 b'hello, world!'
+# encrypted by cipher then decrypted by decipher	 b'hello, world!'
+# encrypted by cipher then decrypted by pkcs11	 PyKCS11.PyKCS11Error: CKR_ENCRYPTED_DATA_INVALID (0x00000040)
+# encrypted by pkcs11 then decrypted by decipher	 b'hello, world!l\x98n\xd8'
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 from PyKCS11 import PyKCS11Lib, AES_GCM_Mechanism
 from PyKCS11.LowLevel import CKA_VALUE_LEN, CKA_VALUE
 
-IV = bytes([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-            0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f])
+IV = bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
 AAD = bytes([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07])
 AES_GCM_MECHANISM = AES_GCM_Mechanism(IV, AAD, 32)
 
 CLEAR_TEXT = b"hello, world!"
 PADDED = pad(CLEAR_TEXT, 16)
+
+
+# PADDED = CLEAR_TEXT
 
 
 def main():
@@ -41,13 +46,25 @@ def main():
 
     #
 
-    decrypted_by_pkcs11 = session.decrypt(handle_of_secret_key, encrypted_by_pkcs11, mecha=AES_GCM_MECHANISM)
-    print("decrypted by pkcs11", bytes(decrypted_by_pkcs11))
+    encrypted_by_pkcs11_then_decrypted_by_pkcs11 = session.decrypt(handle_of_secret_key, encrypted_by_pkcs11,
+                                                                   mecha=AES_GCM_MECHANISM)
+    print("encrypted by pkcs11 then decrypted by pkcs11\t", bytes(encrypted_by_pkcs11_then_decrypted_by_pkcs11))
 
     decipher = AES.new(bytes(secret_key), AES.MODE_GCM, nonce=IV)
     decipher = decipher.update(AAD)
-    decrypted_by_decipher = decipher.decrypt(encrypted_by_cipher)
-    print("decrypted by decipher", decrypted_by_decipher)
+    encrypted_by_cipher_then_decrypted_by_decipher = decipher.decrypt(encrypted_by_cipher)
+    print("encrypted by cipher then decrypted by decipher\t", encrypted_by_cipher_then_decrypted_by_decipher)
+
+    # encrypted_by_cipher_then_decrypted_by_pkcs11 = session.decrypt(handle_of_secret_key, encrypted_by_cipher,
+    #                                                                mecha=AES_GCM_MECHANISM)
+    # print("encrypted by cipher then decrypted by pkcs11\t", bytes(encrypted_by_cipher_then_decrypted_by_pkcs11))
+    print("encrypted by cipher then decrypted by pkcs11\t",
+          "PyKCS11.PyKCS11Error: CKR_ENCRYPTED_DATA_INVALID (0x00000040)")
+
+    decipher = AES.new(bytes(secret_key), AES.MODE_GCM, nonce=IV)
+    decipher = decipher.update(AAD)
+    encrypted_by_pkcs11_then_decrypted_by_cipher = decipher.decrypt(bytes(encrypted_by_pkcs11))
+    print("encrypted by pkcs11 then decrypted by decipher\t", encrypted_by_pkcs11_then_decrypted_by_cipher)
 
     session.closeSession()
 
