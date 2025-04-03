@@ -2,22 +2,9 @@ from __future__ import annotations
 
 import tomllib
 from collections import defaultdict
+from pathlib import Path
 
-from abstract_pkcs11_commands import \
-    AbstractPKCS11Wrap, \
-    AbstractPKCS11Unwrap, \
-    AbstractPKCS11Encrypt, \
-    AbstractPKCS11Decrypt, \
-    AbstractDeduceEncrypt, \
-    AbstractDeduceDecrypt, \
-    AbstractPKCS11SetWrap, \
-    AbstractPKCS11SetUnwrap, \
-    AbstractPKCS11SetEncrypt, \
-    AbstractPKCS11SetDecrypt, \
-    AbstractPKCS11UnsetWrap, \
-    AbstractPKCS11UnsetUnwrap, \
-    AbstractPKCS11UnsetEncrypt, \
-    AbstractPKCS11UnsetDecrypt
+from abstract_pkcs11_commands import *
 
 
 class Configuration:
@@ -31,13 +18,27 @@ class Configuration:
         self.aenc_list: list[int] = []
         self.senc_list: list[int] = []
         self.pointed_by: dict[int, list[int]] = defaultdict(list)
-        #
-        self.wrap_commands: list[AbstractPKCS11Wrap] = []
-        self.unwrap_commands: list[AbstractPKCS11Unwrap] = []
-        self.encrypt_commands: list[AbstractPKCS11Encrypt] = []
-        self.decrypt_commands: list[AbstractPKCS11Decrypt] = []
-        self.deduce_encrypt_commands: list[AbstractDeduceEncrypt] = []
-        self.deduce_decrypt_commands: list[AbstractDeduceDecrypt] = []
+        # wrap
+        self.wrap_sym_sym_commands: list[AbstractPKCS11WrapSymSym] = []
+        self.wrap_sym_asym_commands: list[AbstractPKCS11WrapSymAsym] = []
+        self.wrap_asym_sym_commands: list[AbstractPKCS11WrapAsymSym] = []
+        # unwrap
+        self.unwrap_sym_sym_commands: list[AbstractPKCS11UnwrapSymSym] = []
+        self.unwrap_sym_asym_commands: list[AbstractPKCS11UnwrapSymAsym] = []
+        self.unwrap_asym_sym_commands: list[AbstractPKCS11UnwrapAsymSym] = []
+        # encrypt
+        self.encrypt_sym_sym_commands: list[AbstractPKCS11EncryptSymSym] = []
+        self.encrypt_sym_asym_commands: list[AbstractPKCS11EncryptSymAsym] = []
+        # decrypt
+        self.decrypt_sym_sym_commands: list[AbstractPKCS11DecryptSymSym] = []
+        self.decrypt_sym_asym_commands: list[AbstractPKCS11DecryptSymAsym] = []
+        # deduce encrypt
+        self.deduce_encrypt_sym_sym_commands: list[AbstractDeduceEncryptSymSym] = []
+        self.deduce_encrypt_sym_asym_commands: list[AbstractDeduceEncryptSymAsym] = []
+        # deduce decrypt
+        self.deduce_decrypt_sym_sym_commands: list[AbstractDeduceDecryptSymSym] = []
+        self.deduce_decrypt_sym_asym_commands: list[AbstractDeduceDecryptSymAsym] = []
+        self.deduce_decrypt_asym_sym_commands: list[AbstractDeduceDecryptAsymSym] = []
         #
         self.setwrap_commands: list[AbstractPKCS11SetWrap] = []
         self.setunwrap_commands: list[AbstractPKCS11SetUnwrap] = []
@@ -50,7 +51,7 @@ class Configuration:
         self.unsetdecrypt_commands: list[AbstractPKCS11UnsetDecrypt] = []
 
     @staticmethod
-    def load_from_file(file: str) -> Configuration:
+    def load_from_file(file: Path) -> Configuration:
         """
         :param file: a .toml file, such as "wrap_and_decrypt.toml" 
         """
@@ -106,48 +107,116 @@ class Configuration:
 
             commands = data["commands"]
 
-            wrap_commands = commands.get('wrap', [])
-            unwrap_commands = commands.get('unwrap', [])
-            encrypt_commands = commands.get('encrypt', [])
-            decrypt_commands = commands.get('decrypt', [])
-            deduce_encrypt_commands = commands.get('deduce_encrypt', [])
-            deduce_decrypt_commands = commands.get('deduce_decrypt', [])
+            wrap_sym_sym_commands = commands.get('wrap_sym_sym', [])
+            wrap_sym_asym_commands = commands.get('wrap_sym_asym', [])
+            wrap_asym_sym_commands = commands.get('wrap_asym_sym', [])
 
-            for command in wrap_commands:
-                command = AbstractPKCS11Wrap(command["handle_of_wrapping_key"],
-                                             command["handle_of_key_to_be_wrapped"],
-                                             command["wrapped_key"])
-                config.wrap_commands.append(command)
+            unwrap_sym_sym_commands = commands.get('unwrap_sym_sym', [])
+            unwrap_sym_asym_commands = commands.get('unwrap_sym_asym', [])
+            unwrap_asym_sym_commands = commands.get('unwrap_asym_sym', [])
 
-            for command in unwrap_commands:
-                command = AbstractPKCS11Unwrap(command["handle_of_unwrapping_key"],
-                                               command["key_to_be_unwrapped"],
-                                               command["handle_of_recovered_key"])
-                config.unwrap_commands.append(command)
+            encrypt_sym_sym_commands = commands.get('encrypt_sym_sym', [])
+            encrypt_sym_asym_commands = commands.get('encrypt_sym_asym', [])
 
-            for command in encrypt_commands:
-                command = AbstractPKCS11Encrypt(command["handle_of_encryption_key"],
-                                                command["key_to_be_encrypted"],
-                                                command["encrypted_key"])
-                config.encrypt_commands.append(command)
+            decrypt_sym_sym_commands = commands.get('decrypt_sym_sym', [])
+            decrypt_sym_asym_commands = commands.get('decrypt_sym_asym', [])
 
-            for command in decrypt_commands:
-                command = AbstractPKCS11Decrypt(command["handle_of_decryption_key"],
-                                                command["key_to_be_decrypted"],
-                                                command["decrypted_key"])
-                config.decrypt_commands.append(command)
+            deduce_encrypt_sym_sym_commands = commands.get('deduce_encrypt_sym_sym', [])
+            deduce_encrypt_sym_asym_commands = commands.get('deduce_encrypt_sym_asym', [])
 
-            for command in deduce_encrypt_commands:
-                command = AbstractDeduceEncrypt(command["encryption_key"],
-                                                command["key_to_be_encrypted"],
-                                                command["encrypted_key"])
-                config.deduce_encrypt_commands.append(command)
+            deduce_decrypt_sym_sym_commands = commands.get('deduce_decrypt_sym_sym', [])
+            deduce_sym_asym_decrypt_commands = commands.get('deduce_decrypt_sym_asym', [])
+            deduce_decrypt_asym_sym_commands = commands.get('deduce_decrypt_asym_sym', [])
 
-            for command in deduce_decrypt_commands:
-                command = AbstractDeduceDecrypt(command["decryption_key"],
-                                                command["key_to_be_decrypted"],
-                                                command["decrypted_key"])
-                config.deduce_decrypt_commands.append(command)
+            for command in wrap_sym_sym_commands:
+                command = AbstractPKCS11WrapSymSym(command["handle_of_wrapping_key"],
+                                                   command["handle_of_key_to_be_wrapped"],
+                                                   command["wrapped_key"])
+                config.wrap_sym_sym_commands.append(command)
+
+            for command in wrap_sym_asym_commands:
+                command = AbstractPKCS11WrapSymAsym(command["handle_of_wrapping_key"],
+                                                    command["handle_of_key_to_be_wrapped"],
+                                                    command["wrapped_key"])
+                config.wrap_sym_asym_commands.append(command)
+
+            for command in wrap_asym_sym_commands:
+                command = AbstractPKCS11WrapAsymSym(command["handle_of_wrapping_key"],
+                                                    command["handle_of_key_to_be_wrapped"],
+                                                    command["wrapped_key"])
+                config.wrap_asym_sym_commands.append(command)
+
+            for command in unwrap_sym_sym_commands:
+                command = AbstractPKCS11UnwrapSymSym(command["handle_of_unwrapping_key"],
+                                                     command["key_to_be_unwrapped"],
+                                                     command["handle_of_recovered_key"])
+                config.unwrap_sym_sym_commands.append(command)
+
+            for command in unwrap_sym_asym_commands:
+                command = AbstractPKCS11UnwrapSymAsym(command["handle_of_unwrapping_key"],
+                                                      command["key_to_be_unwrapped"],
+                                                      command["handle_of_recovered_key"])
+                config.unwrap_sym_asym_commands.append(command)
+
+            for command in unwrap_asym_sym_commands:
+                command = AbstractPKCS11UnwrapAsymSym(command["handle_of_unwrapping_key"],
+                                                      command["key_to_be_unwrapped"],
+                                                      command["handle_of_recovered_key"])
+                config.unwrap_asym_sym_commands.append(command)
+
+            for command in encrypt_sym_sym_commands:
+                command = AbstractPKCS11EncryptSymSym(command["handle_of_encryption_key"],
+                                                      command["key_to_be_encrypted"],
+                                                      command["encrypted_key"])
+                config.encrypt_sym_sym_commands.append(command)
+
+            for command in encrypt_sym_asym_commands:
+                command = AbstractPKCS11EncryptSymAsym(command["handle_of_encryption_key"],
+                                                       command["key_to_be_encrypted"],
+                                                       command["encrypted_key"])
+                config.encrypt_sym_asym_commands.append(command)
+
+            for command in decrypt_sym_sym_commands:
+                command = AbstractPKCS11DecryptSymSym(command["handle_of_decryption_key"],
+                                                      command["key_to_be_decrypted"],
+                                                      command["decrypted_key"])
+                config.decrypt_sym_sym_commands.append(command)
+
+            for command in decrypt_sym_asym_commands:
+                command = AbstractPKCS11DecryptSymAsym(command["handle_of_decryption_key"],
+                                                       command["key_to_be_decrypted"],
+                                                       command["decrypted_key"])
+                config.decrypt_sym_asym_commands.append(command)
+
+            for command in deduce_encrypt_sym_sym_commands:
+                command = AbstractDeduceEncryptSymSym(command["encryption_key"],
+                                                      command["key_to_be_encrypted"],
+                                                      command["encrypted_key"])
+                config.deduce_encrypt_sym_sym_commands.append(command)
+
+            for command in deduce_encrypt_sym_asym_commands:
+                command = AbstractDeduceEncryptSymAsym(command["encryption_key"],
+                                                       command["key_to_be_encrypted"],
+                                                       command["encrypted_key"])
+                config.deduce_encrypt_sym_asym_commands.append(command)
+
+            for command in deduce_decrypt_sym_sym_commands:
+                command = AbstractDeduceDecryptSymSym(command["decryption_key"],
+                                                      command["key_to_be_decrypted"],
+                                                      command["decrypted_key"])
+                config.deduce_decrypt_sym_sym_commands.append(command)
+
+            for command in deduce_sym_asym_decrypt_commands:
+                command = AbstractDeduceDecryptSymAsym(command["decryption_key"],
+                                                       command["key_to_be_decrypted"],
+                                                       command["decrypted_key"])
+                config.deduce_decrypt_sym_asym_commands.append(command)
+
+            for command in deduce_decrypt_asym_sym_commands:
+                command = AbstractDeduceDecryptAsymSym(command["decryption_key"],
+                                                       command["key_to_be_decrypted"],
+                                                       command["decrypted_key"])
+                config.deduce_decrypt_asym_sym_commands.append(command)
 
             setattribute = data["setattribute"]
 
@@ -196,8 +265,3 @@ class Configuration:
                 config.unsetdecrypt_commands.append(command)
 
         return config
-
-
-if __name__ == "__main__":
-    config = Configuration.load_from_file("wrap_and_decrypt.toml")
-    pass

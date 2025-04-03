@@ -1,6 +1,6 @@
 from aalpy import MealyState, Automaton
 
-from python_pkcs11_commands import NOT_APPLICABLE
+from abstract_pkcs11_commands import NOT_APPLICABLE
 
 
 def remove_not_applicable_transitions(mealy: Automaton) -> Automaton:

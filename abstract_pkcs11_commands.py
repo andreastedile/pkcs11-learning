@@ -1,3 +1,30 @@
+__all__ = [
+    "NOT_APPLICABLE", "OP_OK", "OP_FAIL",
+
+    "AbstractPKCS11Wrap",
+    "AbstractPKCS11WrapSymSym", "AbstractPKCS11WrapSymAsym", "AbstractPKCS11WrapAsymSym",
+
+    "AbstractPKCS11Unwrap",
+    "AbstractPKCS11UnwrapSymSym", "AbstractPKCS11UnwrapAsymSym", "AbstractPKCS11UnwrapSymAsym",
+
+    "AbstractPKCS11Encrypt",
+    "AbstractPKCS11EncryptSymSym", "AbstractPKCS11EncryptSymAsym",
+
+    "AbstractPKCS11Decrypt",
+    "AbstractPKCS11DecryptSymSym", "AbstractPKCS11DecryptSymAsym",
+
+    "AbstractDeduceEncrypt",
+    "AbstractDeduceEncryptSymSym", "AbstractDeduceEncryptSymAsym",
+
+    "AbstractDeduceDecrypt",
+    "AbstractDeduceDecryptSymSym", "AbstractDeduceDecryptAsymSym", "AbstractDeduceDecryptSymAsym",
+
+    "AbstractPKCS11SetWrap", "AbstractPKCS11UnsetWrap",
+    "AbstractPKCS11SetUnwrap", "AbstractPKCS11UnsetUnwrap",
+    "AbstractPKCS11SetEncrypt", "AbstractPKCS11UnsetEncrypt",
+    "AbstractPKCS11SetDecrypt", "AbstractPKCS11UnsetDecrypt"
+]
+
 from dataclasses import dataclass
 
 NOT_APPLICABLE = "not-applicable"
@@ -5,7 +32,8 @@ OP_FAIL = "fail"
 OP_OK = "ok"
 
 
-# https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html#_Toc111203351
+# https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.1/os/pkcs11-spec-v3.1-os.html
+
 
 @dataclass
 class AbstractPKCS11Wrap:
@@ -25,6 +53,30 @@ class AbstractPKCS11Wrap:
 
 
 @dataclass
+class AbstractPKCS11WrapSymSym(AbstractPKCS11Wrap):
+    """
+    Wrap a secret key with a secret key. 
+    """
+    pass
+
+
+@dataclass
+class AbstractPKCS11WrapSymAsym(AbstractPKCS11Wrap):
+    """
+    Wrap a secret key with a public key that supports encryption and decryption.
+    """
+    pass
+
+
+@dataclass
+class AbstractPKCS11WrapAsymSym(AbstractPKCS11Wrap):
+    """
+    Wrap a private key with a secret key.
+    """
+    pass
+
+
+@dataclass
 class AbstractPKCS11Unwrap:
     """
     see:
@@ -39,6 +91,21 @@ class AbstractPKCS11Unwrap:
 
     def __str__(self) -> str:
         return f"unwrap({self.handle_of_unwrapping_key},{self.key_to_be_unwrapped})={self.handle_of_recovered_key}"
+
+
+@dataclass
+class AbstractPKCS11UnwrapSymSym(AbstractPKCS11Unwrap):
+    pass
+
+
+@dataclass
+class AbstractPKCS11UnwrapSymAsym(AbstractPKCS11Unwrap):
+    pass
+
+
+@dataclass
+class AbstractPKCS11UnwrapAsymSym(AbstractPKCS11Unwrap):
+    pass
 
 
 @dataclass
@@ -60,6 +127,16 @@ class AbstractPKCS11Encrypt:
 
 
 @dataclass
+class AbstractPKCS11EncryptSymSym(AbstractPKCS11Encrypt):
+    pass
+
+
+@dataclass
+class AbstractPKCS11EncryptSymAsym(AbstractPKCS11Encrypt):
+    pass
+
+
+@dataclass
 class AbstractPKCS11Decrypt:
     """
     see:
@@ -78,6 +155,16 @@ class AbstractPKCS11Decrypt:
 
 
 @dataclass
+class AbstractPKCS11DecryptSymSym(AbstractPKCS11Decrypt):
+    pass
+
+
+@dataclass
+class AbstractPKCS11DecryptSymAsym(AbstractPKCS11Decrypt):
+    pass
+
+
+@dataclass
 class AbstractDeduceEncrypt:
     encryption_key: int
     key_to_be_encrypted: int
@@ -87,7 +174,17 @@ class AbstractDeduceEncrypt:
         return str(self)
 
     def __str__(self) -> str:
-        return f"i-Encrypt({self.encryption_key},{self.key_to_be_encrypted})={self.encrypted_key}"
+        return f"deduceEncrypt({self.encryption_key},{self.key_to_be_encrypted})={self.encrypted_key}"
+
+
+@dataclass
+class AbstractDeduceEncryptSymSym(AbstractDeduceEncrypt):
+    pass
+
+
+@dataclass
+class AbstractDeduceEncryptSymAsym(AbstractDeduceEncrypt):
+    pass
 
 
 @dataclass
@@ -100,10 +197,22 @@ class AbstractDeduceDecrypt:
         return str(self)
 
     def __str__(self) -> str:
-        return f"i-Decrypt({self.decryption_key},{self.key_to_be_decrypted})={self.decrypted_key}"
+        return f"deduceDecrypt({self.decryption_key},{self.key_to_be_decrypted})={self.decrypted_key}"
 
 
-AbstractPKCS11Functions = AbstractPKCS11Wrap | AbstractPKCS11Unwrap | AbstractPKCS11Encrypt | AbstractPKCS11Decrypt | AbstractDeduceDecrypt
+@dataclass
+class AbstractDeduceDecryptSymSym(AbstractDeduceDecrypt):
+    pass
+
+
+@dataclass
+class AbstractDeduceDecryptAsymSym(AbstractDeduceDecrypt):
+    pass
+
+
+@dataclass
+class AbstractDeduceDecryptSymAsym(AbstractDeduceDecrypt):
+    pass
 
 
 @dataclass
