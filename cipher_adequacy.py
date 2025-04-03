@@ -1,11 +1,11 @@
 # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
 
-# encrypted by pkcs11 b'!\xbfQ\xc1\xc5\x03G\x15\xaex\x9c\xe7\xd2\x97\x9a\xfa\xde'
-# encrypted by cipher b'!\xbfQ\xc1\xc5\x03G\x15\xaex\x9c\xe7\xd2'
-# encrypted by pkcs11 then decrypted by pkcs11	 b'hello, world!'
-# encrypted by cipher then decrypted by decipher	 b'hello, world!'
-# encrypted by cipher then decrypted by pkcs11	 PyKCS11.PyKCS11Error: CKR_ENCRYPTED_DATA_INVALID (0x00000040)
-# encrypted by pkcs11 then decrypted by decipher	 b'hello, world!l\x98n\xd8'
+# encrypted by pkcs11		b'!\xabgU\xe8\xf0\xbe\xbf\xfe\x9f\x1b\x0fy\x80\x12\xc6\x13\x94\xdc\xa7'
+# encrypted by cipher, tag	b'!\xabgU\xe8\xf0\xbe\xbf\xfe\x9f\x1b\x0fy\x80\x12\xc6' b'\x13\x94\xdc\xa7'
+# encrypted by pkcs11 then decrypted by pkcs11	 b'hello, world!\x03\x03\x03'
+# encrypted by cipher then decrypted by decipher b'hello, world!\x03\x03\x03'
+# encrypted by cipher then decrypted by pkcs11	 b'hello, world!\x03\x03\x03'
+# encrypted by pkcs11 then decrypted by decipher b'hello, world!\x03\x03\x03'
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
@@ -15,7 +15,8 @@ from PyKCS11.LowLevel import CKA_VALUE_LEN, CKA_VALUE
 IV = bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
 AAD = bytes([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07])
-AES_GCM_MECHANISM = AES_GCM_Mechanism(IV, AAD, 32)
+TAG_BYTES = 4
+AES_GCM_MECHANISM = AES_GCM_Mechanism(IV, AAD, TAG_BYTES * 8)
 
 CLEAR_TEXT = b"hello, world!"
 PADDED = pad(CLEAR_TEXT, 16)
@@ -37,12 +38,12 @@ def main():
     #
 
     encrypted_by_pkcs11 = session.encrypt(handle_of_secret_key, PADDED, mecha=AES_GCM_MECHANISM)
-    print("encrypted by pkcs11", bytes(encrypted_by_pkcs11))
+    print("encrypted by pkcs11\t\t\t", bytes(encrypted_by_pkcs11))
 
-    cipher = AES.new(bytes(secret_key), AES.MODE_GCM, nonce=IV)
+    cipher = AES.new(bytes(secret_key), AES.MODE_GCM, nonce=IV, mac_len=TAG_BYTES)
     cipher = cipher.update(AAD)
-    encrypted_by_cipher = cipher.encrypt(PADDED)
-    print("encrypted by cipher", encrypted_by_cipher)
+    encrypted_by_cipher, tag = cipher.encrypt_and_digest(PADDED)
+    print("encrypted by cipher, tag\t", encrypted_by_cipher, tag)
 
     #
 
@@ -50,20 +51,19 @@ def main():
                                                                    mecha=AES_GCM_MECHANISM)
     print("encrypted by pkcs11 then decrypted by pkcs11\t", bytes(encrypted_by_pkcs11_then_decrypted_by_pkcs11))
 
-    decipher = AES.new(bytes(secret_key), AES.MODE_GCM, nonce=IV)
+    decipher = AES.new(bytes(secret_key), AES.MODE_GCM, nonce=IV, mac_len=TAG_BYTES)
     decipher = decipher.update(AAD)
-    encrypted_by_cipher_then_decrypted_by_decipher = decipher.decrypt(encrypted_by_cipher)
+    encrypted_by_cipher_then_decrypted_by_decipher = decipher.decrypt_and_verify(encrypted_by_cipher, tag)
     print("encrypted by cipher then decrypted by decipher\t", encrypted_by_cipher_then_decrypted_by_decipher)
 
-    # encrypted_by_cipher_then_decrypted_by_pkcs11 = session.decrypt(handle_of_secret_key, encrypted_by_cipher,
-    #                                                                mecha=AES_GCM_MECHANISM)
-    # print("encrypted by cipher then decrypted by pkcs11\t", bytes(encrypted_by_cipher_then_decrypted_by_pkcs11))
-    print("encrypted by cipher then decrypted by pkcs11\t",
-          "PyKCS11.PyKCS11Error: CKR_ENCRYPTED_DATA_INVALID (0x00000040)")
+    encrypted_by_cipher_then_decrypted_by_pkcs11 = session.decrypt(handle_of_secret_key, encrypted_by_cipher + tag,
+                                                                   mecha=AES_GCM_MECHANISM)
+    print("encrypted by cipher then decrypted by pkcs11\t", bytes(encrypted_by_cipher_then_decrypted_by_pkcs11))
 
-    decipher = AES.new(bytes(secret_key), AES.MODE_GCM, nonce=IV)
+    decipher = AES.new(bytes(secret_key), AES.MODE_GCM, nonce=IV, mac_len=TAG_BYTES)
     decipher = decipher.update(AAD)
-    encrypted_by_pkcs11_then_decrypted_by_cipher = decipher.decrypt(bytes(encrypted_by_pkcs11))
+    encrypted_by_pkcs11_then_decrypted_by_cipher = decipher.decrypt_and_verify(bytes(encrypted_by_pkcs11[:-TAG_BYTES]),
+                                                                               bytes(encrypted_by_pkcs11[-TAG_BYTES:]))
     print("encrypted by pkcs11 then decrypted by decipher\t", encrypted_by_pkcs11_then_decrypted_by_cipher)
 
     session.closeSession()
