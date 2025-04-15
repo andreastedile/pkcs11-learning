@@ -33,3 +33,19 @@ python learn_known_attacks.py /usr/local/lib/opencryptoki/libopencryptoki.so pri
 ```shell
 ./cleanup.sh
 ```
+
+## Compare HSM models
+
+First, convert dot files to the aut format: https://mcrl2.org/web/user_manual/tools/lts.html.
+For example:
+
+```shell
+python3 lts.py model.dot
+``` 
+
+Then:
+
+```shell
+ltscompare --counter-example --preorder=trace-ac model2.aut model1.aut
+tracepp --format=plain counter_example_trace_preorder.trc
+```
