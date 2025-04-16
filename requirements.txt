@@ -3,3 +3,5 @@ networkx~=3.4.2
 aalpy~=1.5.1
 pycryptodome~=3.21.0
 pykcs11~=1.5.17
+pygraphviz
+automata-lib
