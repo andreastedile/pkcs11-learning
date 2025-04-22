@@ -15,15 +15,17 @@ __all__ = [
 import abc
 import sys
 
-from Crypto.Cipher import AES, PKCS1_v1_5
+from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
-from PyKCS11 import Session, PyKCS11Error, CK_TRUE, CK_FALSE, MechanismRSAPKCS1
+from PyKCS11 import Session, PyKCS11Error, CK_TRUE, CK_FALSE, RSAOAEPMechanism
 from PyKCS11.LowLevel import \
     CK_OBJECT_HANDLE, \
     CKA_CLASS, CKA_KEY_TYPE, CKA_WRAP, CKA_UNWRAP, CKA_ENCRYPT, CKA_DECRYPT, \
     CKO_PRIVATE_KEY, CKO_SECRET_KEY, \
-    CKK_RSA, CKK_AES
+    CKK_RSA, CKK_AES, \
+    CKM_SHA_1, \
+    CKG_MGF1_SHA1
 
 from abstract_pkcs11_commands import *
 from my_types import AESGCMEncryptionWithDigest, AES_GCM_MECHANISM, TAG_BYTES, AAD, IV
@@ -97,8 +99,10 @@ class PyKCS11WrapSymAsym(PyKCS11Command):
             return NOT_APPLICABLE
         assert isinstance(handle_of_key_to_be_wrapped, CK_OBJECT_HANDLE)
 
+        mechanism = RSAOAEPMechanism(CKM_SHA_1, CKG_MGF1_SHA1)
+
         try:
-            wrapped_key = session.wrapKey(handle_of_wrapping_key, handle_of_key_to_be_wrapped, MechanismRSAPKCS1)
+            wrapped_key = session.wrapKey(handle_of_wrapping_key, handle_of_key_to_be_wrapped, mechanism)
 
             if self.command.wrapped_key in ks.aenc_dict:  # terms can be derived in multiple ways
                 assert bytes(wrapped_key) == ks.aenc_dict[self.command.wrapped_key]
@@ -215,11 +219,13 @@ class PyKCS11UnwrapSymAsym(PyKCS11Command):
             return NOT_APPLICABLE
         assert isinstance(key_to_be_unwrapped, bytes)
 
+        mechanism = RSAOAEPMechanism(CKM_SHA_1, CKG_MGF1_SHA1)
+
         try:
             handle_of_recovered_key = session.unwrapKey(handle_of_unwrapping_key,
                                                         key_to_be_unwrapped,
                                                         PyKCS11UnwrapSymAsym.UNWRAP_SYM_ASYM_TEMPLATE,
-                                                        MechanismRSAPKCS1)
+                                                        mechanism)
 
             ks.handle_dict[self.command.handle_of_recovered_key] = handle_of_recovered_key
         except PyKCS11Error as e:
@@ -328,8 +334,10 @@ class PyKCS11EncryptSymAsym(PyKCS11Command):
             return NOT_APPLICABLE
         assert isinstance(key_to_be_encrypted, bytes)
 
+        mechanism = RSAOAEPMechanism(CKM_SHA_1, CKG_MGF1_SHA1)
+
         try:
-            encrypted_key = session.encrypt(handle_of_encryption_key, key_to_be_encrypted, MechanismRSAPKCS1)
+            encrypted_key = session.encrypt(handle_of_encryption_key, key_to_be_encrypted, mechanism)
 
             if self.command.encrypted_key in ks.senc_dict:  # terms can be derived in multiple ways
                 # no, PKCS#1 v1.5 padding introduces randomness!
@@ -401,8 +409,10 @@ class PyKCS11DecryptSymAsym(PyKCS11Command):
             return NOT_APPLICABLE
         assert isinstance(key_to_be_decrypted, bytes)
 
+        mechanism = RSAOAEPMechanism(CKM_SHA_1, CKG_MGF1_SHA1)
+
         try:
-            decrypted_key = session.decrypt(handle_of_decryption_key, key_to_be_decrypted, MechanismRSAPKCS1)
+            decrypted_key = session.decrypt(handle_of_decryption_key, key_to_be_decrypted, mechanism)
 
             if self.command.decrypted_key in ks.secret_key_dict:  # terms can be derived in multiple ways
                 assert bytes(decrypted_key) == ks.secret_key_dict[self.command.decrypted_key]
@@ -469,7 +479,7 @@ class PyKCS11DeduceEncryptSymAsym(PyKCS11Command):
             return NOT_APPLICABLE
         assert isinstance(key_to_be_encrypted, bytes)
 
-        cipher = PKCS1_v1_5.new(encryption_key)
+        cipher = PKCS1_OAEP.new(encryption_key)
 
         encrypted_key = cipher.encrypt(key_to_be_encrypted)
 
@@ -558,10 +568,9 @@ class PyKCS11DeduceDecryptSymAsym(PyKCS11Command):
             return NOT_APPLICABLE
         assert isinstance(key_to_be_decrypted, bytes)
 
-        decipher = PKCS1_v1_5.new(decryption_key)
+        decipher = PKCS1_OAEP.new(decryption_key)
 
-        decrypted_key = decipher.decrypt(key_to_be_decrypted, None, 0)
-        assert decrypted_key is not None
+        decrypted_key = decipher.decrypt(key_to_be_decrypted)
 
         if self.command.decrypted_key in ks.secret_key_dict:  # terms can be derived in multiple ways
             assert decrypted_key == ks.secret_key_dict[self.command.decrypted_key]
@@ -644,10 +653,8 @@ class PyKCS11DeduceDecryptAsymSym(PyKCS11Command):
                     # if CKA_ENCRYPT was not set, then we unset it.
                     session.setAttributeValue(encryption_key, [(CKA_ENCRYPT, CK_FALSE)])
 
-                decipher = PKCS1_v1_5.new(private_key)
-                encrypted_by_pkcs11_then_decrypted_by_cipher = decipher.decrypt(bytes(encrypted_by_pkcs11), None,
-                                                                                len(PyKCS11DeduceDecryptAsymSym.CLEAR_TEXT))
-                assert encrypted_by_pkcs11_then_decrypted_by_cipher is not None
+                decipher = PKCS1_OAEP.new(private_key)
+                encrypted_by_pkcs11_then_decrypted_by_cipher = decipher.decrypt(bytes(encrypted_by_pkcs11))
 
                 assert PyKCS11DeduceDecryptAsymSym.CLEAR_TEXT == encrypted_by_pkcs11_then_decrypted_by_cipher.decode()
             except PyKCS11Error as e:
