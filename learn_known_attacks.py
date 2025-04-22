@@ -44,7 +44,7 @@ def learn_attack(session: Session,
         lsharp_automaton = run_Lsharp(alphabet, sul, eq_oracle, "mealy")
         assert isinstance(lsharp_automaton, MealyMachine)
 
-        save_automaton_to_file(lstar_automaton, file.with_name(file.stem + "_Lsharp"))
+        save_automaton_to_file(lsharp_automaton, file.with_name(file.stem + "_Lsharp"))
         lsharp_automaton_without_unapplicable_transitions = remove_not_applicable_transitions(lsharp_automaton)
         save_automaton_to_file(lsharp_automaton_without_unapplicable_transitions,
                                file.with_name(file.stem + "_Lsharp"), "svg")
