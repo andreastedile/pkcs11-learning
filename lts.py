@@ -53,5 +53,6 @@ if __name__ == "__main__":
     dot_file_path = args.dot_file_path
 
     dot = graph_from_dot_file(dot_file_path)
+    assert dot is not None
     dot = dot[0]
     export_dot_as_aut(dot, Path(dot_file_path))
