@@ -1,3 +1,5 @@
+import re
+
 from automata.fa.dfa import DFA
 from automata.fa.nfa import NFA
 from pydot import Dot, graph_from_dot_file, Node, Edge
@@ -41,13 +43,12 @@ def convert_to_nfa(nodes: list[Node], edges: list[Edge], input_symbols: set[str]
 
     del nodes
     del edges
-    del dot
 
     nfa = NFA(
         states=states,
         input_symbols=input_symbols,
         transitions=transitions,
-        initial_state="s0",
+        initial_state="__start0",
         final_states=states,
     )
 
@@ -64,13 +65,25 @@ def extract_input_symbols(edges: list[Edge]) -> set[str]:
     return input_symbols
 
 
+def dfa_to_agraph(dfa: DFA) -> AGraph:
+    digraph = AGraph(directed=True)
+    digraph.add_node("__start0", style="invis")
+    digraph.add_edge("__start0", dfa.initial_state)
+    for state in dfa.states:
+        digraph.add_node(state, label=state, shape="doublecircle" if state in dfa.final_states else "circle")
+    for source, commands_with_destinations in dfa.transitions.items():
+        for command, destination in commands_with_destinations.items():
+            digraph.add_edge(source, destination, label=command)
+    return digraph
+
+
+PATTERN = re.compile(r"(wrap|unwrap|encrypt|decrypt|deduceEncrypt|deduceDecrypt)\((\d+),(\d+)\)=(\d+)")
+
 if __name__ == "__main__":
     from pathlib import Path
 
-    dot1 = graph_from_dot_file(
-        Path("known_attacks", "wrap_and_decrypt", "wrap_and_decrypt_alphabet_model_0_Lsharp.dot"))
-    dot2 = graph_from_dot_file(
-        Path("known_attacks", "wrap_and_decrypt", "wrap_and_decrypt_alphabet_model_0_Lsharp.dot"))
+    dot1 = graph_from_dot_file(Path("vulnerable.dot"))
+    dot2 = graph_from_dot_file(Path("patched.dot"))
     assert dot1 is not None
     assert dot2 is not None
 
@@ -81,8 +94,6 @@ if __name__ == "__main__":
 
     nodes1, edges1 = dot1.get_nodes(), dot1.get_edges()
     nodes2, edges2 = dot2.get_nodes(), dot2.get_edges()
-    remove_extra_node(nodes1, edges1)
-    remove_extra_node(nodes2, edges2)
 
     input_symbols1 = extract_input_symbols(edges1)
     input_symbols2 = extract_input_symbols(edges2)
@@ -95,14 +106,14 @@ if __name__ == "__main__":
 
     diff = dfa1.difference(dfa2)
 
-    digraph = AGraph(directed=True)
-    digraph.add_node("__start0", style="invis")
-    digraph.add_edge("__start0", diff.initial_state)
-    for state in diff.states:
-        digraph.add_node(state, label=f"s{state}")
-    for source, commands_with_destinations in diff.transitions.items():
-        for command, destination in commands_with_destinations.items():
-            digraph.add_edge(source, destination, label=command)
-    digraph.write("difference.dot")
+    dfa_to_agraph(diff).write("difference.dot")
+
+    words_of_length = diff.words_of_length(4)
+    for i, word in enumerate(words_of_length):
+        matches = re.findall(PATTERN, word)
+        for match in matches:
+            function_name, n1, n2, result = match
+            print(f"{function_name}({n1},{n2})={result}", end=" ")
+        print()
 
     # not a DFA: for example, s0 does not have a transition for symbol decrypt(1,4)=6/ok
