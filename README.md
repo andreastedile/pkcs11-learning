@@ -46,6 +46,15 @@ python3 lts.py model.dot
 Then:
 
 ```shell
-ltscompare --counter-example --preorder=trace-ac model2.aut model1.aut
+python3 lts.py vulnerable.dot
+python3 lts.py patched.dot
+ltscompare --counter-example --preorder=trace-ac vulnerable.aut patched.aut
 tracepp --format=plain counter_example_trace_preorder.trc
+```
+
+This outputs:
+
+```text
+wrap(1,0)=4/ok
+decrypt(1,4)=6/ok
 ```
