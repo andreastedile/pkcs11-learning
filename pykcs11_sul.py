@@ -8,34 +8,23 @@ from pykcs11_knowledge_set import PyKCS11KnowledgeSet
 
 
 class PyKCS11SUL(SUL):
-    __slots__ = ["session", "initial_knowledge_factory", "knowledge_set"]
+    __slots__ = ["session", "knowledge_set", "reset_knowledge_set"]
 
     def __init__(self,
                  session: Session,
-                 initial_knowledge_factory: typing.Callable[[Session, PyKCS11KnowledgeSet], None]):
-        """
-        :param session: 
-        :param initial_knowledge_factory: Factory for the attacker's initial knowledge of handles.
-        """
+                 knowledge_set: PyKCS11KnowledgeSet,
+                 reset_knowledge_set: typing.Callable[[Session, PyKCS11KnowledgeSet], None]):
         super().__init__()
 
         self.session = session
-        
-        objects = session.findObjects()
-        for obj in objects:
-            session.destroyObject(obj)
-
-        self.initial_knowledge_factory = initial_knowledge_factory
-
-        self.knowledge_set = PyKCS11KnowledgeSet()
+        self.knowledge_set = knowledge_set
+        self.reset_knowledge_set = reset_knowledge_set
 
     def pre(self):
-        self.initial_knowledge_factory(self.session, self.knowledge_set)
+        pass
 
     def post(self):
-        objects = self.session.findObjects()
-        for obj in objects:
-            self.session.destroyObject(obj)
+        self.reset_knowledge_set(self.session, self.knowledge_set)
 
     def step(self, command: PyKCS11Command):
         ret = command.execute(self.knowledge_set, self.session)

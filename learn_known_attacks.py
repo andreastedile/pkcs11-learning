@@ -19,7 +19,8 @@ from visualization import remove_not_applicable_transitions
 
 def learn_attack(session: Session,
                  path: Path,
-                 initial_knowledge_factory: typing.Callable[[Session, PyKCS11KnowledgeSet], None]):
+                 knowledge_set: PyKCS11KnowledgeSet,
+                 reset_knowledge_set: typing.Callable[[Session, PyKCS11KnowledgeSet], None]):
     path = Path(path)
     for file in path.rglob("*.toml"):
         assert isinstance(file, Path)
@@ -27,19 +28,21 @@ def learn_attack(session: Session,
         configuration = Configuration.load_from_file(file)
         alphabet = convert_configuration_to_pykcs11_command_list(configuration)
 
-        print("run_Lstar")
-        sul = PyKCS11SUL(session, initial_knowledge_factory)
-        eq_oracle = RandomWalkEqOracle(alphabet, sul)
-        lstar_automaton = run_Lstar(alphabet, sul, eq_oracle, "mealy")
-        assert isinstance(lstar_automaton, MealyMachine)
+        # print("run_Lstar")
+        # sul = PyKCS11SUL(session, knowledge_set, reset_knowledge_set)
+        # eq_oracle = RandomWalkEqOracle(alphabet, sul)
+        # lstar_automaton = run_Lstar(alphabet, sul, eq_oracle, "mealy")
+        # assert isinstance(lstar_automaton, MealyMachine)
+        # 
+        # save_automaton_to_file(lstar_automaton, file.with_name(file.stem + "_Lstar"))
+        # lstar_automaton_without_unapplicable_transitions = remove_not_applicable_transitions(lstar_automaton)
+        # save_automaton_to_file(lstar_automaton_without_unapplicable_transitions,
+        #                        file.with_name(file.stem + "_Lstar"), "svg")
 
-        save_automaton_to_file(lstar_automaton, file.with_name(file.stem + "_Lstar"))
-        lstar_automaton_without_unapplicable_transitions = remove_not_applicable_transitions(lstar_automaton)
-        save_automaton_to_file(lstar_automaton_without_unapplicable_transitions,
-                               file.with_name(file.stem + "_Lstar"), "svg")
+        # reset_knowledge_set(session, knowledge_set)
 
         print("run_Lsharp")
-        sul = PyKCS11SUL(session, initial_knowledge_factory)
+        sul = PyKCS11SUL(session, knowledge_set, reset_knowledge_set)
         eq_oracle = RandomWalkEqOracle(alphabet, sul)
         lsharp_automaton = run_Lsharp(alphabet, sul, eq_oracle, "mealy")
         assert isinstance(lsharp_automaton, MealyMachine)
@@ -71,18 +74,19 @@ if __name__ == "__main__":
 
     learn_attack(session,
                  Path("known_attacks", "wrap_and_decrypt"),
-                 wrap_and_decrypt.wrap_and_decrypt_initial_knowledge_factory)
+                 wrap_and_decrypt.create_knowledge_set(session),
+                 wrap_and_decrypt.reset_knowledge_set)
 
-    learn_attack(session,
-                 Path("known_attacks", "dks_2"),
-                 dks_2.dks_experiment_2_initial_knowledge_factory)
+    # learn_attack(session,
+    #              Path("known_attacks", "dks_2"),
+    #              dks_2.dks_experiment_2_initial_knowledge_factory)
 
-    learn_attack(session,
-                 Path("known_attacks", "dks_6"),
-                 dks_6.dks_experiment_6_initial_knowledge_factory)
+    # learn_attack(session,
+    #              Path("known_attacks", "dks_6"),
+    #              dks_6.dks_experiment_6_initial_knowledge_factory)
 
-    learn_attack(session,
-                 Path("known_attacks", "fls_2"),
-                 fls_2.fls_2_initial_knowledge_factory)
+    # learn_attack(session,
+    #              Path("known_attacks", "fls_2"),
+    #              fls_2.fls_2_initial_knowledge_factory)
 
     session.closeSession()
