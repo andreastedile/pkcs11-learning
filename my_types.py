@@ -3,6 +3,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from PyKCS11 import AES_GCM_Mechanism
+from PyKCS11.LowLevel import \
+    CKA_WRAP, CKA_UNWRAP, CKA_ENCRYPT, CKA_DECRYPT, \
+    CKA_SENSITIVE, CKA_EXTRACTABLE, \
+    CK_TRUE
+
+DEFAULT_HANDLE_TEMPLATE = [
+    (CKA_WRAP, CK_TRUE),
+    (CKA_UNWRAP, CK_TRUE),
+    (CKA_ENCRYPT, CK_TRUE),
+    (CKA_DECRYPT, CK_TRUE),
+    (CKA_SENSITIVE, CK_TRUE),
+    (CKA_EXTRACTABLE, CK_TRUE),
+]
 
 
 @dataclass

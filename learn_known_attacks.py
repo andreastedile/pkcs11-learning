@@ -77,9 +77,9 @@ if __name__ == "__main__":
                  wrap_and_decrypt.create_knowledge_set(session),
                  wrap_and_decrypt.reset_knowledge_set)
 
-    # learn_attack(session,
-    #              Path("known_attacks", "dks_2"),
-    #              dks_2.dks_experiment_2_initial_knowledge_factory)
+    learn_attack(session,
+                 Path("known_attacks", "dks_2"),
+                 dks_2.dks_experiment_2_initial_knowledge_factory)
 
     # learn_attack(session,
     #              Path("known_attacks", "dks_6"),

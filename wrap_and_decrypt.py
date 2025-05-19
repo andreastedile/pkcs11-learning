@@ -1,7 +1,9 @@
 from PyKCS11 import Session, MechanismAESGENERATEKEY
 from PyKCS11.LowLevel import \
-    CKA_VALUE_LEN, CKA_LABEL, CKA_SENSITIVE, CKA_EXTRACTABLE, CKA_WRAP, CKA_DECRYPT, \
+    CKA_VALUE_LEN, CKA_LABEL, CKA_SENSITIVE, CKA_EXTRACTABLE, \
     CK_TRUE, CK_OBJECT_HANDLE
+
+from my_types import DEFAULT_HANDLE_TEMPLATE
 from pykcs11_knowledge_set import PyKCS11KnowledgeSet
 
 
@@ -10,15 +12,15 @@ def create_knowledge_set(session: Session) -> PyKCS11KnowledgeSet:
         (CKA_VALUE_LEN, 16),
         (CKA_LABEL, "0"),
         (CKA_SENSITIVE, CK_TRUE),
-        (CKA_EXTRACTABLE, CK_TRUE)
+        (CKA_EXTRACTABLE, CK_TRUE),
+        *DEFAULT_HANDLE_TEMPLATE
     ]
     n0 = session.generateKey(n0_template, MechanismAESGENERATEKEY)
 
     n1_template = [
         (CKA_VALUE_LEN, 16),
         (CKA_LABEL, "1"),
-        (CKA_WRAP, CK_TRUE),
-        (CKA_DECRYPT, CK_TRUE)
+        *DEFAULT_HANDLE_TEMPLATE
     ]
     n1 = session.generateKey(n1_template, MechanismAESGENERATEKEY)
 
@@ -36,12 +38,15 @@ def reset_knowledge_set(session: Session, knowledge_set: PyKCS11KnowledgeSet):
     for obj in session.findObjects():
         assert isinstance(obj, CK_OBJECT_HANDLE)
 
-        if obj.value() == n0.value() or obj.value() == n1.value():
+        if obj.value() == n0.value():
+            continue
+        elif obj.value() == n1.value():
             continue
         else:
             session.destroyObject(obj)
 
-    session.setAttributeValue(n1, [(CKA_WRAP, CK_TRUE), (CKA_DECRYPT, CK_TRUE)])
+    session.setAttributeValue(n0, DEFAULT_HANDLE_TEMPLATE)
+    session.setAttributeValue(n1, DEFAULT_HANDLE_TEMPLATE)
 
     knowledge_set.clear()
     knowledge_set.handle_dict[0] = n0

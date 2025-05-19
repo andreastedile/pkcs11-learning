@@ -1,8 +1,9 @@
 from PyKCS11 import Session, MechanismAESGENERATEKEY, MechanismRSAGENERATEKEYPAIR
 from PyKCS11.LowLevel import \
     CKA_VALUE_LEN, CKA_LABEL, CKA_SENSITIVE, CKA_EXTRACTABLE, CKA_MODULUS_BITS, CKA_PUBLIC_EXPONENT, \
-    CK_TRUE, CK_FALSE
+    CK_TRUE, CK_FALSE, CK_OBJECT_HANDLE
 
+from my_types import DEFAULT_HANDLE_TEMPLATE
 from pykcs11_knowledge_set import PyKCS11KnowledgeSet
 from pykcs11_utils import convert_handle_of_public_key_to_rsa_key
 
@@ -20,8 +21,8 @@ N1_TEMPLATE = [
 ]
 
 
-def dks_experiment_6_initial_knowledge_factory(session: Session, ks: PyKCS11KnowledgeSet):
-    ks.clear()
+def create_knowledge_set(session: Session) -> PyKCS11KnowledgeSet:
+    knowledge_set = PyKCS11KnowledgeSet()
 
     n0_template = [
         (CKA_VALUE_LEN, 16),
@@ -50,8 +51,14 @@ def dks_experiment_6_initial_knowledge_factory(session: Session, ks: PyKCS11Know
     ]
     pub, priv = session.generateKeyPair(templatePub, templatePriv, MechanismRSAGENERATEKEYPAIR)
 
-    ks.handle_dict[0] = n0
-    ks.handle_dict[1] = n1
-    ks.secret_key_dict[2] = n2
-    ks.public_key_dict[3] = convert_handle_of_public_key_to_rsa_key(session, pub)
-    ks.handle_dict[4] = priv
+    knowledge_set.handle_dict[0] = n0
+    knowledge_set.handle_dict[1] = n1
+    knowledge_set.secret_key_dict[2] = n2
+    knowledge_set.public_key_dict[3] = convert_handle_of_public_key_to_rsa_key(session, pub)
+    knowledge_set.handle_dict[4] = priv
+
+    return knowledge_set
+
+
+def reset_knowledge_set(session: Session, knowledge_set: PyKCS11KnowledgeSet):
+    raise NotImplementedError()
