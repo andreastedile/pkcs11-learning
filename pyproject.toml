@@ -1,0 +1,9 @@
+[project]
+name = "pkcs11-learning"
+version = "0.1"
+dependencies = ["aalpy", "automata-lib", "pykcs11", "pycryptodome", "pygraphviz", "python-dotenv"]
+
+[project.scripts]
+mealy_difference = "scripts.mealy_difference:main"
+lts = "scripts.lts:main"
+
