@@ -1,0 +1,60 @@
+[commands]
+decrypt_sym_asym = []
+deduce_decrypt_asym_sym = []
+deduce_decrypt_sym_asym = []
+deduce_decrypt_sym_sym = []
+deduce_encrypt_asym_sym = []
+deduce_encrypt_sym_asym = []
+deduce_encrypt_sym_sym = []
+encrypt_sym_asym = []
+encrypt_sym_sym = []
+unwrap_asym_sym = []
+unwrap_sym_asym = []
+unwrap_sym_sym = []
+wrap_asym_sym = []
+wrap_sym_asym = []
+
+[[commands.decrypt_sym_sym]]
+decrypted_key = 6
+handle_of_decryption_key = 1
+key_to_be_decrypted = 4
+
+[[commands.wrap_sym_sym]]
+handle_of_key_to_be_wrapped = 0
+handle_of_wrapping_key = 1
+wrapped_key = 4
+
+[nodes]
+aenc = []
+handle_of_private_key = []
+handle_of_public_key = []
+handle_of_secret_key = []
+private_key = []
+public_key = []
+
+[[nodes.secret_key]]
+index = 6
+pointed_by = [0]
+
+[[nodes.senc]]
+index = 4
+
+[setattribute]
+encrypt = []
+unwrap = []
+
+[[setattribute.decrypt]]
+handle = 1
+
+[[setattribute.wrap]]
+handle = 1
+
+[unsetattribute]
+encrypt = []
+unwrap = []
+
+[[unsetattribute.decrypt]]
+handle = 1
+
+[[unsetattribute.wrap]]
+handle = 1

@@ -1,0 +1,8 @@
+digraph {
+    0 [ label = "id=0, h(1)" shape=box, style=filled, fillcolor=lightblue, peripheries=2]
+    1 [ label = "id=2, senc(1,1)" shape=box]
+    2 [ label = "id=6, 1" shape=box]
+    0 -> 1 [ label = "wrap(0,0)=2" ]
+    0 -> 2 [ label = "decrypt(0,2)=6" ]
+    1 -> 2 [ label = "decrypt(0,2)=6" ]
+}
