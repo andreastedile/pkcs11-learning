@@ -27,8 +27,8 @@ def dks3_attack_des_ecb(session: Session, patched: bool):
         (CKA_EXTRACTABLE, CK_TRUE),
         (CKA_VALUE_LEN, 8),
         (CKA_WRAP, CK_FALSE),
-        (CKA_UNWRAP, CK_TRUE),
-        (CKA_ENCRYPT, CK_TRUE),
+        (CKA_UNWRAP, CK_FALSE),
+        (CKA_ENCRYPT, CK_FALSE),
         (CKA_DECRYPT, CK_FALSE),
     ]
     n2 = session.generateKey(n2_template, Mechanism(CKM_DES_KEY_GEN))
