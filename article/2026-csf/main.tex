@@ -53,7 +53,7 @@
 % make title bold and 14 pt font (Latex default is non-bold, 16 pt)
 \title{
   \Large \bf
-  something about pkcs11
+  Automatic Learning and Verification of Cryptographic Protocols: the Case of \pkcs
 }
 
 \author{
@@ -79,6 +79,38 @@
 
 
 \section{Introduction}\label{sec:intro}
+
+%% ctx
+\MPin{ crypto protocols, automata learning}
+
+%% problem
+cryptographic protocols are hard to verify as adhering to their specs.
+
+worse, oftentimes specifications are just reference implementations\MP{true? i guess}, so it is hard to ha
+
+%% solution
+we devise a framework based on hardware-software contracts for the verification of protocol specs and protocol implementations wrt their specs.
+We use automata learning to compute the behaviour of protocol specifications and of protocol implementations, obtaining their behavioural description in the same language: \MPin{traces? automata?}.
+
+
+
+%% validation
+We prove\MP{do we need new proofs?} the correctness of our framework: a specs that is secure wrt an attack cannot be attacked, an implementation that respects a spec cannot be attacked by the attacks the spec is secure against 
+\MPin{ proofs sul framework?}
+
+we instantiate the framework on the PKCS11 protocol,
+we verify its specs as insecure,
+we verify their patched specs as secure -- identify a series of security specs and order them from least to most secure --
+we learn the behaviour of modern implementations of PKCS11 (list: securosys, \MPin{more}) and prove they are secure
+
+%% list of contributions
+
+\section{Background}\label{sec:background}
+
+
+
+\section{Related Work}\label{sec:related_work}
+\section{Conclusion}\label{sec:conclusion}
 
 
 %-------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.6.24)  4 JUL 2025 10:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.6.24)  4 JUL 2025 10:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1470,6 +1470,34 @@ ick labels; missing features). Consider writing \pgfplotsset{compat=1.18} into
 your preamble.
  on input line 47.
 
+LaTeX Font Info:    Calculating math sizes for size <14> on input line 68.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 68.
+
+(/usr/local/texlive/2022/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 68.
+
+
+(/usr/local/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Trying to load font information for U+stmry on input line 6
+8.
+
+(/usr/local/texlive/2022/texmf-dist/tex/latex/stmaryrd/Ustmry.fd)
+LaTeX Font Info:    Trying to load font information for U+lasy on input line 68
+.
+
+(/usr/local/texlive/2022/texmf-dist/tex/latex/base/ulasy.fd
+File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
+)
+
+LaTeX Font Warning: Font shape `U/stmry/b/n' undefined
+(Font)              using `U/stmry/m/n' instead on input line 68.
+
+Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
+ine 84.
 No file main.bbl.
 
 ** Conference Paper **
@@ -1488,25 +1516,29 @@ Before submitting the final camera ready copy, remember to:
 
 ]
 (./main.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 9814C2D956916ADB9290ECA4E25C967A;103.
+(rerunfilecheck)             Checksum: 752BAA339047604B74717509B7EB59F3;395.
  ) 
 Here is how much of TeX's memory you used:
- 44332 strings out of 478268
- 998784 string characters out of 5846347
- 1399468 words of memory out of 5000000
- 61823 multiletter control sequences out of 15000+600000
- 571591 words of font info for 117 fonts, out of 8000000 for 9000
+ 44485 strings out of 478268
+ 1002135 string characters out of 5846347
+ 1407411 words of memory out of 5000000
+ 61935 multiletter control sequences out of 15000+600000
+ 579017 words of font info for 147 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 115i,8n,118p,720b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 115i,8n,118p,720b,680s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2022/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/202
-2/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2022/texmf-d
-ist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on main.pdf (1 page, 31910 bytes).
+exlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/local/te
+xlive/2022/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2022
+/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2022/texmf-di
+st/fonts/type1/urw/times/utmr8a.pfb>
+Output written on main.pdf (1 page, 48004 bytes).
 PDF statistics:
- 61 PDF objects out of 1000 (max. 8388607)
- 35 compressed objects within 1 object stream
- 3 named destinations out of 1000 (max. 500000)
- 117 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 84 PDF objects out of 1000 (max. 8388607)
+ 56 compressed objects within 1 object stream
+ 10 named destinations out of 1000 (max. 500000)
+ 141 words of extra memory for PDF output out of 10000 (max. 10000000)
 

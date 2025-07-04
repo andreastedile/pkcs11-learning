@@ -8,21 +8,23 @@
 \newcommand{\MP}[1]{\todo[color=blue!30]{TODO: #1}}
 \newcommand{\MPin}[1]{\todo[color=blue!30,inline]{TODO: #1}}
 
-\newcommand{\SB}[1]{\todo[color=orange!30]{TODO: #1}}
-\newcommand{\SBin}[1]{\todo[color=orange!30,inline]{TODO: #1}}
+\newcommand{\AS}[1]{\todo[color=purple!30]{TODO: #1}}
+\newcommand{\ASin}[1]{\todo[color=purple!30,inline]{TODO: #1}}
 
+\newcommand{\FL}[1]{\todo[color=yellow!30]{TODO: #1}}
+\newcommand{\FLin}[1]{\todo[color=yellow!30,inline]{TODO: #1}}
 
-\newcommand{\MG}[1]{\todo[color=green!30]{TODO: #1}}
-\newcommand{\MGin}[1]{\todo[color=green!30,inline]{TODO: #1}}
+\newcommand{\RF}[1]{\todo[color=green!30]{TODO: #1}}
+\newcommand{\RFin}[1]{\todo[color=green!30,inline]{TODO: #1}}
+
+\newcommand{\LG}[1]{\todo[color=red!30]{TODO: #1}}
+\newcommand{\LGin}[1]{\todo[color=red!30,inline]{TODO: #1}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % My shortcuts
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\wbctxskel}[2]{\ensuremath{\mi{WBctx}^{#1}_{#2}}\xspace}
-\newcommand{\wbctxgen}[0]{\wbctxskel{\S}{\T}}
-\newcommand{\wbctxsu}[0]{\wbctxskel{\stlc}{\ulc}}
-
+\newcommand{\pkcs}[0]{\ms{PKCS11}\xspace}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %	Math formatting
@@ -111,16 +113,6 @@
 \newcommand{\compgenm}[1]{\compskel{\fbox{\fbox{#1}}}{\S}{\T}}
 \newcommand{\compai}[1]{\compskel{#1}{\LA}{\LI}}
 
-\newcommand{\compslh}[1]{\compskel{#1}{\com{s}}{}}
-\newcommand{\compsslh}[1]{\compskel{#1}{\com{ss}}{}}
-\newcommand{\compslht}[1]{\compskel{#1}{\com{s}}{\com{n}}}
-\newcommand{\compslhd}[1]{\compskel{#1}{\com{s}}{\com{3}}}
-\newcommand{\complfence}[1]{\compskel{#1}{\com{f}}{}}
-\newcommand{\complfencet}[1]{\compskel{#1}{\com{f}}{\OL}}
-\newcommand{\comprp}[1]{\compskel{#1}{\com{r}}{}}
-
-\newcommand{\compfac}[1]{\compskel{\fbox{#1}}{\LU}{\LP}}
-
 \newcommand{\funname}[1]{\mtt{#1}}
 \newcommand{\fun}[2]{\ensuremath{{\bl{\funname{#1}\left(#2\right)}}}\xspace}
 \newcommand{\mydom}[1]{\fun{dom}{#1}}
@@ -131,63 +123,23 @@
 \newcommand{\funt}[2]{\ensuremath{{\trg{{#1}\left(#2\right)}}}\xspace}
 
 
-
 \newcommand{\Nat}[0]{\ensuremath{\mb{N}}\xspace}
 
 \newcommand{\protname}[0]{protect}
 \newcommand{\prot}[1]{\fun{\protname}{#1}}
 
-\newcommand{\backtrskel}[3]{\ensuremath{\bl{\left\langle\!\left\langle {#1} \right\rangle\!\right\rangle^{#2}_{#3}}}}
-\newcommand{\backtr}[1]{\backtrskel{#1}{}{}}
-\newcommand{\backtrup}[1]{\backtrskel{#1}{\LP}{\LU}}
-\newcommand{\backtrfac}[1]{\backtrskel{\trg{\fbox{\trg{#1}}}}{\LP}{\LU}}
-
-\newcommand{\backtrfencec}[1]{\backtrskel{#1}{\com{f}}{\com{c}}}
-\newcommand{\backtrfencet}[1]{\backtrskel{#1}{\com{f}}{\com{t}}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %	Language shortcuts
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\UC}[0]{\mi{UC}\xspace}
 \newcommand{\SC}[0]{\mi{SC}\xspace}
 
-
 \newcommand{\SR}[0]{\src{L}\xspace}
 \newcommand{\TR}[0]{\trg{T}\xspace}
-\newcommand{\wSR}[0]{\src{\weak{L}}\xspace}
-\newcommand{\wTR}[0]{\trg{\weak{T}}\xspace}
-\newcommand{\OL}[0]{\trg{E}\xspace}
-
-\newcommand{\strong}[1]{#1\ensuremath{^{\text{+}}}\xspace}
-\newcommand{\weak}[1]{#1\ensuremath{^{\text{-}}}}%{w#1}
-
-
-\newcommand{\lc}[0]{\ensuremath{\lambda}-calculus\xspace}
-\newcommand{\jjr}[0]{Java Jr.\xspace}
-
-\newcommand{\jem}[0]{\ms{J}{\scriptsize\ms{EM}}\xspace}
-\newcommand{\aim}[0]{\ms{A}{\scriptsize\ms{IL}}\xspace}
-\newcommand{\ai}[0]{\ms{A}\texttt{+}\ms{I}\xspace}
-
-\newcommand{\Mmachine}[0]{\ensuremath{\mbox{M-machine}}\xspace}
-\newcommand{\Cheri}[0]{\ensuremath{\mbox{Cheri}}\xspace}
-\newcommand{\Capsicum}[0]{\ensuremath{\mbox{Capsicum}}\xspace}
-\newcommand{\PMA}[0]{\mi{PMA}\xspace}
-
-\newcommand{\ASLR}[0]{ASLR\xspace}
-
 \renewcommand{\S}[0]{\src{{S}}\xspace}
 \newcommand{\T}[0]{\trg{{T}}\xspace}
 
-\newcommand{\langlett}[0]{L} %\lambda ?
-\newcommand{\LA}[0]{\src{\langlett^{\tau}}\xspace}
-\newcommand{\LC}[0]{\trg{\langlett^{\pi}}\xspace}
-\newcommand{\LU}[0]{\src{\langlett^{U}}\xspace}
-\newcommand{\LP}[0]{\trg{\langlett^{P}}\xspace}
-\newcommand{\LN}[0]{\src{\langlett^{NI}}\xspace}
-\newcommand{\LR}[0]{\src{\langlett^{C}}\xspace}
-\newcommand{\LI}[0]{\oth{\langlett^{I}}\xspace}
-
-\newcommand{\cmp}[1]{\ms{#1}}
+\newcommand{\lc}[0]{\ensuremath{\lambda}-calculus\xspace}
 
 \newcommand{\Cs}[1]{\src{C#1}\xspace} %%TODO
 \newcommand{\M}[1]{\trg{C#1}\xspace}%M
@@ -300,11 +252,6 @@
 \newcommand{\myagree}[0]{\mathop{\raisebox{1mm}{$\frown$}}}
 \newcommand{\agree}[2]{\ensuremath{#1\myagree#2}}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%	Logical relations formatting
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newcommand{\rhorel}[1]{\ensuremath{\sim_{#1}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %	Type rules
@@ -450,9 +397,6 @@
 \newcommand{\toid}[0]{\ensuremath{\xto{\trg{\id}}}}
 \newcommand{\tolid}[0]{\ensuremath{\xtol{\trg{\id}}}}
 \newcommand{\tolun}[0]{\ensuremath{\xto{\unp}}}
-
-\newcommand{\stus}[0]{\ensuremath{^{\src{\times}}\xspace}}
-\newcommand{\stut}[0]{\ensuremath{^{\trg{\times}}\xspace}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Listings
