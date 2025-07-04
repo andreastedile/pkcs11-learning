@@ -1,0 +1,1715 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%							COMMANDS						  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	TODO annotations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\MP}[1]{\todo[color=blue!30]{TODO: #1}}
+\newcommand{\MPin}[1]{\todo[color=blue!30,inline]{TODO: #1}}
+
+\newcommand{\SB}[1]{\todo[color=orange!30]{TODO: #1}}
+\newcommand{\SBin}[1]{\todo[color=orange!30,inline]{TODO: #1}}
+
+
+\newcommand{\MG}[1]{\todo[color=green!30]{TODO: #1}}
+\newcommand{\MGin}[1]{\todo[color=green!30,inline]{TODO: #1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% My shortcuts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\wbctxskel}[2]{\ensuremath{\mi{WBctx}^{#1}_{#2}}\xspace}
+\newcommand{\wbctxgen}[0]{\wbctxskel{\S}{\T}}
+\newcommand{\wbctxsu}[0]{\wbctxskel{\stlc}{\ulc}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Math formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\mi}[1]{\ensuremath{\mathit{#1}}}
+\newcommand{\mr}[1]{\ensuremath{\mathrm{#1}}}
+\newcommand{\mt}[1]{\ensuremath{\texttt{#1}}}
+\newcommand{\mtt}[1]{\ensuremath{\mathtt{#1}}}
+\newcommand{\mf}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\mk}[1]{\ensuremath{\mathfrak{#1}}}
+\newcommand{\mc}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\ms}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\mb}[1]{\ensuremath{\mathbb{#1}}}
+\newcommand{\msc}[1]{\ensuremath{\mathscr{#1}}}
+
+\newcommand{\isdef}[0]{\ensuremath{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily def}}}{=}}}}
+
+\newcommand{\lift}[1]{\ensuremath{\lceil#1\rceil}}
+
+% http://tex.stackexchange.com/questions/5502/how-to-get-a-mid-binary-relation-that-grows
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+
+\DeclareMathOperator\mydefsym{\ensuremath{\iangleq}}
+\newcommand\bnfdef{\ensuremath{\mathrel{::=}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Math shortcuts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\OB}[1]{\ensuremath{\overline{#1}}}
+\newcommand{\llb}{\llbracket}
+\newcommand{\rrb}{\rrbracket}
+\newcommand{\lla}{\mathopen{\ll}}
+\newcommand{\rra}{\mathclose{\gg}}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\Ra}{\Rightarrow}
+\newcommand{\la}{\leftarrow}
+\newcommand{\La}{\Leftarrow}
+\newcommand{\Da}[1]{\ensuremath{\Downarrow^{#1}}}
+\newcommand{\Ua}[1]{\ensuremath{\Downarrow^{#1}}}
+
+\newcommand{\myset}[2]{\ensuremath{\left\{#1 ~\relmiddle|~ #2\right\}}}
+\newcommand{\partof}[1]{\ensuremath{\mc{P}(#1)}}
+
+\newcommand{\compstatus}[0]{\ensuremath{\mc{CS}}}
+\newcommand{\compending}[0]{\ensuremath{\mc{CE}}}
+
+\newcommand{\divr}[0]{\ensuremath{\!\!\Uparrow}\xspace}
+\newcommand{\ndivr}[0]{\ensuremath{\!\!\not\Uparrow}\xspace}
+\newcommand{\divrs}[0]{\ensuremath{\src{\Uparrow}}\xspace}
+\newcommand{\divrt}[0]{\ensuremath{\trg{\Uparrow}}\xspace}
+\newcommand{\divrc}[0]{\ensuremath{\com{\Uparrow}}\xspace}
+
+\newcommand{\term}[0]{\ensuremath{^{\Downarrow}}\xspace}
+\newcommand{\termsl}[0]{\ensuremath{^{\src{\Downarrow}}}\xspace}
+\newcommand{\termt}[0]{\ensuremath{^{\trg{\Downarrow}}}\xspace}
+\newcommand{\termc}[0]{\ensuremath{^{\com{\Downarrow}}}\xspace}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Math environments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand*{\QEDA}{\hfill\ensuremath{\blacksquare}}%
+
+\AtEndEnvironment{problem}{\null\hfill\QEDA}
+\AtEndEnvironment{example}{}%\null\hfill$\boxdot$}
+%\AtEndEnvironment{proof}{\null\hfill\qed}
+
+\Crefname{lstlisting}{Listing}{Listings}
+\Crefname{problem}{Problem}{Problems}
+
+\Crefname{equation}{Rule}{Rules}
+
+\newenvironment{proofsketch}{\trivlist\item[]\emph{Proof Sketch}.\xspace}{\unskip\nobreak\hskip 1em plus 1fil\nobreak$\Box$\parfillskip=0pt\endtrivlist}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Compiler
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\compskel}[3]{\ensuremath{\bl{\left\llbracket \src{#1} \right\rrbracket^{#2}_{#3}}}}
+\newcommand{\comp}[1]{\compskel{\bl{#1}}{}{}}
+\newcommand{\compap}[1]{\compskel{#1}{\LA}{\LC}}
+\newcommand{\compup}[1]{\compskel{#1}{\LU}{\LP}}
+\newcommand{\compnp}[1]{\compskel{{#1}}{\LN}{\LP}}
+\newcommand{\compgen}[1]{\compskel{#1}{\S}{\T}}
+\newcommand{\compapm}[1]{\compskel{\fbox{\fbox{#1}}}{\LA}{\LC}}
+\newcommand{\compgenm}[1]{\compskel{\fbox{\fbox{#1}}}{\S}{\T}}
+\newcommand{\compai}[1]{\compskel{#1}{\LA}{\LI}}
+
+\newcommand{\compslh}[1]{\compskel{#1}{\com{s}}{}}
+\newcommand{\compsslh}[1]{\compskel{#1}{\com{ss}}{}}
+\newcommand{\compslht}[1]{\compskel{#1}{\com{s}}{\com{n}}}
+\newcommand{\compslhd}[1]{\compskel{#1}{\com{s}}{\com{3}}}
+\newcommand{\complfence}[1]{\compskel{#1}{\com{f}}{}}
+\newcommand{\complfencet}[1]{\compskel{#1}{\com{f}}{\OL}}
+\newcommand{\comprp}[1]{\compskel{#1}{\com{r}}{}}
+
+\newcommand{\compfac}[1]{\compskel{\fbox{#1}}{\LU}{\LP}}
+
+\newcommand{\funname}[1]{\mtt{#1}}
+\newcommand{\fun}[2]{\ensuremath{{\bl{\funname{#1}\left(#2\right)}}}\xspace}
+\newcommand{\mydom}[1]{\fun{dom}{#1}}
+\newcommand{\domG}[1]{\fun{domG}{#1}}
+\newcommand{\domM}[1]{\fun{domM}{#1}}
+\newcommand{\invcond}[1]{\fun{cond}{#1}}
+\newcommand{\funs}[2]{\ensuremath{{\src{{#1}\left(#2\right)}}}\xspace}
+\newcommand{\funt}[2]{\ensuremath{{\trg{{#1}\left(#2\right)}}}\xspace}
+
+
+
+\newcommand{\Nat}[0]{\ensuremath{\mb{N}}\xspace}
+
+\newcommand{\protname}[0]{protect}
+\newcommand{\prot}[1]{\fun{\protname}{#1}}
+
+\newcommand{\backtrskel}[3]{\ensuremath{\bl{\left\langle\!\left\langle {#1} \right\rangle\!\right\rangle^{#2}_{#3}}}}
+\newcommand{\backtr}[1]{\backtrskel{#1}{}{}}
+\newcommand{\backtrup}[1]{\backtrskel{#1}{\LP}{\LU}}
+\newcommand{\backtrfac}[1]{\backtrskel{\trg{\fbox{\trg{#1}}}}{\LP}{\LU}}
+
+\newcommand{\backtrfencec}[1]{\backtrskel{#1}{\com{f}}{\com{c}}}
+\newcommand{\backtrfencet}[1]{\backtrskel{#1}{\com{f}}{\com{t}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Language shortcuts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\UC}[0]{\mi{UC}\xspace}
+\newcommand{\SC}[0]{\mi{SC}\xspace}
+
+
+\newcommand{\SR}[0]{\src{L}\xspace}
+\newcommand{\TR}[0]{\trg{T}\xspace}
+\newcommand{\wSR}[0]{\src{\weak{L}}\xspace}
+\newcommand{\wTR}[0]{\trg{\weak{T}}\xspace}
+\newcommand{\OL}[0]{\trg{E}\xspace}
+
+\newcommand{\strong}[1]{#1\ensuremath{^{\text{+}}}\xspace}
+\newcommand{\weak}[1]{#1\ensuremath{^{\text{-}}}}%{w#1}
+
+
+\newcommand{\lc}[0]{\ensuremath{\lambda}-calculus\xspace}
+\newcommand{\jjr}[0]{Java Jr.\xspace}
+
+\newcommand{\jem}[0]{\ms{J}{\scriptsize\ms{EM}}\xspace}
+\newcommand{\aim}[0]{\ms{A}{\scriptsize\ms{IL}}\xspace}
+\newcommand{\ai}[0]{\ms{A}\texttt{+}\ms{I}\xspace}
+
+\newcommand{\Mmachine}[0]{\ensuremath{\mbox{M-machine}}\xspace}
+\newcommand{\Cheri}[0]{\ensuremath{\mbox{Cheri}}\xspace}
+\newcommand{\Capsicum}[0]{\ensuremath{\mbox{Capsicum}}\xspace}
+\newcommand{\PMA}[0]{\mi{PMA}\xspace}
+
+\newcommand{\ASLR}[0]{ASLR\xspace}
+
+\renewcommand{\S}[0]{\src{{S}}\xspace}
+\newcommand{\T}[0]{\trg{{T}}\xspace}
+
+\newcommand{\langlett}[0]{L} %\lambda ?
+\newcommand{\LA}[0]{\src{\langlett^{\tau}}\xspace}
+\newcommand{\LC}[0]{\trg{\langlett^{\pi}}\xspace}
+\newcommand{\LU}[0]{\src{\langlett^{U}}\xspace}
+\newcommand{\LP}[0]{\trg{\langlett^{P}}\xspace}
+\newcommand{\LN}[0]{\src{\langlett^{NI}}\xspace}
+\newcommand{\LR}[0]{\src{\langlett^{C}}\xspace}
+\newcommand{\LI}[0]{\oth{\langlett^{I}}\xspace}
+
+\newcommand{\cmp}[1]{\ms{#1}}
+
+\newcommand{\Cs}[1]{\src{C#1}\xspace} %%TODO
+\newcommand{\M}[1]{\trg{C#1}\xspace}%M
+\renewcommand{\P}[1]{\com{C#1}\xspace}%P
+
+\newcommand{\contextletter}[0]{A}
+\newcommand{\ctx}[1]{\ensuremath{\contextletter}} %\mb{#1}}}
+\newcommand{\ctxs}[1]{\src{\ctx{\contextletter}#1}\xspace}
+\newcommand{\ctxt}[1]{\trg{\ctx{\contextletter}#1}\xspace}%M
+\newcommand{\ctxc}[1]{\com{\ctx{\contextletter}#1}\xspace}%P
+\newcommand{\hole}[1]{\ensuremath{\left[#1\right]}}
+
+\newcommand{\evalctx}[0]{\ensuremath{\mb{E}}}
+\newcommand{\evalctxs}[1]{\src{\evalctx#1}\xspace}
+\newcommand{\evalctxt}[1]{\trg{\evalctx#1}\xspace}
+\newcommand{\evalctxc}[1]{\com{\evalctx#1}\xspace}
+
+\newcommand{\vs}[0]{\src{v}\xspace}
+\newcommand{\vt}[0]{\trg{v}\xspace}
+\newcommand{\taus}[0]{\src{\tau}\xspace}
+\newcommand{\Gammas}[0]{\src{\Gamma}\xspace}
+
+\newcommand{\Bools}[0]{\src{{Bool}}\xspace}
+\newcommand{\Nats}[0]{\src{{Nat}}\xspace}
+\newcommand{\Boolt}[0]{\trg{{Bool}}\xspace}
+\newcommand{\Ints}[0]{\src{{Int}}\xspace}
+\newcommand{\Intt}[0]{\trg{{Int}}\xspace}
+\newcommand{\Objs}[0]{\src{{Obj}}\xspace}
+\newcommand{\Units}[0]{\src{{Unit}}\xspace}
+\newcommand{\trues}[0]{\src{{true}}\xspace}
+\newcommand{\falses}[0]{\src{{false}}\xspace}
+\newcommand{\units}[0]{\src{{unit}}\xspace}
+\newcommand{\truet}[0]{\trg{{true}}\xspace}
+\newcommand{\falset}[0]{\trg{false}\xspace}
+\newcommand{\unitt}[0]{\trg{unit}\xspace}
+\newcommand{\Refs}[1]{\src{Ref~#1}\xspace}
+\newcommand{\UNS}[0]{\src{UN}\xspace}
+\newcommand{\vdashun}[0]{\vdash_\UNS}
+\newcommand{\vdasht}[0]{\trgb{\vdash}}
+\newcommand{\vdashatts}[0]{\vdash_{\src{att}}}
+\newcommand{\vdashattt}[0]{\vdash_{\trg{att}}}
+\newcommand{\vdashatto}[0]{\vdash_{\oth{att}}}
+
+\newcommand{\lskip}{\ensuremath{{skip}}}
+\newcommand{\skips}{\ensuremath{\src{skip}}}
+\newcommand{\skipc}{\ensuremath{\com{skip}}}
+\newcommand{\skipt}{\ensuremath{\trg{skip}}}
+\newcommand{\skipo}{\ensuremath{\oth{skip}}}
+
+\newcommand{\srce}[0]{\src{\emptyset}\xspace}
+\newcommand{\trge}[0]{\trg{\emptyset}\xspace}
+\newcommand{\othe}[0]{\oth{\emptyset}\xspace}
+\newcommand{\come}[0]{\com{\emptyset}\xspace}
+
+\newcommand{\SInit}[1]{\ensuremath{{\Omega_0}\left({#1}\right)}\xspace}
+\newcommand{\SInits}[1]{\ensuremath{\src{\Omega_0}\left(\src{#1}\right)}\xspace}
+\newcommand{\SInitt}[1]{\ensuremath{\trg{\Omega_0}\left(\trg{#1}\right)}\xspace}
+\newcommand{\SInito}[1]{\ensuremath{\oth{\Omega_0}\left(\oth{#1}\right)}\xspace}
+
+\newcommand{\CInit}[1]{\ensuremath{{\sigma_0}\left({#1}\right)}\xspace}
+
+\newcommand{\TInit}[1]{\ensuremath{{\Theta_0}\left({#1}\right)}\xspace}
+
+\newcommand{\TInitt}[1]{\ensuremath{\trg{\Theta_0}\left(\trg{#1}\right)}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Language formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\neutcol}[0]{black}
+\newcommand{\stlccol}[0]{RoyalBlue}
+\newcommand{\ulccol}[0]{RedOrange}
+\newcommand{\othercol}[0]{YellowOrange}
+\newcommand{\idecol}[0]{Emerald}
+\newcommand{\commoncol}[0]{black}    % CarnationPink
+
+\newcommand{\col}[2]{\ensuremath{{\color{#1}{#2}}}}
+
+\newcommand{\src}[1]{\ms{\col{\stlccol}{#1}}}
+\newcommand{\trg}[1]{{\mf{\col{\ulccol }{#1}}}}
+\newcommand{\trgb}[1]{\ensuremath{\bm{\col{\ulccol }{#1}}}}
+
+\newcommand{\ide}[1]{\ms{\col{\idecol }{#1}}}
+\newcommand{\con}[1]{\bm{$\ms{\col{\othercol }{#1}}$}}
+
+\newcommand{\bl}[1]{\col{\neutcol }{#1}}
+\newcommand{\com}[1]{\mi{\col{\commoncol }{#1}}}
+
+\newcommand{\fail}[0]{\mi{fail}}
+\newcommand{\fails}[0]{\src{fail}\xspace}
+\newcommand{\failt}[0]{\trg{fail}\xspace}
+\newcommand{\failc}[0]{\com{fail}\xspace}
+\newcommand{\failo}[0]{\oth{fail}\xspace}
+\newcommand{\retback}[0]{\mi{retBack}}
+\newcommand{\throw}[0]{\mi{throw}}
+\newcommand{\entry}[0]{\mi{entry}}
+
+\newcommand{\secu}[0]{\mi{sec}\xspace}
+\newcommand{\inse}[0]{\mi{ins}\xspace}
+
+\newcommand{\hil}[1]{\colorbox{yellow}{#1}}
+
+\newcommand{\lowloc}[1]{\fun{low\text{-}loc}{#1}}
+\newcommand{\highloc}[1]{\fun{high\text{-}loc}{#1}}
+\newcommand{\highcap}[1]{\fun{high\text{-}cap}{#1}}
+\newcommand{\sech}[1]{\fun{secure}{#1}}
+\newcommand{\monh}[1]{\fun{mon\text{-}care}{#1}}
+
+\newcommand{\strip}[1]{\relev{#1}}
+\newcommand{\relev}[1]{\fun{relevant}{#1}}
+\newcommand{\myagree}[0]{\mathop{\raisebox{1mm}{$\frown$}}}
+\newcommand{\agree}[2]{\ensuremath{#1\myagree#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Logical relations formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\rhorel}[1]{\ensuremath{\sim_{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Type rules
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{typerule}
+\crefname{typerule}{rule}{rules}
+
+\newcommand{\typeruleInt}[5]{%									    % #1 is the title, #2 is the hypotheses. #3 is the thesis, #4 is the label for referencing
+	\def\thetyperule{#1}%
+	\refstepcounter{typerule}%
+	\label{tr:#4}%
+	%\ensuremath{\begin{array}{c}\textsf{\scriptsize ({#1})} \\#2 \\\hline{\ensuremath{#3}}\end{array}} \inference
+  \ensuremath{\begin{array}{c}#5 \inference{#2}{#3}\end{array}}
+}
+\newcommand{\typerule}[4]{%									        % #1 is the title, #2 is the hypotheses. #3 is the thesis, #4 is the label for referencing
+  \typeruleInt{#1}{#2}{#3}{#4}{\textsf{\scriptsize ({#1})} \\      }
+}
+\newcommand{\typerulenolabel}[4]{%									    % #1 is the title, #2 is the hypotheses. #3 is the thesis, #4 is the label for referencing
+	\def\thetyperule{#1}%
+	\refstepcounter{typerule}%
+  \ensuremath{\begin{array}{c} \inference{#2}{#3}\end{array}}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Figures, tables and tikz
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{veryback}
+\pgfdeclarelayer{veryback2}
+\pgfdeclarelayer{veryback3}
+\pgfdeclarelayer{back2}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{veryback3,veryback2,veryback,background,back2,main,foreground}
+
+\newcommand{\tikzpic}[1]{
+\begin{tikzpicture}[shorten >=1pt,auto,node distance=6mm]
+\tikzstyle{state} =[fill=white,minimum size=4pt]
+\tikzstyle{field} =[fill=gray!5,draw=black!70, rectangle, minimum width={width("whiskersfieldww")+2pt}]]
+#1
+\end{tikzpicture}
+}
+
+\newcommand{\tikzpicT}[1]{
+\begin{tikzpicture}[shorten >=1pt,node distance=12mm,auto]
+\tikzstyle{state} =[fill=white,minimum size=4pt]
+#1
+\end{tikzpicture}
+}
+
+\newcommand{\myfig}[3]{\begin{figure} [!ht]
+#1
+\caption{\label{fig:#2}#3}
+\end{figure}}
+\newcommand{\myfigonecol}[3]{\begin{figure*} [!hbt]
+#1
+\caption{\label{fig:#2}#3}
+\end{figure*}}
+
+\newcommand{\myfigp}[4]{\begin{figure} #4
+#1
+\caption{\label{fig:#2}#3}
+\end{figure}}
+
+
+\newcommand{\mytab}[3]{\begin{table} [!h]
+\centering
+#1
+
+\caption{\label{tab:#2}#3}
+\end{table}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Misc
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\etal}[0]{\textit{et al.}\xspace}
+
+\newcommand{\BREAK}[0]{
+\botrule
+\begin{center}$\spadesuit$\end{center}
+\botrule}
+
+\newcommand{\mytoprule}[1]{\vspace{1mm}\noindent\hrulefill\ \raisebox{-0.5ex}{\fbox{\ensuremath{#1}}} \hrulefill\hrulefill\hrulefill\vspace{0.5mm}}
+
+\def\botrule{\vspace{0mm}\hrule\vspace{2mm}}
+
+\newcommand{\link}[1]{\href{#1}{#1}}
+
+\newcommand{\myparagraph}[1]{ \smallskip \noindent\noindent\textit{#1}~}
+
+\DeclareMathOperator\compat{\ensuremath{\raisebox{1mm}{$\frown$}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Assembly
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\hiil}[1]{\color{red!60}{#1}}
+\newcommand{\hl}[1]{\colorbox{yellow}{#1}}
+\newcounter{line}
+
+\newcommand{\assline}[1]{\trg{\arabic{line}}~~ \trg{\mtt{#1}}\stepcounter{line}}
+\newcommand{\asm}[1]{\mtt{#1}}
+
+\newcommand{\xto}[1]{\ensuremath{~\mathrel{\xrightarrow{~#1~}}~}}
+\newcommand{\Xto}[1]{\ensuremath{~\mathrel{\xRightarrow{~#1~}}~}}
+
+
+\newcommand{\xtos}[1]{\src{\xto{#1}}}
+\newcommand{\Xtos}[1]{\src{\Xto{#1}}}
+\newcommand{\nxtos}[1]{\src{\centernot{\xto{#1}}}}
+\newcommand{\nXtos}[1]{\src{\centernot{\Xto{#1}}}}
+\newcommand{\xtot}[1]{\trg{\xto{#1}}}
+\newcommand{\Xtot}[1]{\trg{\Xto{#1}}}
+\newcommand{\nxtot}[1]{\trg{\centernot{\xto{#1}}}}
+\newcommand{\nXtot}[1]{\trg{\centernot{\Xto{#1}}}}
+\newcommand{\xtoc}[1]{\com{\xto{#1}}}
+\newcommand{\Xtoc}[1]{\com{\Xto{#1}}}
+\newcommand{\nxtoc}[1]{\com{\centernot{\xto{#1}}}}
+\newcommand{\nXtoc}[1]{\com{\centernot{\Xto{#1}}}}
+\newcommand{\xtoo}[1]{\oth{\xto{#1}}}
+\newcommand{\Xtoo}[1]{\oth{\Xto{#1}}}
+\newcommand{\nxtoo}[1]{\oth{\centernot{\xto{#1}}}}
+\newcommand{\nXtoo}[1]{\oth{\centernot{\Xto{#1}}}}
+
+
+
+\newcommand{\xtol}[1]{\ensuremath{\xrightarrow{~#1~}\low}}
+\newcommand{\Xtol}[1]{\ensuremath{\xRightarrow{~#1~}\Low}}
+\newcommand{\Xtols}[1]{\ensuremath{\xRightarrow{~\src{#1}~}\Low}}
+\newcommand{\tol}[0]{\ensuremath{\to\low}}
+\newcommand{\low}[0]{\ensuremath{\!\!\!\!\to} }
+\newcommand{\Low}[0]{\ensuremath{\!\!\!\!\Rightarrow} }
+\newcommand{\sst}[0]{\ensuremath{\searrow^{\ms{SS}}}}
+\newcommand{\acp}[1]{\ms{#1}}
+\newcommand{\blk}[0]{\ensuremath{(\unk,\trg{m},\trg{\OB{s}},\trg{h},\trg{t})}\xspace}
+\newcommand{\unk}[0]{\ensuremath{unk}}
+\newcommand{\unp}[0]{\ensuremath{\mi{un}}}
+\newcommand{\stu}[0]{\ensuremath{^{\times}\xspace}}
+\newcommand{\id}[0]{\mi{id}}
+\newcommand{\tolai}[0]{\ensuremath{\to}}
+\newcommand{\tolaii}[0]{\ensuremath{\tolai^{\!\!\!\!\!i}\ }}
+\newcommand{\tolaie}[0]{\ensuremath{\tolai^{\!\!\!\!\!e}\ }}
+\newcommand{\toid}[0]{\ensuremath{\xto{\trg{\id}}}}
+\newcommand{\tolid}[0]{\ensuremath{\xtol{\trg{\id}}}}
+\newcommand{\tolun}[0]{\ensuremath{\xto{\unp}}}
+
+\newcommand{\stus}[0]{\ensuremath{^{\src{\times}}\xspace}}
+\newcommand{\stut}[0]{\ensuremath{^{\trg{\times}}\xspace}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Listings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.3,0.3,0.3}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\newcommand{\lstb}[1]{\ensuremath{\text{\texttt{\textbf{#1}}}}}
+\newcommand{\lst}[1]{\ensuremath{\text{\texttt{#1}}}}
+
+\lstdefinelanguage{Java} %thanks to whoever did this
+{morekeywords={abstract, all, and, as, assert, but, disj, else, exactly, extends, fact, for, fun, iden, if, iff, implies, in, Int, void, int, let, lone, module, no, none, not, one, open, or, part, pred, run, seq, set, sig, some, sum, then, univ, package, class, public, private, null, return, new, interface, extern, object, implements, System, static, super, try , catch, throw, throws, Unit, var, val, of, principal, trust},
+sensitive=true,
+%commentstyle=\color{mygreen},
+%morecomment=[l][\small\itshape\color{mygreen}]{--},
+%morecomment=[l][\small\itshape\color{mygreen}]{//},
+%morecomment=[s][\small\itshape\color{mygreen}]{/*}{*/},
+%keywordstyle=\color{blue!60!black}\bfseries,
+%stringstyle=\ttfamily\color{red!50!brown},
+%identifierstyle=\color{purple!40!black},
+keywordstyle=\bfseries\color{\stlccol}, %green!40!black
+commentstyle=\itshape\color{purple!40!black},
+morecomment=[l][\small\itshape\color{purple!40!black}]{//},
+identifierstyle=\color{\stlccol},
+stringstyle=\color{orange},
+basicstyle=\small,
+basicstyle={\small\ttfamily},
+numbers=left,
+numberstyle=\tiny\color{mygray},
+tabsize=2,
+numbersep=5pt,
+breaklines=true,
+lineskip=-2pt,
+stepnumber=1,
+captionpos=b,
+breaklines=true,
+breakatwhitespace=false,
+showspaces=false,
+showtabs=false,
+float=!h,
+%frame=single,
+columns=fullflexible,escapeinside={(*@}{@*)},
+moredelim=**[is][\color{red!60}]{@}{@},
+literate={->}{{$\to$}}1 {^}{{$\mspace{-3mu}\widehat{\quad}\mspace{-3mu}$}}1
+{<}{$<$ }2 {>}{$>$ }2 {>=}{$\geq$ }2 {=<}{$\leq$ }2
+{<:}{{$<\mspace{-3mu}:$}}2 {:>}{{$:\mspace{-3mu}>$}}2
+{=>}{{$\Rightarrow$ }}2 {+}{$+$ }2 {++}{{$+\mspace{-8mu}+$ }}2
+{<=>}{{$\Leftrightarrow$ }}2 {+}{$+$ }2 {++}{{$+\mspace{-8mu}+$ }}2
+{\~}{{$\mspace{-3mu}\widetilde{\quad}\mspace{-3mu}$}}1
+{!=}{$\neq$ }2 {*}{${}^{\ast}$}1 %{.}{$\cdot$}1
+{\#}{$\#$}1
+}
+
+\lstdefinelanguage{General} %thanks to whoever did this
+{morekeywords={abstract, all, and, as, assert, but, disj, else, exactly, extends, fact, for, fun, iden, if, iff, implies, in, Int, void, int, let, lone, module, no, none, not, one, open, or, part, pred, run, seq, set, sig, some, sum, then, univ, package, class, public, private, null, return, new, interface, extern, object, implements, System, static, super, try , catch, throw, throws, Unit, var, val, of, principal, trust},
+sensitive=true,
+%commentstyle=\color{mygreen},
+%morecomment=[l][\small\itshape\color{mygreen}]{--},
+%morecomment=[l][\small\itshape\color{mygreen}]{//},
+%morecomment=[s][\small\itshape\color{mygreen}]{/*}{*/},
+%keywordstyle=\color{blue!60!black}\bfseries,
+%stringstyle=\ttfamily\color{red!50!brown},
+%identifierstyle=\color{purple!40!black},
+keywordstyle=\bfseries\color{\neutcol},
+commentstyle=\itshape\color{purple!40!black},
+morecomment=[l][\small\itshape\color{purple!40!black}]{//},
+identifierstyle=\color{\neutcol},
+stringstyle=\color{orange},
+basicstyle=\small,
+basicstyle={\small\ttfamily},
+numbers=left,
+numberstyle=\tiny\color{mygray},
+tabsize=2,
+numbersep=5pt,
+breaklines=true,
+lineskip=-2pt,
+stepnumber=1,
+captionpos=b,
+breaklines=true,
+breakatwhitespace=false,
+showspaces=false,
+showtabs=false,
+float=!h,
+%frame=single,
+columns=fullflexible,escapeinside={(*@}{@*)},
+moredelim=**[is][\color{red!60}]{@}{@},
+literate={->}{{$\to$}}1 {^}{{$\mspace{-3mu}\widehat{\quad}\mspace{-3mu}$}}1
+{<}{$<$}2 {>}{$>$}2 {>=}{$\geq$}2 {=<}{$\leq$}2
+{<:}{{$<\mspace{-3mu}:$}}2 {:>}{{$:\mspace{-3mu}>$}}2
+{=>}{{$\Rightarrow$ }}2 {+}{$+$ }2 {++}{{$+\mspace{-8mu}+$ }}2
+{<=>}{{$\Leftrightarrow$ }}2 {+}{$+$ }2 {++}{{$+\mspace{-8mu}+$ }}2
+{\~}{{$\mspace{-3mu}\widetilde{\quad}\mspace{-3mu}$}}1
+{!=}{$\neq$ }2 {*}{${}^{\ast}$}1 %{.}{$\cdot$}1
+{\#}{$\#$}1
+}
+
+\lstdefinelanguage{Asm}
+{morekeywords={abstract, all, and, as, assert, but, check, disj, else, exactly, extends, fact, for, fun, iden, if, iff, implies, in, Int, void, int, let, lone, module, no, none, not, one, open, part, pred, run, seq, set, sig, some, sum, then, univ, package, class, public, private, null, return, new, interface, extern, object, implements, System, static, super, try , catch, throw, throws, Unit, var, val, principal, trust, label, load, add, addi, into, test, mov, cmov, cmova, movzx, cmp, jbe, sar, cmovbe, or, jmp, shl, ret, jae, lea, lfence, jne},
+sensitive=true,
+%commentstyle=\color{mygreen},
+%morecomment=[l][\small\itshape\color{mygreen}]{--},
+%morecomment=[l][\small\itshape\color{mygreen}]{//},
+%morecomment=[s][\small\itshape\color{mygreen}]{/*}{*/},
+%keywordstyle=\color{blue!60!black}\bfseries,
+%stringstyle=\ttfamily\color{red!50!brown},
+identifierstyle=\color{\ulccol},
+keywordstyle=\bfseries\color{\ulccol},
+commentstyle=\itshape\color{purple!40!black},
+morecomment=[l][\small\itshape\color{purple!40!black}]{//},
+% identifierstyle=\color{blue},
+stringstyle=\color{orange},
+basicstyle=\small,
+basicstyle={\small},
+numbers=left,
+numberstyle=\tiny\color{mygray},
+tabsize=2,
+numbersep=5pt,
+breaklines=true,
+lineskip=-2pt,
+stepnumber=1,
+captionpos=b,
+breaklines=true,
+breakatwhitespace=false,
+showspaces=false,
+showtabs=false,
+float=!h,
+%frame=single,
+columns=fullflexible,escapeinside={(*@}{@*)},
+moredelim=**[is][\color{red!60}]{@}{@},
+literate={->}{{$\to$}}1 {^}{{$\mspace{-3mu}\widehat{\quad}\mspace{-3mu}$}}1
+{<}{$<$}2 {>}{$>$ }2 {>=}{$\geq$ }2 {=<}{$\leq$ }2
+{<:}{{$<\mspace{-3mu}:$}}2 {:>}{{$:\mspace{-3mu}>$}}2
+{=>}{{$\Rightarrow$ }}2 {+}{$+$ }2 {++}{{$+\mspace{-8mu}+$ }}2
+{<=>}{{$\Leftrightarrow$ }}2 {+}{$+$ }2 {++}{{$+\mspace{-8mu}+$ }}2
+{\~}{{$\mspace{-3mu}\widetilde{\quad}\mspace{-3mu}$}}1
+{!=}{$\neq$ }2 {*}{${}^{\ast}$}1 %{.}{$\cdot$}1
+{\#}{$\#$}1
+}
+\lstset{language=General,numbersep=5pt,frame=single}%,linewidth=.45\textwidth}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Contextual equivalence
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \DeclareMathOperator\niff{\ensuremath{\nLeftrightarrow}}
+% \DeclareMathOperator\nequiv{\ensuremath{\mathrel{\not\equiv}}} %TODO
+
+\DeclareMathOperator\ceq{\ensuremath{\mathrel{\simeq_{\mi{ctx}}}}}
+\DeclareMathOperator\nceq{\mathrel{\nsimeq_{\mi{ctx}}}}
+
+\DeclareMathOperator\ceqs{\src{\ceq}}
+\DeclareMathOperator\ceqt{\trg{\ceq}}
+\DeclareMathOperator\ceqc{\com{\ceq}}
+
+\DeclareMathOperator\nceqs{\src{\nceq}}
+\DeclareMathOperator\nceqt{\trg{\nceq}}
+
+\DeclareMathOperator\loweq{\ensuremath{\mathrel{=_{\text{L}}}}}
+
+\DeclareMathOperator\loweqs{\src{\loweq}}
+\DeclareMathOperator\loweqt{\trg{\loweq}}
+\DeclareMathOperator\loweqc{\com{\loweq}}
+
+\DeclareMathOperator\nloweq{\ensuremath{\mathrel{\neq_{\text{L}}}}}
+
+\DeclareMathOperator\nloweqs{\src{\nloweq}}
+\DeclareMathOperator\nloweqt{\trg{\nloweq}}
+\DeclareMathOperator\nloweqc{\com{\nloweq}}
+
+\DeclareMathOperator\tloweq{\ensuremath{\mathrel{\teqa_{\mi{L}}}}}
+
+\DeclareMathOperator\ntloweq{\ensuremath{\mathrel{\nteqa_{\mi{L}}}}}
+
+\DeclareMathOperator\tloweqs{\src{\tloweq}}
+\DeclareMathOperator\tloweqt{\trg{\tloweq}}
+\DeclareMathOperator\tloweqc{\com{\tloweq}}
+
+\DeclareMathOperator\ntloweqs{\src{\ntloweq}}
+\DeclareMathOperator\ntloweqt{\trg{\ntloweq}}
+\DeclareMathOperator\ntloweqc{\com{\ntloweq}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Trace equivalence
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\teqaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\scriptsize{T}}\hfil\cr\hfil
+       $=$}}}}
+\def\teqa{\mathrel{\mathpalette\teqaux{}}}
+\def\nteqa{\mathrel{\mathpalette\teqaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\teqs{\ensuremath{\src{\teqa}}}
+\DeclareMathOperator\nteqs{\ensuremath{\src{\nteqa}}}
+\DeclareMathOperator\teqt{\ensuremath{\trg{\teqa}}}
+\DeclareMathOperator\nteqt{\ensuremath{\trg{\nteqa}}}
+\DeclareMathOperator\teqc{\ensuremath{\com{\teqa}}}
+\DeclareMathOperator\nteqc{\ensuremath{\com{\nteqa}}}
+
+\DeclareMathOperator\teqwbst{\trg{\teqa^{w\text{-}b}_{\S\T}}}
+
+
+
+\def\relssa{\approx} %{\mathrel{\mathpalette\relssaux{}}}
+\def\nrelssa{\not\approx} %{\mathrel{\mathpalette\relssaux{}\!\!\!\!/\ }}
+% \DeclareMathOperator\relss{\ensuremath{\src{\relssa}}}
+% \DeclareMathOperator\nrelss{\ensuremath{\src{\nrelssa}}}
+% \DeclareMathOperator\relst{\ensuremath{\trg{\relssa}}}
+% \DeclareMathOperator\nrelst{\ensuremath{\trg{\nrelssa}}}
+
+\DeclareMathOperator\rels{\ensuremath{\com{\relssa}}}
+\DeclareMathOperator\nrels{\ensuremath{\com{\nrelssa}}}
+
+\newcommand{\reltext}[0]{\relssa}
+\newcommand{\relref}[0]{\ensuremath{\Cref{cr:tracerel}}\xspace}
+\newcommand{\tracerel}[0]{\relref}
+\newcommand{\reldef}[0]{\criteria{\reltext}{tracerel}}
+
+
+\def\relssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{$\boldsymbol{+}$}}\hfil\cr\hfil
+       $\approx$}}}}
+\def\relssb{\mathrel{\mathpalette\relssaux{}}}
+\def\nrelssb{\mathrel{\mathpalette\relssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\relsp{\ensuremath{\com{\relssb}}}
+\DeclareMathOperator\nrelsp{\ensuremath{\com{\nrelssb}}}
+
+\newcommand{\relptext}[0]{\relssb}
+\newcommand{\relpref}[0]{\ensuremath{\Cref{cr:tracerelp}}\xspace}
+\newcommand{\tracerelp}[0]{\relpref}
+\newcommand{\relpdef}[0]{\criteria{\relptext}{tracerelp}}
+
+
+\def\hrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{H}}}\hfil\cr\hfil
+       $\approx$}}}}
+\def\hrelssb{\mathrel{\mathpalette\hrelssaux{}}}
+\def\hnrelssb{\mathrel{\mathpalette\hrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\hrel{\ensuremath{\com{\hrelssb}}}
+\DeclareMathOperator\nhrel{\ensuremath{\com{\hnrelssb}}}
+
+\newcommand{\hreltext}[0]{\hrel}
+\newcommand{\hrelref}[0]{\ensuremath{\Cref{cr:htracerel}}\xspace}
+\newcommand{\htracerelp}[0]{\hrel}
+\newcommand{\hreldef}[0]{\criteria{\hreltext}{htracerel}}
+
+
+\def\vrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{V}}}\hfil\cr\hfil
+       $\approx$}}}}
+\def\vrelssb{\mathrel{\mathpalette\vrelssaux{}}}
+\def\vnrelssb{\mathrel{\mathpalette\vrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\vrel{\ensuremath{\com{\vrelssb}}}
+\DeclareMathOperator\nvrel{\ensuremath{\com{\vnrelssb}}}
+
+\newcommand{\vreltext}[0]{\vrel}
+\newcommand{\vrelref}[0]{\ensuremath{\Cref{cr:vtracerel}}\xspace}
+\newcommand{\vtracerelp}[0]{\vrel}
+\newcommand{\vreldef}[0]{\criteria{\vreltext}{vtracerel}}
+
+
+\def\srelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{S}}}\hfil\cr\hfil
+       $\approx$}}}}
+\def\srelssb{\mathrel{\mathpalette\srelssaux{}}}
+\def\snrelssb{\mathrel{\mathpalette\srelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\srel{\ensuremath{\com{\srelssb}}}
+\DeclareMathOperator\nsrel{\ensuremath{\com{\snrelssb}}}
+
+\newcommand{\sreltext}[0]{\srel}
+\newcommand{\srelref}[0]{\ensuremath{\Cref{cr:stracerel}}\xspace}
+\newcommand{\stracerel}[0]{\srel}
+\newcommand{\sreldef}[0]{\criteria{\sreltext}{stracerel}}
+
+
+\def\brelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{B}}}\hfil\cr\hfil
+       $\approx$}}}}
+\def\brelssb{\mathrel{\mathpalette\brelssaux{}}}
+\def\bnrelssb{\mathrel{\mathpalette\brelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\brel{\ensuremath{\com{\brelssb}}}
+\DeclareMathOperator\nbrel{\ensuremath{\com{\bnrelssb}}}
+
+\newcommand{\breltext}[0]{\brel}
+\newcommand{\brelref}[0]{\ensuremath{\Cref{cr:btracerel}}\xspace}
+\newcommand{\btracerel}[0]{\brel}
+\newcommand{\breldef}[0]{\criteria{\breltext}{btracerel}}
+
+
+\def\crelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{C}}}\hfil\cr\hfil
+       $\approx$}}}}
+\def\crelssb{\mathrel{\mathpalette\crelssaux{}}}
+\def\cnrelssb{\mathrel{\mathpalette\crelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\crel{\ensuremath{\com{\crelssb}}}
+\DeclareMathOperator\ncrel{\ensuremath{\com{\cnrelssb}}}
+
+\newcommand{\creltext}[0]{\crel}
+\newcommand{\crelref}[0]{\ensuremath{\Cref{cr:ctracerel}}\xspace}
+\newcommand{\ctracerel}[0]{\crel}
+\newcommand{\creldef}[0]{\criteria{\creltext}{ctracerel}}
+
+\def\arelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{A}}}\hfil\cr\hfil
+       $\approx$}}}}
+\def\arelssb{\mathrel{\mathpalette\arelssaux{}}}
+\def\anrelssb{\mathrel{\mathpalette\arelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\arel{\ensuremath{\com{\arelssb}}}
+\DeclareMathOperator\narel{\ensuremath{\com{\anrelssb}}}
+
+\newcommand{\areltext}[0]{\arel}
+\newcommand{\arelref}[0]{\ensuremath{\Cref{cr:atracerel}}\xspace}
+\newcommand{\atracerelp}[0]{\arel}
+\newcommand{\areldef}[0]{\criteria{\areltext}{atracerel}}
+
+
+\newcommand{\relslh}[0]{\Bumpeq} %\eqcirc \propto \bumpeq \Bumpeq
+
+
+\def\shrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{H}}}\hfil\cr\hfil
+       $\relslh$}}}}
+\def\shrelssb{\mathrel{\mathpalette\shrelssaux{}}}
+\def\shnrelssb{\mathrel{\mathpalette\shrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\shrel{\ensuremath{\com{\shrelssb}}}
+\DeclareMathOperator\nshrel{\ensuremath{\com{\shnrelssb}}}
+
+\newcommand{\shreltext}[0]{\shrel}
+\newcommand{\shrelref}[0]{\ensuremath{\Cref{cr:shtracerel}}\xspace}
+\newcommand{\shtracerelp}[0]{\shrel}
+\newcommand{\shreldef}[0]{\criteria{\shreltext}{shtracerel}}
+
+
+\def\svrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{V}}}\hfil\cr\hfil
+       $\relslh$}}}}
+\def\svrelssb{\mathrel{\mathpalette\svrelssaux{}}}
+\def\svnrelssb{\mathrel{\mathpalette\svrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\svrel{\ensuremath{\com{\svrelssb}}}
+\DeclareMathOperator\nsvrel{\ensuremath{\com{\svnrelssb}}}
+
+\newcommand{\svreltext}[0]{\svrel}
+\newcommand{\svrelref}[0]{\ensuremath{\Cref{cr:svtracerel}}\xspace}
+\newcommand{\svtracerelp}[0]{\svrel}
+\newcommand{\svreldef}[0]{\criteria{\svreltext}{svtracerel}}
+
+
+\def\ssrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{S}}}\hfil\cr\hfil
+       $\relslh$}}}}
+\def\ssrelssb{\mathrel{\mathpalette\ssrelssaux{}}}
+\def\ssnrelssb{\mathrel{\mathpalette\ssrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\ssrel{\ensuremath{\com{\ssrelssb}}}
+\DeclareMathOperator\nssrel{\ensuremath{\com{\ssnrelssb}}}
+
+\newcommand{\ssreltext}[0]{\ssrel}
+\newcommand{\ssrelref}[0]{\ensuremath{\Cref{cr:sstracerel}}\xspace}
+\newcommand{\sstracerel}[0]{\ssrel}
+\newcommand{\ssreldef}[0]{\criteria{\ssreltext}{sstracerel}}
+
+
+\def\sbrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{B}}}\hfil\cr\hfil
+       $\relslh$}}}}
+\def\sbrelssb{\mathrel{\mathpalette\sbrelssaux{}}}
+\def\sbnrelssb{\mathrel{\mathpalette\sbrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\sbrel{\ensuremath{\com{\sbrelssb}}}
+\DeclareMathOperator\nsbrel{\ensuremath{\com{\sbnrelssb}}}
+
+\newcommand{\sbreltext}[0]{\sbrel}
+\newcommand{\sbrelref}[0]{\ensuremath{\Cref{cr:sbtracerel}}\xspace}
+\newcommand{\sbtracerel}[0]{\sbrel}
+\newcommand{\sbreldef}[0]{\criteria{\sbreltext}{sbtracerel}}
+
+
+\def\screlssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{C}}}\hfil\cr\hfil
+       $\relslh$}}}}
+\def\screlssb{\mathrel{\mathpalette\screlssaux{}}}
+\def\scnrelssb{\mathrel{\mathpalette\screlssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\screl{\ensuremath{\com{\screlssb}}}
+\DeclareMathOperator\nscrel{\ensuremath{\com{\scnrelssb}}}
+
+\newcommand{\screltext}[0]{\crel}
+\newcommand{\screlref}[0]{\ensuremath{\Cref{cr:ctracerel}}\xspace}
+\newcommand{\sctracerel}[0]{\crel}
+\newcommand{\screldef}[0]{\criteria{\creltext}{ctracerel}}
+
+\def\sarelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{A}}}\hfil\cr\hfil
+       $\relslh$}}}}
+\def\sarelssb{\mathrel{\mathpalette\arelssaux{}}}
+\def\sanrelssb{\mathrel{\mathpalette\arelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\sarel{\ensuremath{\com{\sarelssb}}}
+\DeclareMathOperator\nsarel{\ensuremath{\com{\sanrelssb}}}
+
+\newcommand{\sareltext}[0]{\sarel}
+\newcommand{\sarelref}[0]{\ensuremath{\Cref{cr:satracerel}}\xspace}
+\newcommand{\satracerelp}[0]{\sarel}
+\newcommand{\sareldef}[0]{\criteria{\sareltext}{satracerel}}
+
+
+%%%
+\newcommand{\relslhp}[0]{\propto} %\eqcirc \propto \bumpeq \Bumpeq
+
+\def\cssrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{S}}}\hfil\cr\hfil
+       $\relslhp$}}}}
+\def\cssrelssb{\mathrel{\mathpalette\cssrelssaux{}}}
+\def\cssnrelssb{\mathrel{\mathpalette\cssrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\cssrel{\ensuremath{\com{\cssrelssb}}}
+\DeclareMathOperator\cnssrel{\ensuremath{\com{\cssnrelssb}}}
+
+\newcommand{\cssreltext}[0]{\cssrel}
+\newcommand{\cssrelref}[0]{\ensuremath{\Cref{cr:csstracerel}}\xspace}
+\newcommand{\csstracerel}[0]{\cssrel}
+\newcommand{\cssreldef}[0]{\criteria{\cssreltext}{csstracerel}}
+
+\def\csbrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{B}}}\hfil\cr\hfil
+       $\relslhp$}}}}
+\def\csbrelssb{\mathrel{\mathpalette\csbrelssaux{}}}
+\def\csbnrelssb{\mathrel{\mathpalette\csbrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\csbrel{\ensuremath{\com{\csbrelssb}}}
+\DeclareMathOperator\cnsbrel{\ensuremath{\com{\csbnrelssb}}}
+
+\newcommand{\csbreltext}[0]{\csbrel}
+\newcommand{\csbrelref}[0]{\ensuremath{\Cref{cr:csbtracerel}}\xspace}
+\newcommand{\csbtracerel}[0]{\csbrel}
+\newcommand{\csbreldef}[0]{\criteria{\csbreltext}{csbtracerel}}
+
+\def\cshrelssaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\tiny{\com{H}}}\hfil\cr\hfil
+       $\relslhp$}}}}
+\def\cshrelssb{\mathrel{\mathpalette\cshrelssaux{}}}
+\def\cshnrelssb{\mathrel{\mathpalette\cshrelssaux{}\!\!\!\!/\ }}
+
+\DeclareMathOperator\cshrel{\ensuremath{\com{\cshrelssb}}}
+\DeclareMathOperator\cnshrel{\ensuremath{\com{\cshnrelssb}}}
+
+\newcommand{\cshreltext}[0]{\cshrel}
+\newcommand{\cshrelref}[0]{\ensuremath{\Cref{cr:cshtracerel}}\xspace}
+\newcommand{\cshtracerelp}[0]{\cshrel}
+\newcommand{\cshreldef}[0]{\criteria{\cshreltext}{cshtracerel}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Well-behaved ceq
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ceqwaux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise6pt \hbox{\scriptsize{w-b}}\hfil\cr\hfil
+       $\ceq$}}}}
+\def\ceqwf{\mathrel{\mathpalette\ceqwaux{}}}
+
+\DeclareMathOperator\ceqw{\ceqwf}
+\DeclareMathOperator\ceqwbst{\trg{\ceqwf}^{\S}_{\T}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pre-eq for AIM
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\praux#1{\vcenter{\hbox{\ooalign{\hfil
+       \raise4pt \hbox{$\subset$}\hfil\cr\hfil
+       $\sim$}}}}
+\def\pr{\mathrel{\mathpalette\praux{}}}
+\DeclareMathOperator\preqaims{\trg{\pr}^{\trg{\pi}}}
+\DeclareMathOperator\refrel{\pr}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Traces
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\labelfont}[1]{\ensuremath{\asm{#1}}}
+\newcommand{\trcl}[2]{\ensuremath{\labelfont{call}~ #1~ #2{?}}}
+\newcommand{\trcb}[2]{\ensuremath{\labelfont{call}~ #1~ #2{!}}}
+\newcommand{\trrt}[1]{\ensuremath{\labelfont{ret}~ #1{!}}}
+\newcommand{\trrb}[1]{\ensuremath{\labelfont{ret}~ #1{?}}}
+\newcommand{\tick}[0]{\trg{\surd}}
+
+\newcommand{\clh}[3]{\ensuremath{\labelfont{call}~ #1~ #2{?}}} 	%{\ensuremath{\labelfont{call}~ #1~ #2~ #3{?}}}
+\newcommand{\cbh}[3]{\ensuremath{\labelfont{call}~ #1~ #2{!}}} 	%{\ensuremath{\labelfont{call}~ #1~ #2~ #3{!}}}
+\newcommand{\rth}[2]{\ensuremath{\labelfont{ret}{!}}}	 		%{\ensuremath{\labelfont{ret}~ #1~ #2{!}}}
+\newcommand{\rbh}[2]{\ensuremath{\labelfont{ret}{?}}}			%{\ensuremath{\labelfont{ret}~ #1~ #2{?}}}
+\newcommand{\mnh}[1]{\ensuremath{\labelfont{mon}~#1}}
+
+\newcommand{\emptycl}[1]{\ensuremath{#1{?}}}
+\newcommand{\emptyrt}[1]{\ensuremath{#1{!}}}
+
+\newcommand{\jm}[1]{\ensuremath{\labelfont{jump} #1{?}}}
+\newcommand{\jb}[1]{\ensuremath{\labelfont{jump} #1{!}}}
+
+\newcommand{\rdl}[1]{\ensuremath{\labelfont{read}(#1)}}
+\newcommand{\wrl}[1]{\ensuremath{\labelfont{write}(#1)}}
+
+\newcommand{\ifl}[1]{\ensuremath{\labelfont{if}(#1)}}
+
+\newcommand{\startl}[0]{\ensuremath{\labelfont{start}}}
+\newcommand{\rollbl}[0]{\ensuremath{\labelfont{rlb}}}
+
+\newcommand{\clgen}[2]{\ensuremath{\labelfont{call}~#1~#2}}
+\newcommand{\rtgen}[1]{\ensuremath{\labelfont{ret}~#1}}
+\newcommand{\jmpgen}[0]{\ensuremath{\labelfont{jump}}}
+
+\newcommand{\tracesname}[0]{\ensuremath{\ms{TR}}}
+\newcommand{\trsname}[0]{\src{\tracesname}\xspace}
+\newcommand{\trtname}[0]{\trg{\tracesname}\xspace}
+\newcommand{\trcname}[0]{\com{\tracesname}\xspace}
+
+\newcommand{\traces}[3]{\ensuremath{\ms{TR}^{#2}_{#3}(#1)}}
+\newcommand{\tracess}[1]{\src{\traces{#1}{}{}}}
+\newcommand{\tracest}[1]{\trg{\traces{#1}{}{}}}
+\newcommand{\tracesc}[1]{\com{\traces{#1}{}{}}}
+\newcommand{\trwbt}[1]{\trg{\traces{#1}{w\text{-}b}{\S\T}}}
+
+\newcommand{\behav}[1]{{Beh}{\left(#1\right)}}
+\newcommand{\behavs}[1]{\src{\behav{#1}}}
+\newcommand{\behavt}[1]{\trg{\behav{#1}}}
+\newcommand{\behavc}[1]{\com{\behav{#1}}}
+
+\newcommand{\Ob}[1]{\trg{\mc{O}_{#1}}}
+\newcommand{\B}[1]{\trg{\mc{B}_{#1}}}
+\newcommand{\D}[1]{\trg{\mc{D}_{#1}}}
+\newcommand{\N}[1]{\trg{\mc{N}_{#1}}}
+\newcommand{\PR}[1]{\trg{\mc{P}_{#1}}}
+
+% \newcommand{\G}[1]{\trg{\mc{G}_{#1}}} %TODO
+
+% cross language stuff
+\newcommand\subsetsim{\mathrel{\substack{\textstyle\subset\\[-0.2ex]\textstyle\sim}}}
+\newcommand\supsetsim{\mathrel{\substack{\textstyle\supset\\[-0.2ex]\textstyle\sim}}}
+\newcommand\sqsubsetsim{\mathrel{\substack{\textstyle\sqsubset\\[-0.2ex]\textstyle\sim}}}
+\DeclareMathOperator\relate{\bl{\approx}}
+\DeclareMathOperator\relatebeta{\bl{\approx_{\beta}}}
+\DeclareMathOperator\relatephi{\bl{\approx_{\varphi}}}
+\DeclareMathOperator\relaz{\bl{\sim}}
+\DeclareMathOperator\relatet{\bl{\triplesim}}
+\DeclareMathOperator\relatetbeta{\bl{\triplesim_{\beta}}}
+\DeclareMathOperator\relatetphi{\bl{\triplesim_{\varphi}}}
+\DeclareMathOperator\relateb{\bl{\simb}}
+\newcommand*{\triplesim}{\mathrel{\vcenter{\offinterlineskip\hbox{$\sim$}\vskip-.35ex\hbox{$\sim$}\vskip-.35ex\hbox{$\sim$}}}}
+
+\newcommand*{\simb}{\mathrel{\vcenter{\offinterlineskip\hbox{$\,\circ$}\vskip-.4ex\hbox{\phantom{$\sim$}}\vskip-.35ex\hbox{$\sim$}}}}
+\DeclareMathOperator\relateq{\bl{\quadruplesim}}
+\newcommand*{\quadruplesim}{\mathrel{\Box}}
+
+\DeclareMathOperator\altrelatet{\bl{\sim}}
+\DeclareMathOperator\altrelatetbeta{\bl{\sim_{\beta}}}
+\DeclareMathOperator\notaltrelatetbeta{\bl{\not\sim_{\beta}}}
+
+
+\DeclareMathOperator\prefix{\bl{\leq}}
+\DeclareMathOperator\nprefix{\bl{\not\leq}}
+
+
+\newcommand{\length}[1]{\ensuremath{|#1|}}
+\newcommand{\abs}[1]{\length{#1}}
+
+\newcommand{\as}[0]{\src{\alpha}\xspace}
+\newcommand{\at}[0]{\trg{\alpha}\xspace}
+\newcommand{\ac}[0]{\com{\alpha}\xspace}
+\newcommand{\gas}[0]{\src{\gamma}\xspace}
+\newcommand{\gat}[0]{\trg{\gamma}\xspace}
+\newcommand{\gac}[0]{\com{\gamma}\xspace}
+
+\newcommand{\divt}[0]{\trg{\uparrow}\xspace}
+\newcommand{\tert}[0]{\trg{\downarrow}\xspace}
+\newcommand{\divs}[0]{\src{\uparrow}\xspace}
+\newcommand{\ters}[0]{\src{\downarrow}\xspace}
+\newcommand{\divc}[0]{\com{\uparrow}\xspace}
+\newcommand{\terc}[0]{\com{\downarrow}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sets envs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\oset}[1]{\setb{#1}}%\ensuremath{\widehat{#1}}}
+\newcommand{\settr}[1]{\ensuremath{\widehat{\bar{#1}}}}
+\newcommand{\settrt}[1]{\trg{\settr{#1}}}
+\newcommand{\settrs}[1]{\src{\settr{#1}}}
+\newcommand{\settrc}[1]{\com{\settr{#1}}}
+\newcommand{\setb}[1]{\ensuremath{\left\{#1\right\}}}
+
+\newcommand{\card}[1]{\ensuremath{|\!|{#1}|\!|}}
+
+\newcommand{\nameformatting}[1]{\mi{#1}}
+\newcommand{\Prop}[0]{\nameformatting{Prop}\xspace}
+\newcommand{\Obs}[0]{\nameformatting{Obs}\xspace}
+
+\newcommand{\proc}[2]{\ensuremath{(#1)_{#2} }}
+
+
+\newcommand{\lam}[2]{\ensuremath{\lambda #1\ldotp #2}}
+\newcommand{\pair}[1]{\ensuremath{\left\langle#1\right\rangle}}
+\newcommand{\projone}[1]{\ensuremath{#1.1}}
+\newcommand{\projtwo}[1]{\ensuremath{#1.2}}
+\newcommand{\fix}[1]{\ensuremath{\mr{fix}}_{#1}}
+\newcommand{\case}{\ensuremath{\mr{case}}}
+\newcommand{\of}{\ensuremath{\mr{of}}}
+\newcommand{\unit}{\ensuremath{{unit}}}
+\newcommand{\caseof}[3]{\ensuremath{\mr{case}~#1~\mr{of}~\inl{x_1}\mapsto #2\mid\inr{x_2}\mapsto #3}}
+\newcommand{\inl}[1]{\ensuremath{\mr{inl}~#1}}
+\newcommand{\inr}[1]{\ensuremath{\mr{inr}~#1}}
+\newcommand{\Bool}[0]{\mtt{Bool}\xspace}
+\newcommand{\Unit}[0]{\mtt{Unit}\xspace}
+\newcommand{\wrong}[0]{\trg{wrong}}
+\newcommand{\wrongo}[0]{\oth{wrong}}
+\newcommand{\protd}[1]{\ensuremath{\funname{\trg{protect}_{\src{#1}}}}}
+\newcommand{\confi}[1]{\ensuremath{\funname{\trg{confine}_{\src{#1}}}}}
+\newcommand{\conf}[1]{\confi{#1}}
+\newcommand{\newty}[2]{\ensuremath{\src{new}_{#2}~#1}}
+\newcommand{\fold}[1]{\ensuremath{\lst{fold}~#1}}
+\newcommand{\unfold}[1]{\ensuremath{\lst{unfold}~#1}}
+\newcommand{\forkold}[2]{\ensuremath{#1 \parallel #2}}
+\newcommand{\fork}[1]{\ensuremath{\left(\parallel #1\right)}}
+\newcommand{\myop}[0]{\ensuremath{\oplus}}
+\newcommand{\bop}[0]{\ensuremath{\otimes}}
+
+\newcommand{\type}[3]{\ensuremath{ \left\{#1:#2\relmiddle|#3 \right\}}}
+
+\newcommand{\matgen}[2]{\ensuremath{\mu #1.#2}}
+\newcommand{\mat}[0]{\matgen{\alpha}{\tau}}
+
+\newcommand{\assume}[1]{\underline{assume}(#1)}
+\newcommand{\assert}[1]{\underline{assert}(#1)}
+\newcommand{\callwith}[1]{\lst{monitor}~#1}
+\newcommand{\monitor}[2]{\lst{monitor}~#1~ \lst{with}~#2}
+
+%% used
+\newcommand{\lfence}[0]{{lfence}}
+%\newcommand{\mon}[0]{\lst{monitor}}
+\newcommand{\mon}[0]{{monitor}}
+\newcommand{\mons}[0]{\src{monitor}}
+\newcommand{\mont}[0]{\trg{monitor}}
+%\newcommand{\ret}[1]{\lst{return}~#1}
+\newcommand{\ret}[0]{{return;}}%{{return}~#1}
+%\newcommand{\letin}[3]{\lst{let}~#1=#2~\lst{in}~#3}
+\newcommand{\letin}[3]{{let}~#1=#2~{in}~#3}
+\newcommand{\letnew}[3]{{let}~#1=\new{#2}~{in}~#3}
+\newcommand{\letread}[3]{{let}~#1=rd~{#2}~{in}~#3}
+\newcommand{\letreads}[3]{\src{let}~#1=\src{rd}~{#2}~\src{in}~#3}
+\newcommand{\letreadt}[3]{\trg{let}~#1=\trg{rd}~{#2}~\trg{in}~#3}
+\newcommand{\letreadp}[3]{{let}~#1=rd_p~{#2}~{in}~#3}
+\newcommand{\letreadps}[3]{\src{let}~#1=\src{rd_p}~#2~\src{in}~#3}
+\newcommand{\letreadpt}[3]{\trg{let}~#1=\trg{rd_p}~{#2}~\trg{in}~#3}
+
+\newcommand{\asgn}[2]{#1 := #2}
+\newcommand{\asgnt}[2]{#1 \trg{:=} #2}
+\newcommand{\asgnp}[2]{#1 :=_p #2}
+\newcommand{\asgnps}[2]{#1 :=_\src{p} #2}
+\newcommand{\asgnpt}[2]{#1 :=_\trg{p} #2}
+
+\newcommand{\letnewt}[3]{\trg{let}~#1=\newt{#2}~\trg{in}~#3}
+\newcommand{\letnews}[3]{\src{let}~#1=\news{#2}~\src{in}~#3}
+\newcommand{\letnewo}[3]{\oth{let}~#1=\newo{#2}~\oth{in}~#3}
+\newcommand{\letins}[3]{\src{let}~#1\src{=}#2~\src{in}~#3}
+\newcommand{\letint}[3]{\trg{let}~#1\trg{=}#2~\trg{in}~#3}
+\newcommand{\letino}[3]{\oth{let}~#1\oth{=}#2~\oth{in}~#3}
+\newcommand{\letnewty}[4]{\src{let}~#1=\newty{#2}{#3}~\src{in}~#4}
+\newcommand{\letiso}[3]{{let}~#1=\newiso{#2}~{in}~#3}
+\newcommand{\cmove}[4]{{let}~#1=#2~({if}~#3)~{in}~#4}
+\newcommand{\cmovet}[4]{\trg{let}~#1=#2~(\trg{if}~#3)~\trg{in}~#4}
+%\newcommand{\call}[1]{\lst{call}~#1}
+\newcommand{\call}[1]{{call}~#1}
+\newcommand{\calls}[1]{\src{call}~#1}
+\newcommand{\callt}[1]{\trg{call}~#1}
+%\newcommand{\ifte}[3]{\lst{if}~#1~\lst{then}~#2~\lst{else}~#3}
+%\newcommand{\ifzte}[3]{\lst{ifz}~#1~\lst{then}~#2~\lst{else}~#3}
+\newcommand{\ifte}[3]{{if}~#1~{then}~#2~{else}~#3}
+\newcommand{\iftetag}[4]{{if}_{[#4]}~#1~{then}~#2~{else}~#3}
+\newcommand{\iftes}[3]{\src{if}~#1~\src{then}~#2~\src{else}~#3}
+\newcommand{\ifzte}[3]{{ifz}~#1~{then}~#2~{else}~#3}
+\newcommand{\ifztes}[3]{\src{ifz}~#1~\src{then}~#2~\src{else}~#3}
+\newcommand{\ifztet}[3]{\trg{ifz}~#1~\trg{then}~#2~\trg{else}~#3}
+\newcommand{\ifzteo}[3]{\oth{ifz}~#1~\oth{then}~#2~\oth{else}~#3}
+%\newcommand{\new}[1]{\ensuremath{\lst{new}~#1}}
+\newcommand{\new}[1]{{new}~#1}
+\newcommand{\news}[1]{\src{new}~#1}
+\newcommand{\newt}[1]{\trg{new}~#1}
+\newcommand{\newo}[1]{\oth{new}~#1}
+\newcommand{\newiso}[1]{\oth{newiso}~#1}
+% \newcommand{\hide}[1]{\trg{\lst{hide}~#1}}
+% \newcommand{\with}[1]{\trg{~\lst{with}~#1}}
+\newcommand{\hide}[1]{\trg{\trg{hide}~#1}}
+\newcommand{\lethide}[3]{\trg{let}~#1=\hide{#2}~\trg{in}~#3}
+\newcommand{\with}[1]{\trg{~{with}~#1}}
+\newcommand{\myendorse}[4]{\src{endorse}~#1~\src{=}~#2~\src{as}~#3~\src{in}~#4}
+\newcommand{\destruct}[5]{\trg{destruct}~#1~\trg{=}~#2~\trg{as}~#3~\trg{in}~#4~\trg{or}~#5}
+\newcommand{\destructo}[5]{\oth{destruct}~#1~\oth{=}~#2~\oth{as}~#3~\oth{in}~#4~\oth{or}~#5}
+\newcommand{\letatom}[3]{\trg{let}~#1~\trg{=}~\trg{newhide}~#2~\trg{in}~#3}
+
+\newcommand{\letderef}[3]{{let}~#1=~!#2~{in}~#3}
+\newcommand{\letderefs}[3]{\src{let}~#1\src{=~!}#2~\src{in}~#3}
+\newcommand{\letdereft}[3]{\trg{let}~#1\trg{=~!}#2~\trg{in}~#3}
+%% end used
+
+\newcommand{\myskip}[0]{\lst{skip}}
+\newcommand{\var}[1]{\lst{var}~#1}
+\newcommand{\decl}[1]{\lst{declassify}~#1}
+\newcommand{\newun}[1]{\lst{new-UN}~#1}
+\newcommand{\newlow}[1]{\lst{new-L}~#1}
+
+
+\newcommand{\ulc}[0]{\ensuremath{\bl{\lambda}^{\trg{\ms{u}}}}\xspace}
+\newcommand{\stlc}[0]{\ensuremath{\bl{\lambda}^{\src{\tau}}}\xspace}
+\newcommand{\erase}[1]{\fun{erase}{\src{#1}}}
+
+\newcommand{\lnat}[0]{\ensuremath{\bl{\lambda}^{\trg{\mb{N}}}}\xspace}
+\newcommand{\lbool}[0]{\ensuremath{\bl{\lambda}^{\src{\mi{B}}}}\xspace}
+
+\newcommand{\lnamed}[0]{\ensuremath{\bl{\lambda}^{\src{f}}}\xspace}
+\newcommand{\lasm}[0]{\ensuremath{\trg{\mi{Asm}}}\xspace}
+
+
+
+\newcommand{\formatCompilers}[1]{\mf{\mi{#1}}\xspace}
+\newcommand{\rthscomp}[0]{\formatCompilers{R2HSC}}
+\newcommand{\rthsp}[0]{\formatCompilers{R2HSP}}
+\newcommand{\nipcomp}[0]{\formatCompilers{NIPC}}
+\newcommand{\stpcomp}[0]{\formatCompilers{STP}}
+\newcommand{\mtpc}[0]{\formatCompilers{MTPC}}
+\newcommand{\mfac}[0]{\formatCompilers{MFAC}}
+\newcommand{\ccomp}[0]{\formatCompilers{CC}\xspace}
+
+
+\newcommand{\redto}[0]{\ensuremath{\ \hookrightarrow\low\ }}
+\newcommand{\red}[0]{\ensuremath{\ \hookrightarrow\ }}
+
+\newcommand{\bigred}[0]{\ensuremath{\ \downarrow\ }}
+
+\newcommand{\monred}[0]{\rightsquigarrow}
+
+\newcommand{\nred}[0]{\ensuremath{\not\hookrightarrow}}
+\newcommand{\redapp}[1]{\ensuremath{\!\!\!\!^{#1}\ }}
+\newcommand{\redstar}[0]{\redapp{*}}
+
+\newcommand{\nredt}[0]{\trg{\nred}}
+\newcommand{\nreds}[0]{\src{\nred}}
+\newcommand{\nredc}[0]{\com{\nred}}
+\newcommand{\redstars}[0]{\src{\redstar}}
+\newcommand{\redstarc}[0]{\com{\redstar}}
+\newcommand{\redstart}[0]{\trg{\redstar}}
+
+\DeclareMathOperator\redtos{\src{\redto}}
+\DeclareMathOperator\reds{\src{\red}}
+\DeclareMathOperator\redas{\src{\rightsquigarrow}}
+
+\DeclareMathOperator\bigreds{\src{\bigred}}
+\DeclareMathOperator\bigredt{\trg{\bigred}}
+
+\DeclareMathOperator\redtot{\trg{\redto}}
+\DeclareMathOperator\redt{\trg{\red}}
+\DeclareMathOperator\redat{\trg{\rightsquigarrow}}
+\DeclareMathOperator\redspt{\trg{\xleadsto{}}}
+\newcommand{\xltot}[1]{\,\trg{\xleadsto{#1}}\,}
+
+
+\DeclareMathOperator\redtoo{\oth{\redto}}
+\DeclareMathOperator\redo{\oth{\red}}
+\DeclareMathOperator\redao{\oth{\rightsquigarrow}}
+
+\newcommand{\diverge}{\Uparrow}
+
+\newcommand{\ltrace}{\alphaseq}
+\newcommand{\traceset}{\tracesname}
+\newcommand{\tracesets}{\trsname}
+\newcommand{\tracesett}{\trtname}
+
+\newcommand{\inps}[1]{#1|_I}
+\newcommand{\outs}[1]{#1|_O}
+
+\newcommand{\oddprefixes}[1]{\fun{op}{#1}}
+\newcommand{\observables}[1]{\fun{obs}{#1}}
+
+\AtEndEnvironment{example}{\null\hfill$\boxdot$}
+
+\makeatletter
+\xdef\@thefnmark{\@empty}
+\newcommand{\thmref}[1]{\cref{#1}~(\nameref{#1})}
+\newcommand{\Thmref}[1]{\Cref{#1}~(\nameref{#1})}
+\makeatother
+
+\newcommand{\subst}[2]{\ensuremath{\bl{\left[#1\relmiddle/#2\right]}}} %replace 1 in place of 2
+\newcommand{\subs}[2]{\subst{\src{#1}}{\src{#2}}}
+\newcommand{\subt}[2]{\subst{\trg{#1}}{\trg{#2}}}
+\newcommand{\subo}[2]{\subst{\oth{#1}}{\oth{#2}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\isptaux}[0]{\trg{?}}
+\DeclareMathOperator\ispt{\isptaux}
+
+
+\newcommand{\W}[0]{\bl{W}}
+\newcommand{\obs}[1]{\fun{obs}{#1}}
+\newcommand{\ot}[1]{\fun{ot}{#1}}
+
+\newcommand{\latergen}[1]{\ensuremath{\triangleright^{#1}}}
+\newcommand{\futwgen}[1]{\ensuremath{\sqsupseteq^{#1}}}
+\newcommand{\futwpubgen}[1]{\ensuremath{\futwgen{#1}_{\ms{pub}}}}
+\newcommand{\strfutwgen}[1]{\ensuremath{\sqsupset_{\later}^{#1}}}
+\DeclareMathOperator\later{\latergen{}}
+\DeclareMathOperator\futw{\futwgen{}}
+\DeclareMathOperator\futwpub{\futwpubgen{}}
+\DeclareMathOperator\strfutw{\strfutwgen{}}
+
+\newcommand{\genrel}[3]{\ensuremath{\mc{#1}\llparenthesis\src{#2}\rrparenthesis^{#3}}} %Lbag \Rbag
+\newcommand{\valrel}[1]{\genrel{V}{#1}{}}
+\newcommand{\contrel}[1]{\genrel{K}{#1}{}}
+\newcommand{\termrel}[1]{\genrel{E}{#1}{}}
+\newcommand{\envrel}[1]{\genrel{G}{#1}{}}
+
+%% YEAH
+\renewcommand{\emptyset}[0]{\varnothing}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	naming HP and referring to them
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{hps}
+\crefname{hps}{}{}
+\newcommand{\hpdef}[2]{ % nome, label
+	\def\thehps{#1}%
+  	\refstepcounter{hps}%
+  	\label{hp:#2}%
+  	#1
+}
+\newcommand{\hpref}[1]{\Cref{hp:#1}}
+
+\newcommand{\proven}[1]{\ensuremath{\checkmark}}
+
+
+\Crefname{mydefinition}{Definition}{Definitions}
+\crefname{mydefinition}{Definition}{Definitions}
+\theoremstyle{definition}
+\newtheorem{mydefinition}{Definition}
+
+
+\newcommand{\p}[1]{\left(#1\right)}
+%%%%%%%%%%%%%%%%%%%%
+%% SPECTECTOR
+%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\specEval}[2]{\fun{Spec\text{-}Sem}{#1,#2}} %{\llbracket #1 \rrbracket(#2)}
+\newcommand{\nspecEval}[2]{\fun{Sem}{#1,#2}} %{\llparenthesis #1 \rrparenthesis(#2)}
+\newcommand{\specbeh}[1]{\fun{Spec\text{-}Sem}{#1} } %{\llbracket #1 \rrbracket(#2)}
+\newcommand{\nspecbeh}[1]{\fun{Sem}{#1}} %{\llparenthesis #1 \rrparenthesis(#2)}
+\newcommand{\nspecProject}[1]{#1\!\!\upharpoonright_{\mi{nse}}}
+\newcommand{\ns}[1]{#1|_{\mi{ns}}}
+\newcommand{\nspecproj}[1]{\nspecProject{#1}}
+\newcommand{\specproj}[1]{#1\!\!\downharpoonright_{\mi{sp}}}
+
+\newcommand{\sni}[0]{\Cref{cr:sni}\xspace} %{\text{SNI}\xspace}
+\newcommand{\snitext}[0]{\text{SNI}\xspace}
+\newcommand{\snidef}[0]{\criteria{\snitext}{sni}}
+
+\newcommand{\rsni}[0]{\Cref{cr:rsni}\xspace}
+\newcommand{\rsnitext}[0]{\text{RSNI}\xspace}
+\newcommand{\rsnidef}[0]{\criteria{\rsnitext}{rsni}}
+
+\newcommand{\vdashsni}[0]{\vdash_\snitext}
+\newcommand{\vdashrsni}[0]{\vdash_\rsnitext}
+
+\newcommand{\sred}[1]{\Xto{#1}}
+\newcommand{\nsred}[1]{\xto{#1}}
+
+\newcommand{\specbehs}[1]{\funs{Spec\text{-}Sem}{#1} }
+\newcommand{\nspecbehs}[1]{\funs{Sem}{#1}}
+\newcommand{\specbeht}[1]{\funt{Spec\text{-}Sem}{#1} }
+\newcommand{\nspecbeht}[1]{\funt{Sem}{#1}}
+
+
+\renewcommand{\leadsto}{\rightsquigarrow}
+\newcommand{\xleadsto}[1]{%
+   \if\relax\detokenize{#1}\relax
+   \rightsquigarrow
+   \else
+   \mathrel{%
+     \begin{tikzpicture}[%
+       baseline={(current bounding box.south)}
+       ]
+       \node[%
+       ,inner sep=.44ex
+       ,align=center
+       ] (tmp) {$\scriptstyle #1$};
+       \path[%
+       ,draw,<-
+       ,decorate,decoration={%
+         ,zigzag
+         ,amplitude=0.7pt
+         ,segment length=1.2mm,pre length=3.5pt
+       }
+       ]
+       (tmp.south east) -- (tmp.south west);
+     \end{tikzpicture}
+   }
+   \fi
+ }
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%
+%	traces
+%%%%%%%%%%%%%%%%%%%%
+\newcommand{\tracesymbol}[0]{\lambda}
+\newcommand{\actionsymbol}[0]{\alpha}
+\newcommand{\nonspectracesymbol}[0]{\iota}
+\newcommand{\spectracesymbol}[0]{\sigma}
+\newcommand{\terminationsymbol}[0]{\lightning}
+\newcommand{\ts}[0]{\terminationsymbol}
+
+\newcommand{\taintt}{\trgb{\sigma}}
+
+\newcommand{\tra}[1]{\OB{\tracesymbol{#1}}}
+% \newcommand{\trs}[1]{\OB{\spectracesymbol{#1}}}
+\newcommand{\tri}[1]{\OB{\nonspectracesymbol{#1}}}
+\newcommand{\tras}[1]{\src{\tra{#1}}}
+\newcommand{\trss}[1]{\src{\trs{#1}}}
+\newcommand{\tris}[1]{\src{\tri{#1}}}
+\newcommand{\trat}[1]{\trg{\OB{\trgb{\tracesymbol}{#1}}}}
+\newcommand{\trst}[1]{\trg{\trs{#1}}}
+\newcommand{\trit}[1]{\trg{\tri{#1}}}
+\newcommand{\trac}[1]{\com{\tra{#1}}}
+\newcommand{\trsc}[1]{\com{\trs{#1}}}
+\newcommand{\tric}[1]{\com{\tri{#1}}}
+
+\newcommand{\acas}[1]{\src{\actionsymbol{#1}}}
+\newcommand{\acss}[1]{\src{\spectracesymbol_{#1}}}
+\newcommand{\acis}[1]{\src{\nonspectracesymbol_{#1}}}
+\newcommand{\acat}[1]{\trg{\trgb{\actionsymbol}{#1}}}
+\newcommand{\acst}[1]{\trg{\spectracesymbol_{#1}}}
+\newcommand{\acit}[1]{\trg{\nonspectracesymbol_{#1}}}
+\newcommand{\acac}[1]{\com{\actionsymbol{#1}}}
+\newcommand{\acsc}[1]{\com{\spectracesymbol_{#1}}}
+\newcommand{\acic}[1]{\com{\nonspectracesymbol_{#1}}}
+
+\newcommand{\lowac}[0]{^{L}}
+\newcommand{\highac}[0]{^{H}}
+
+\newcommand{\safeac}[0]{^{\safeta}}
+\newcommand{\unac}[0]{^{\unta}}
+
+\newcommand{\safeta}[0]{\ensuremath{S}}
+\newcommand{\unta}[0]{\ensuremath{U}}
+
+
+\newcommand{\acacl}[1]{\com{\tracesymbol_{#1}\lowac}}
+\newcommand{\acscl}[1]{\com{\spectracesymbol_{#1}\lowac}}
+\newcommand{\acicl}[1]{\com{\nonspectracesymbol_{#1}\lowac}}
+\newcommand{\acach}[1]{\com{\tracesymbol_{#1}\highac}}
+\newcommand{\acsch}[1]{\com{\spectracesymbol_{#1}\highac}}
+\newcommand{\acich}[1]{\com{\nonspectracesymbol_{#1}\highac}}
+
+\newcommand{\acacs}[1]{\com{\tracesymbol_{#1}\safeac}}
+\newcommand{\acscs}[1]{\com{\spectracesymbol_{#1}\safeac}}
+\newcommand{\acics}[1]{\com{\nonspectracesymbol_{#1}\safeac}}
+\newcommand{\acacu}[1]{\com{\tracesymbol_{#1}\unac}}
+\newcommand{\acscu}[1]{\com{\spectracesymbol_{#1}\unac}}
+\newcommand{\acicu}[1]{\com{\nonspectracesymbol_{#1}\unac}}
+
+\DeclareMathOperator\glb{\ensuremath{\sqcap}}
+
+\newcommand{\unsafeproj}[1]{\bl{\left\lceil#1\right\rceil^{u}}}
+\newcommand{\safeproj}[1]{\bl{\left\lfloor#1\right\rfloor_{s}}}
+
+\DeclareMathOperator\sem{\ensuremath{\rightsquigarrow}}
+\DeclareMathOperator\sems{\src{\rightsquigarrow}}
+\DeclareMathOperator\semt{\trg{\boldsymbol{\rightsquigarrow}}}
+
+\newcounter{criteria}
+\crefname{criteria}{}{}
+\newcommand{\criteria}[2]{%
+	\def\thecriteria{\detokenize{#1}}%
+  	\refstepcounter{criteria}%
+  	\label{cr:#2}%
+  	% \tag{#1}
+  	#1%
+}
+\newcommand{\rhpref}[0]{\Cref{cr:rhp}\xspace}
+\newcommand{\rthscref}[0]{\Cref{cr:r2hsc}\xspace}
+\newcommand{\rthspref}[0]{\Cref{cr:r2hsp}\xspace}
+\newcommand{\nipcref}[0]{\Cref{cr:nipc}\xspace}
+\newcommand{\stpcref}[0]{\Cref{cr:stp}\xspace}
+
+
+\newcommand{\rsscomp}[0]{\formatCompilers{RSSC}}
+\newcommand{\rsscref}[0]{\Cref{cr:rssc}\xspace}
+
+% TODO: i should do all criteria defs like this
+\newcommand{\snipcomp}[0]{\formatCompilers{RSNIP}}
+\newcommand{\snip}[0]{\Cref{cr:snip}\xspace}
+\newcommand{\rsnip}[0]{\snip}
+\newcommand{\snipdef}[0]{\criteria{\snipcomp}{snip}}
+
+\newcommand{\sniccomp}[0]{\formatCompilers{RSNIC}}
+\newcommand{\snic}[0]{\Cref{cr:snic}\xspace}
+\newcommand{\rsnic}[0]{\snic}
+\newcommand{\snicdef}[0]{\criteria{\sniccomp}{snic}}
+
+\newcommand{\rdsscomp}[0]{\formatCompilers{RSSC}}
+\newcommand{\rdss}[0]{\Cref{cr:rdss}\xspace}
+\newcommand{\rssc}[0]{\rdss}
+\newcommand{\rdssdef}[0]{\criteria{\rdsscomp}{rdss}}
+\newcommand{\rsscdef}[0]{\rdssdef}
+
+\newcommand{\rdsspcomp}[0]{\formatCompilers{RSSP}}
+\newcommand{\rdssp}[0]{\Cref{cr:rdssp}\xspace}
+\newcommand{\rssp}[0]{\rdssp}
+\newcommand{\rdsspdef}[0]{\criteria{\rdsspcomp}{rdssp}}
+\newcommand{\rsspdef}[0]{\rdsspdef}
+
+\newcommand{\rscomp}[0]{\formatCompilers{RSC}}
+\newcommand{\rscref}[0]{\Cref{cr:rsc}\xspace}
+\newcommand{\rsc}[0]{\rscref}
+\newcommand{\rscdef}[0]{\criteria{\rscomp}{rsc}}
+
+\newcommand{\rspcomp}[0]{\formatCompilers{RSP}}
+\newcommand{\rspref}[0]{\Cref{cr:rsp}\xspace}
+\newcommand{\rsp}[0]{\rscref}
+\newcommand{\rspdef}[0]{\criteria{\rspcomp}{rsp}}
+
+\newcommand{\facomp}[0]{\formatCompilers{FAC}}
+\newcommand{\facref}[0]{\Cref{cr:fac}\xspace}
+\newcommand{\fac}[0]{\facref}
+\newcommand{\facdef}[0]{\criteria{\facomp}{fac}}
+
+\newcommand{\ctpcomp}[0]{\formatCompilers{CTPC}}
+\newcommand{\ctpref}[0]{\Cref{cr:ctp}\xspace}
+\newcommand{\ctp}[0]{\ctpref}
+\newcommand{\ctpdef}[0]{\criteria{\ctpcomp}{ctp}}
+
+\newcommand{\tpcomp}[0]{\formatCompilers{TPC}}
+\newcommand{\tpcref}[0]{\Cref{cr:tpc}\xspace}
+\newcommand{\tpc}[0]{\tpcref}
+\newcommand{\tpcdef}[0]{\criteria{\tpcomp}{tpc}}
+
+
+\newcommand{\stcomp}[0]{\formatCompilers{STC}}
+\newcommand{\stcref}[0]{\Cref{cr:stcomp}\xspace}
+\newcommand{\stc}[0]{\stcref}
+\newcommand{\stcdef}[0]{\criteria{\stcomp}{stcomp}}
+
+\newcommand{\predState}[0]{{pr}}
+
+
+\newcommand{\rsstext}[0]{\text{RSS}\xspace}
+\newcommand{\rssref}[0]{\Cref{cr:rss}\xspace}
+\newcommand{\rss}[0]{\rssref}
+\newcommand{\rssdef}[0]{\criteria{\rsstext}{rss}}
+
+\newcommand{\sstext}[0]{\text{SS}}
+\newcommand{\ssref}[0]{\Cref{cr:ss}\xspace}
+\renewcommand{\ss}[0]{\ssref}
+\newcommand{\ssdef}[0]{\criteria{\sstext}{ss}}
+
+\newcommand{\wsstext}[0]{\text{\weak{SS}}}
+\newcommand{\wssref}[0]{\Cref{cr:wss}\xspace}
+\newcommand{\wss}[0]{\wssref}
+\newcommand{\wssdef}[0]{\criteria{\wsstext}{wss}}
+
+\newcommand{\wsni}[0]{\Cref{cr:wsni}\xspace} %{\text{SNI}\xspace}
+\newcommand{\wsnitext}[0]{\text{wSNI}\xspace}
+\newcommand{\wsnidef}[0]{\criteria{\wsnitext}{wsni}}
+
+
+\newcommand{\wrsstext}[0]{\text{\weak{RSS}}}
+\newcommand{\wrssref}[0]{\Cref{cr:wrss}\xspace}
+\newcommand{\wrss}[0]{\wrssref}
+\newcommand{\wrssdef}[0]{\criteria{\wrsstext}{wrss}}
+
+\newcommand{\wrsni}[0]{\Cref{cr:wrsni}\xspace} %{\text{SNI}\xspace}
+\newcommand{\wrsnitext}[0]{\text{\weak{RSNI}}\xspace}
+\newcommand{\wrsnidef}[0]{\criteria{\wrsnitext}{wrsni}}
+
+\newcommand{\wsnipcomp}[0]{\formatCompilers{\weak{RSNIP}}}
+\newcommand{\wsnip}[0]{\Cref{cr:wsnip}\xspace}
+\newcommand{\rwsnip}[0]{\wsnip}
+\newcommand{\wsnipdef}[0]{\criteria{\wsnipcomp}{wsnip}}
+
+\newcommand{\rwdsscomp}[0]{\formatCompilers{\weak{RSSC}}}
+\newcommand{\rwdss}[0]{\Cref{cr:rwdss}\xspace}
+\newcommand{\rwssc}[0]{\rwdss}
+\newcommand{\rwdssdef}[0]{\criteria{\rwdsscomp}{rwdss}}
+\newcommand{\rwsscdef}[0]{\rwdssdef}
+
+\newcommand{\rwdsspcomp}[0]{\formatCompilers{\weak{RSSP}}}
+\newcommand{\rwdssp}[0]{\Cref{cr:rwdssp}\xspace}
+\newcommand{\rwssp}[0]{\rwdssp}
+\newcommand{\rwdsspdef}[0]{\criteria{\rwdsspcomp}{rwdssp}}
+\newcommand{\rwsspdef}[0]{\rwdsspdef}
+
+
+\newcommand{\vdashss}[0]{\vdash_{\ss}}
+\newcommand{\vdashrss}[0]{\vdash_{\rss}}
+\newcommand{\svdashrss}[0]{\src{\vdash}_{\src{\rss}}}
+\newcommand{\tvdashrss}[0]{\trgb{\vdash}_{\trg{\rss}}}
+
+
+\newcounter{proofr}
+\crefname{proofr}{}{}
+\newcommand{\proofref}[2]{%
+	\def\theproofref{\detokenize{#1}}%
+  	\refstepcounter{proofr}%
+  	\label{prf:#2}%
+  	% \tag{#1}
+  	% #1%
+}
+% \Crefname{proof}{Proof}{Proofs}
+
+\newcommand{\showproof}[1]{Proof \Cref{prf:#1}} % TODO: change to show argument #1 of proofref, use arg #1 of proofref to show if a proof is done
+
+
+%%%%%%%%% decoupling
+\newcommand{\Bv}[0]{\ensuremath{B_v}\xspace}
+\newcommand{\Bs}[0]{\ensuremath{B_{t}}\xspace}%{\ensuremath{B_{\sigma}}\xspace}
+\newcommand{\Bt}[0]{\ensuremath{B_{t}}\xspace}%{\ensuremath{B_{\taintt}}\xspace}
+\newcommand{\Hv}[0]{\ensuremath{H_v}\xspace}
+\newcommand{\Hs}[0]{\ensuremath{H_{t}}\xspace}%{\ensuremath{H_{\sigma}}\xspace}
+\newcommand{\Ht}[0]{\ensuremath{H_{t}}\xspace}%{\ensuremath{H_{\taintt}}\xspace}
+
+\newcommand{\Ov}[0]{\ensuremath{\Omega_v}\xspace}
+\newcommand{\Os}[0]{\ensuremath{\Omega_{t}}\xspace}%{\ensuremath{\Omega_{\sigma}}\xspace}
+\newcommand{\Ot}[0]{\ensuremath{\Omega_{t}}\xspace}%{\ensuremath{\Omega_{\taintt}}\xspace}
+
+\newcommand{\Sv}[0]{\ensuremath{\Sigma_v}\xspace}
+\newcommand{\Ss}[0]{\ensuremath{\Sigma_{t}}\xspace}%{\ensuremath{\Sigma_{\sigma}}\xspace}
+\newcommand{\St}[0]{\ensuremath{\Sigma_{t}}\xspace}%{\ensuremath{\Sigma_{\taintt}}\xspace}
+
+\newcommand{\Pv}[0]{\ensuremath{\Phi_v}\xspace}
+\newcommand{\Ps}[0]{\ensuremath{\Phi_{t}}\xspace}%{\ensuremath{\Sigma_{\sigma}}\xspace}
+\newcommand{\Pt}[0]{\ensuremath{\Phi_{t}}\xspace}%{\ensuremath{\Sigma_{\taintt}}\xspace}
+
+
+
+
+
+\newcommand{\prover}[0]{\ensuremath{\Phi}\xspace}
+\newcommand{\inv}[0]{\ensuremath{\iota}\xspace}
+\newcommand{\modul}[0]{\ensuremath{\Xi}\xspace}
+\newcommand{\local}[0]{\ensuremath{\Lambda}\xspace}
+
+\newcommand{\atk}[0]{{A}\xspace}
+
+\newcommand{\typ}[1]{\ensuremath{\widehat{#1}}}
+
+\newcommand{\invr}[1]{\ensuremath{\fbox{\ensuremath{#1}}}}
+
+\newcommand{\len}[1]{\fun{len}{#1}}
+\newcommand{\rsevalgen}[3]{\codeenv, \procid, i \vdash #1 \red #2 :#3}
+\newcommand{\rsevalgenstar}[3]{\codeenv, \procid, i \vdash #1 \red\redstar #2 :#3}
+
+\newcommand{\rs}[2]{\ensuremath{ \triangleright_{\mi{RS}}\ \com{#1} : \com{#2} }} %\com{#2} \vdash \com{#1} : \com{rs}  % \vdash_{RS} \com{#1} : \com{#2}
+
+
+
+\newcommand{\nil}[0]{[\, ]}
+\newcommand{\listsep}[0]{::}
+\newcommand{\setsep}[0]{,}
+\newcommand{\tracesep}[0]{\ensuremath{\cdot}}
+\newcommand{\logsep}[0]{\ensuremath{\triangleright}}
+
+\newcommand{\restr}[2]{#1|_{\mi{#2}}}
+
+
+\newcommand{\stronginv}[3]{ \com{#1} \vdash \com{#2} \propto \com{#3} : \com{strong} }
+\newcommand{\weakinvinv}[3]{ \com{#1} \vdash \com{#2} \propto \com{#3} : \com{local} }
+\newcommand{\weakinvatk}[3]{ \com{#1} \vdash \com{#2} \propto \com{#3} : \com{unreachable} }
+
+\DeclareMathOperator\notcap{\ensuremath{\not\!\cap}}
+
+\newcommand{\ea}[0]{\modul_{\mi{imm}}}
+\newcommand{\enb}[0]{\modul_{\mi{mut}}}
+\newcommand{\eac}[0]{\modul_{\mi{conf}}}
+
+\newcommand{\totypes}[1]{\fun{absty}{#1}}
+
+\newcommand{\okref}[0]{\textsf{OkRef}}
+\newcommand{\inref}[0]{\textsf{InvRef}}
+\newcommand{\noref}[0]{\textsf{NonRef}}
+
+\newcommand{\absfun}[1]{\totypes{#1}}
+\newcommand{\concfun}[1]{\fun{\gamma}{#1}}
+
+
+\newcommand\xrsquigarrow[1]{%
+\mathrel{%
+\begin{tikzpicture}[baseline= {( $ (current bounding box.south) + (0,-0.5ex) $ )}]
+  \node[inner sep=.5ex] (a) {$\scriptstyle #1$};
+  \path[draw,implies-,double distance between line centers=1.5pt,decorate,
+    decoration={zigzag,amplitude=0.7pt,segment length=1.2mm,pre=lineto,
+    pre   length=4pt}] 
+    (a.south east) -- (a.south west);
+\end{tikzpicture}}%
+}
+
+
+\newcommand{\encapsulated}[3]{\ensuremath{#2 \vdash_{\mi{enc}} #1 :#3}}
+\newcommand{\localed}[3]{\ensuremath{#3 \vdash_{\mi{loc}} #1 :#2}}
+
+\newcommand{\localinv}[2]{\localed{#1}{#2}{\local}} % #1 \Vdash #2 : \com{local}
+
+
+% \newcommand{\move}[0]{\msc{Move}\xspace}
+\newcommand{\tc}{\text{trusted code}\xspace}
+
+
+\renewcommand{\var}[0]{x}
+\newcommand{\locl}[0]{L}
+\newcommand{\stt}[0]{\ensuremath{\sigma}}
+% \newcommand{\var}[0]{x}
+
+\newcommand{\typing}[5]{ \codeenv, \procid, #1 \vdash #2, #3 \rightarrow #4, #5 }
+\newcommand{\Typing}[5]{ \codeenv, \procid, #1 \Vdash #2, #3 \rightarrow #4, #5 }
+\newcommand{\typingdef}[0]{ \codeenv, \procid, \instr \vdash \ty{L}, \ty{S} \rightarrow \ty{L'}, \ty{S'} }
+
+\newcommand{\semsep}[0]{\hdashrule[0.5ex]{.53\textwidth}{.3mm}{3mm}}
+
+\newcommand{\tcenv}[0]{\ensuremath{\Omega^{\!\!\dagger}}}
+
+\newcommand{\trace}[1]{\OB{#1}}
+\newcommand{\trc}[0]{\OB{\ac}}
+
+\newcommand{\acteval}[5]{#1 \triangleright #2 \vdash #3 \xto{#4} #5}
+\newcommand{\actevalfat}[5]{#1 \triangleright #2 \vdash #3 \Xto{#4} #5}
+\newcommand{\treval}[5]{#1 \triangleright #2 \vdash #3 \Xtol{#4} #5}
+
+\newcommand{\wt}[2]{#1\vdash #2 : \com{wt}}
+
+\newcommand{\mandg}[1]{\fun{mg}{#1}}
+
+\newcommand{\actcheck}[2]{ #1 \Vdash #2}
+\newcommand{\tracecheck}[2]{ #1 \Vdash #2}
+
+\newcommand{\dotcode}[0]{\mtt{.code}}
+\newcommand{\dotmidtype}[0]{\mtt{.mid}}
+\newcommand{\dotretty}[0]{\mtt{.rety}}
+\newcommand{\dotinty}[0]{\mtt{.inty}}
+
+\newcommand{\listaccess}[1]{\mtt{.}[#1]}
+
+\newcommand{\ty}[1]{\tilde{#1}}
+
